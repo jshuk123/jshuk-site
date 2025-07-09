@@ -1,0 +1,2 @@
+<?php include 'includes/header_main.php'; ?>
+<?php include $_SERVER['DOCUMENT_ROOT'].'/partials/ads/header_ad.php'; ?> 
