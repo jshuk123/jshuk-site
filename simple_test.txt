@@ -1,9 +1,16 @@
-FTP Test File
-=============
+FTP Test File - UPDATED!
+==========================
 
-This is a simple test file to verify FTP deployment is working.
+✅ AUTOMATIC DEPLOYMENT IS WORKING! ✅
 
-If you can see this file at https://jshuk.com/simple_test.txt then the deployment is working.
+This file was updated to test the new automatic deployment pipeline.
 
-Timestamp: January 10, 2025
-Test #: 001 
+If you can see this updated content, then:
+- GitHub webhook is working
+- Hostinger auto-deployment is working
+- Your deployment pipeline is 100% automated!
+
+Timestamp: January 10, 2025 - UPDATED
+Test #: 002 - AUTO DEPLOYMENT TEST
+
+🚀 Your site now updates automatically when you push to GitHub! 🚀 
