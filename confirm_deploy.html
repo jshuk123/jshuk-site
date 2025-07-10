@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deploy Confirmation - JShuk</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        h1 {
+            color: #23395d;
+            margin-bottom: 20px;
+        }
+        .success {
+            color: #28a745;
+            font-size: 18px;
+            margin: 20px 0;
+        }
+        .timestamp {
+            color: #666;
+            font-size: 14px;
+            margin-top: 20px;
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #23395d;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        .back-link:hover {
+            background-color: #1a2a45;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 Deployment Successful!</h1>
+        <div class="success">
+            ✅ FTP deployment is working correctly
+        </div>
+        <p>This file confirms that your GitHub Actions FTP deployment to Hostinger is functioning properly.</p>
+        
+        <div class="timestamp">
+            Page generated: <span id="timestamp"></span>
+        </div>
+        
+        <a href="/" class="back-link">← Back to JShuk Homepage</a>
+    </div>
+
+    <script>
+        document.getElementById('timestamp').textContent = new Date().toLocaleString();
+    </script>
+</body>
+</html> 
