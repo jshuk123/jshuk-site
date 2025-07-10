@@ -1,0 +1,15 @@
+Directory Test File
+==================
+
+This file is being uploaded to test the correct directory structure.
+
+Possible paths being tested:
+1. domains/jshuk.com/public_html/
+2. public_html/
+3. www/
+4. htdocs/
+5. Root directory (/)
+
+If you can see this file, the directory path is working!
+
+Test timestamp: January 10, 2025 
