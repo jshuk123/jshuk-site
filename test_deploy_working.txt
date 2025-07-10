@@ -1,0 +1,5 @@
+Deployment test file created at: {{ current_time }}
+If you can see this file at https://jshuk.com/test_deploy_working.txt then FTP deployment is working!
+
+GitHub Actions workflow is functioning correctly.
+Created: January 10, 2025 
