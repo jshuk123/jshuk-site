@@ -80,7 +80,7 @@ try {
                         ELSE 3 
                     END,
                     b.created_at DESC 
-                LIMIT 6
+                 LIMIT 6
             ");
             $stmt->execute();
             $featured = $stmt->fetchAll();
