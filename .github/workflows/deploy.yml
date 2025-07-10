@@ -18,5 +18,4 @@ jobs:
           server: 46.202.158.57
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-         server-dir: /public_html/
-
+          server-dir: /public_html/
