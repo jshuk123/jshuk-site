@@ -8,15 +8,23 @@ session_start();
 require_once '../config/config.php';
 
 function checkAdminAccess() {
-    if (!isset($_SESSION['user_id']) || empty($_SESSION['is_admin'])) {
+    if (!isset($_SESSION['user_id'])) {
         header('Location: ../login.php');
+        exit();
+    }
+    global $pdo;
+    $stmt = $pdo->prepare("SELECT role FROM users WHERE id = ?");
+    $stmt->execute([$_SESSION['user_id']]);
+    $user = $stmt->fetch();
+    if ($user['role'] !== 'admin') {
+        header('Location: ../index.php');
         exit();
     }
 }
 checkAdminAccess();
 
 // Get admin info
-$adminName = $_SESSION['user_name'] ?? 'Admin';
+$adminName = $_SESSION['user_name'] ?? $_SESSION['username'] ?? 'Admin';
 $adminEmail = $_SESSION['email'] ?? '';
 $adminRole = $_SESSION['role'] ?? 'admin';
 $lastLogin = $_SESSION['last_login'] ?? '';
