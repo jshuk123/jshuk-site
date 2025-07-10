@@ -1,0 +1,333 @@
+/* === Elite Global Styles for JShuk === */
+
+.icon-circle {
+  width: 70px;
+  height: 70px;
+  background: none; /* Remove background so icon is visible */
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: background var(--transition-smooth), transform var(--transition-smooth), box-shadow var(--transition-smooth);
+  border: 1px solid #e3e3e3;
+}
+.icon-circle .iconify {
+  width: 36px !important;
+  height: 36px !important;
+  font-size: 36px !important;
+  color: var(--primary);
+}
+.icon-circle:hover {
+  background: var(--accent);
+  transform: scale(1.1);
+  box-shadow: var(--shadow-md);
+}
+.icon-circle:hover .iconify {
+  color: var(--primary);
+}
+
+.category-card .icon-circle {
+  background: none;
+  color: var(--primary);
+  width: 65px;
+  height: 65px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 0.8rem;
+  font-size: 2rem;
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition-smooth);
+  border: 1px solid #e3e3e3;
+}
+.category-card .icon-circle .iconify {
+  width: 32px !important;
+  height: 32px !important;
+  font-size: 32px !important;
+  color: var(--primary);
+}
+.category-card:hover .icon-circle {
+  background: var(--accent);
+  transform: scale(1.15);
+  box-shadow: var(--shadow-md);
+}
+.category-card:hover .icon-circle .iconify {
+  color: var(--primary);
+}
+
+/* === Elite UI/UX Enhancements === */
+
+/* Navbar gold accent and shadow */
+.navbar {
+  box-shadow: 0 4px 24px rgba(0,0,0,0.07), 0 1.5px 6px rgba(230,194,0,0.10);
+  transition: box-shadow 0.3s;
+}
+.navbar-nav .nav-link {
+  position: relative;
+  transition: color 0.2s;
+}
+.navbar-nav .nav-link:hover, .navbar-nav .nav-link.active {
+  color: #e6c200 !important;
+}
+.navbar-nav .nav-link::after {
+  content: '';
+  display: block;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #e6c200 0%, #ffe066 100%);
+  transition: width 0.3s;
+  position: absolute;
+  left: 0; bottom: 0;
+}
+.navbar-nav .nav-link:hover::after, .navbar-nav .nav-link.active::after {
+  width: 100%;
+}
+
+/* Hero section animated gradient background */
+.hero-section {
+  background: #ffffff;
+  position: relative;
+  overflow: hidden;
+  padding: 70px 0 50px 0;
+  color: #1a3353;
+  text-align: center;
+}
+.hero-section::before {
+  display: none;
+}
+@keyframes hero-bg-move {
+  0% { background-position: 60% 40%, 30% 80%; }
+  100% { background-position: 65% 45%, 35% 85%; }
+}
+.hero-section h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.8rem;
+  font-weight: 700;
+  color: #ffe066;
+  margin-bottom: 18px;
+  position: relative;
+  z-index: 1;
+  text-shadow: 0 2px 8px #23395d55;
+}
+.hero-section .lead {
+  color: #fffbe6;
+  font-size: 1.25rem;
+  margin-bottom: 32px;
+  position: relative;
+  z-index: 1;
+}
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  justify-content: center;
+  position: relative;
+  z-index: 1;
+}
+
+/* Elite call-to-action buttons */
+.btn-hero {
+  background: linear-gradient(90deg, #e6c200 0%, #ffe066 100%);
+  color: #23395d;
+  font-weight: 700;
+  border: none;
+  border-radius: 30px;
+  padding: 0.75rem 2.2rem;
+  font-size: 1.15rem;
+  box-shadow: 0 4px 18px #e6c20022;
+  transition: background 0.3s, color 0.2s, box-shadow 0.3s, transform 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+.btn-hero:hover, .btn-hero:focus {
+  background: linear-gradient(90deg, #ffe066 0%, #e6c200 100%);
+  color: #23395d;
+  box-shadow: 0 8px 32px #e6c20044;
+  transform: translateY(-2px) scale(1.04);
+}
+.btn-hero.btn-outline {
+  background: transparent;
+  color: #ffe066;
+  border: 2px solid #ffe066;
+  box-shadow: none;
+}
+.btn-hero.btn-outline:hover, .btn-hero.btn-outline:focus {
+  background: #ffe066;
+  color: #23395d;
+  box-shadow: 0 8px 32px #e6c20044;
+}
+
+/* Section titles */
+.section-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.1rem;
+  color: #23395d;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  letter-spacing: 0.5px;
+  position: relative;
+  display: inline-block;
+}
+.section-title::after {
+  content: '';
+  display: block;
+  width: 60%;
+  height: 3px;
+  background: linear-gradient(90deg, #e6c200 0%, #ffe066 100%);
+  margin: 8px auto 0 auto;
+  border-radius: 2px;
+}
+
+/* Card and grid enhancements */
+.business-card, .category-card, .testimonial-card, .card {
+  border-radius: 18px !important;
+  box-shadow: 0 2px 16px #23395d11, 0 1.5px 6px #e6c20011;
+  border: none !important;
+  transition: box-shadow 0.3s, transform 0.2s;
+}
+.business-card:hover, .category-card:hover, .testimonial-card:hover, .card:hover {
+  box-shadow: 0 8px 32px #e6c20022, 0 2px 8px #23395d22;
+  transform: translateY(-2px) scale(1.03);
+}
+
+/* Featured badge */
+.business-card .badge-featured {
+  background: linear-gradient(90deg, #e6c200 0%, #ffe066 100%);
+  color: #23395d;
+  font-weight: 700;
+  border-radius: 12px;
+  font-size: 0.95rem;
+  padding: 0.3em 1em;
+  position: absolute;
+  top: 18px; right: 18px;
+  box-shadow: 0 2px 8px #e6c20033;
+}
+
+/* Sticky footer base (customize as needed) */
+.site-footer {
+  background: #23395d;
+  color: #f8f9fa;
+  padding: 32px 0 18px 0;
+  text-align: center;
+  font-size: 1.1rem;
+  border-top: 3px solid #e6c200;
+  position: relative;
+  z-index: 10;
+}
+.site-footer .footer-brand span {
+  color: #f8f9fa;
+}
+.site-footer .footer-nav a,
+.site-footer .footer-contact a {
+  color: #f8f9fa;
+  text-decoration: none;
+  margin: 0 10px;
+  transition: color 0.2s;
+}
+.site-footer .footer-nav a:hover,
+.site-footer .footer-contact a:hover {
+  color: #e6c200;
+}
+.site-footer .footer-social a {
+  color: #e6c200;
+  margin: 0 10px;
+  font-size: 1.5rem;
+  transition: color 0.2s;
+}
+.site-footer .footer-social a:hover {
+  color: #fffbe6;
+}
+.site-footer .footer-bottom {
+  color: #f8f9fa;
+  font-size: 1rem;
+}
+
+/* Elite Add Business Page Styles */
+.add-business-elite-bg {
+  background: linear-gradient(135deg, #f8fafc 0%, #f3e9d2 100%);
+  min-height: 100vh;
+}
+.add-business-card {
+  border-radius: 1.5rem;
+  box-shadow: 0 8px 32px rgba(44, 37, 19, 0.12);
+  border: 2px solid #e6c200;
+  background: #fff;
+  overflow: hidden;
+}
+.add-business-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #222;
+  letter-spacing: 1px;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  position: relative;
+}
+.add-business-title .elite-crown {
+  color: #e6c200;
+  font-size: 2.2rem;
+  vertical-align: middle;
+  margin-right: 0.5rem;
+}
+.elite-label {
+  font-weight: 600;
+  color: #bfa100;
+}
+.form-control:focus, .form-select:focus {
+  border-color: #e6c200;
+  box-shadow: 0 0 0 0.2rem rgba(230, 194, 0, 0.15);
+}
+.elite-btn {
+  background: linear-gradient(90deg, #e6c200 0%, #bfa100 100%);
+  color: #fff;
+  font-weight: 700;
+  border: none;
+  border-radius: 2rem;
+  padding: 0.75rem 2.5rem;
+  font-size: 1.2rem;
+  box-shadow: 0 4px 16px rgba(230, 194, 0, 0.10);
+  transition: background 0.2s, box-shadow 0.2s, transform 0.1s;
+}
+.elite-btn:hover, .elite-btn:focus {
+  background: linear-gradient(90deg, #bfa100 0%, #e6c200 100%);
+  color: #fff;
+  box-shadow: 0 8px 24px rgba(230, 194, 0, 0.18);
+  transform: translateY(-2px) scale(1.03);
+}
+.elite-alert {
+  border-left: 6px solid #e6c200;
+  background: #fffbe6;
+  color: #7a6600;
+  font-weight: 600;
+  border-radius: 0.5rem;
+  padding: 1rem 1.5rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.elite-alert i {
+  color: #e6c200;
+  font-size: 1.5rem;
+}
+@media (max-width: 768px) {
+  .add-business-title { font-size: 2rem; }
+  .add-business-card { padding: 1.2rem; }
+  .elite-btn { font-size: 1rem; padding: 0.6rem 1.5rem; }
+}
+
+/* FINAL OVERRIDE: Force white background on all hero elements */
+.hero,
+.hero-section,
+.hero *,
+.hero-section *,
+.hero::before,
+.hero::after,
+.hero-section::before,
+.hero-section::after {
+  background: #ffffff !important;
+  background-color: #ffffff !important;
+  background-image: none !important;
+  color: #1a3353 !important;
+} 

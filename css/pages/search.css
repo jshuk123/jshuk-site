@@ -1,0 +1,158 @@
+/* Modern, beautiful, responsive search page styles */
+body {
+  font-family: 'Inter', 'Poppins', Arial, sans-serif;
+  background: linear-gradient(135deg, #f7faff 0%, #e3e6ed 100%);
+}
+
+.search-form {
+  background: #fff;
+  border-radius: 1.5rem;
+  box-shadow: 0 4px 24px rgba(13,110,253,0.09);
+  padding: 2.2rem 2rem 1.7rem 2rem;
+  margin-bottom: 2.8rem;
+}
+
+.search-form .input-group-text {
+  background: #fff;
+  border: 1px solid #e3e6ed;
+  border-right: none;
+  border-radius: 0.7rem 0 0 0.7rem;
+}
+
+.search-form input,
+.search-form select {
+  border-radius: 0.7rem !important;
+  box-shadow: none !important;
+  border: 1px solid #e3e6ed !important;
+  font-size: 1.13rem;
+}
+
+.search-form button {
+  border-radius: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+}
+
+/* Business Card */
+.icon-circle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #e3f0ff 0%, #f7faff 100%);
+  color: #0d6efd;
+  box-shadow: 0 2px 10px rgba(13,110,253,0.08);
+  font-size: 2rem;
+}
+
+.business-card {
+  transition: box-shadow 0.3s, transform 0.3s;
+  border-radius: 1.2rem;
+  background: #fff;
+  border: 1px solid #e3e6ed;
+  box-shadow: 0 2px 10px rgba(13,110,253,0.05);
+}
+
+.business-card:hover {
+  box-shadow: 0 8px 32px rgba(13,110,253,0.15);
+  transform: translateY(-4px) scale(1.02);
+}
+
+/* Pagination */
+.pagination .page-link {
+  border-radius: 0.5rem !important;
+  margin: 0 0.15rem;
+  color: #0d6efd;
+  border: 1px solid #e3e6ed;
+}
+
+.pagination .active .page-link {
+  background: #0d6efd;
+  color: #fff;
+  border: none;
+}
+
+/* Alerts */
+.alert {
+  border-radius: 1rem;
+  font-size: 1.1rem;
+  padding: 1.5rem 1rem;
+}
+
+/* Elite Card Styles */
+.elite-card {
+  border-radius: 1.5rem;
+  box-shadow: 0 6px 32px rgba(13,110,253,0.10), 0 1.5px 6px rgba(0,0,0,0.03);
+  border: none;
+  background: #fff;
+  transition: box-shadow 0.25s, transform 0.25s;
+  position: relative;
+}
+.elite-card:hover {
+  box-shadow: 0 12px 48px rgba(13,110,253,0.18), 0 2px 8px rgba(0,0,0,0.06);
+  transform: translateY(-6px) scale(1.025);
+}
+
+.category-badge {
+  background: #f5c518;
+  color: #23272b;
+  font-size: 0.95rem;
+  font-weight: 600;
+  border-radius: 1.2rem;
+  box-shadow: 0 2px 8px rgba(245,197,24,0.08);
+  letter-spacing: 0.01em;
+  z-index: 2;
+}
+
+.business-logo-img {
+  border-radius: 12px;
+  background: #f8fafc;
+  border: 1.5px solid #e3e6ed;
+  min-height: 96px;
+  max-height: 120px;
+  object-fit: contain;
+  box-shadow: 0 1px 6px rgba(13,110,253,0.04);
+}
+
+.elite-title {
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  color: #1a237e;
+}
+
+.elite-desc {
+  font-size: 1.05rem;
+  color: #4b5563;
+}
+
+.btn-elite {
+  background: linear-gradient(90deg, #23272b 0%, #0d6efd 100%);
+  color: #fff;
+  border-radius: 0.7rem;
+  font-weight: 600;
+  padding: 0.55em 1.5em;
+  border: none;
+  box-shadow: 0 2px 8px rgba(13,110,253,0.08);
+  transition: background 0.2s, color 0.2s;
+}
+.btn-elite:hover, .btn-elite:focus {
+  background: linear-gradient(90deg, #f5c518 0%, #0d6efd 100%);
+  color: #23272b;
+}
+
+@media (max-width: 767px) {
+  .search-form {
+    padding: 1.2rem 0.5rem 1rem 0.5rem;
+  }
+  .icon-circle {
+    width: 48px;
+    height: 48px;
+    font-size: 1.4rem;
+  }
+  .business-card {
+    border-radius: 0.7rem;
+  }
+} 

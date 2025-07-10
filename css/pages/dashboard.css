@@ -1,0 +1,416 @@
+/*
+    Dashboard Styling for JShuk
+    File: dashboard.css
+    Description: Styles for the user dashboard page for a clean, modern, and user-friendly interface.
+*/
+
+:root {
+    --primary-color: #0d6efd;
+    --light-primary: #f0f6ff;
+    --card-header-bg: #f8f9fa;
+    --border-color: #dee2e6;
+    --text-muted: #6c757d;
+    --body-bg: #f8f9fa; /* Lighter background for the page */
+}
+
+body {
+    background-color: var(--body-bg);
+}
+
+/* Sidebar Profile Card */
+.col-lg-3 .card.sticky-top {
+    border-radius: .5rem;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+}
+
+.col-lg-3 .card-body {
+    padding: 1.5rem;
+}
+
+.col-lg-3 .list-group-item {
+    border: none;
+    padding: 0.85rem 1.5rem;
+    font-weight: 500;
+}
+
+.col-lg-3 .list-group-item i {
+    width: 20px;
+    text-align: center;
+    color: var(--text-muted);
+}
+
+.col-lg-3 .list-group-item:hover {
+    background-color: var(--light-primary);
+    color: var(--primary-color);
+}
+.col-lg-3 .list-group-item:hover i {
+    color: var(--primary-color);
+}
+
+/* Main Content Area */
+.col-lg-9 h1 {
+    font-weight: 700;
+}
+
+/* Quick Actions Card */
+.col-lg-9 .card {
+    border-radius: .5rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+/* Dashboard Tabs */
+.nav-pills .nav-link {
+    font-weight: 600;
+    color: #495057;
+    padding: 0.75rem 1.25rem;
+    border-radius: 0.3rem;
+}
+
+.nav-pills .nav-link.active, .nav-pills .show>.nav-link {
+    color: #fff;
+    background-color: var(--primary-color);
+}
+
+/* Tab Content Styling */
+.tab-content .list-group-item {
+    border-radius: .3rem;
+    margin-bottom: 1rem;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+}
+
+.tab-content .list-group-item-action:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    transition: all 0.2s ease-in-out;
+}
+
+.tab-content img.rounded-circle {
+    object-fit: cover;
+    border: 2px solid var(--border-color);
+}
+
+.tab-content .btn-sm i {
+    font-size: 0.8rem;
+}
+
+/* Empty State Placeholder */
+.text-center.p-5.border.rounded {
+    background-color: #fff;
+    border-style: dashed !important;
+}
+
+.profile-summary-card {
+    background: linear-gradient(90deg, #23395d 60%, #2d4263 100%);
+    color: #ffe066;
+}
+
+.profile-summary-card .avatar {
+    width: 90px;
+    height: 90px;
+    background: #fff;
+}
+
+.profile-summary-card .user-name {
+    color: #ffe066;
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+}
+
+.profile-summary-card .user-email {
+    color: #fffbe6;
+    font-size: 1.1rem;
+}
+
+.profile-summary-card .stat-count {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #ffe066;
+}
+
+.profile-summary-card .stat-label {
+    font-size: 0.95rem;
+    color: #fffbe6;
+}
+
+.notification-bar {
+    background: #fffbe6;
+    color: #23395d;
+    border: none;
+}
+
+/* Subscription Upgrade Cards */
+.upgrade-options {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+.upgrade-card {
+    background: white;
+    border: 2px solid #e9ecef;
+    border-radius: 12px;
+    padding: 2rem;
+    text-align: center;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.upgrade-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+
+.upgrade-card.premium-plus {
+    border-color: #007bff;
+    background: linear-gradient(135deg, #f8f9ff, #e3f2fd);
+}
+
+.upgrade-card.premium-plus::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #007bff, #0056b3);
+}
+
+.upgrade-header {
+    margin-bottom: 1.5rem;
+}
+
+.upgrade-header h5 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #333;
+}
+
+.price {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #007bff;
+}
+
+.upgrade-card.premium-plus .price {
+    color: #0056b3;
+}
+
+.upgrade-features {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 2rem 0;
+    text-align: left;
+}
+
+.upgrade-features li {
+    padding: 0.5rem 0;
+    position: relative;
+    padding-left: 1.5rem;
+    color: #555;
+}
+
+.upgrade-features li::before {
+    content: '✓';
+    position: absolute;
+    left: 0;
+    color: #28a745;
+    font-weight: bold;
+}
+
+.upgrade-card .btn {
+    width: 100%;
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.upgrade-card .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Current Tier Info */
+.current-tier-info {
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    border-radius: 12px;
+    padding: 2rem;
+    text-align: center;
+    border: 2px solid #dee2e6;
+}
+
+.current-tier-info h4 {
+    color: #333;
+    margin-bottom: 0.5rem;
+}
+
+/* Business Summary Cards */
+.businesses-summary {
+    background: white;
+    border-radius: 12px;
+    padding: 2rem;
+    border: 1px solid #e9ecef;
+}
+
+.business-summary-card {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 1rem;
+    border: 1px solid #e9ecef;
+    transition: all 0.3s ease;
+}
+
+.business-summary-card:hover {
+    background: #e9ecef;
+    transform: translateY(-2px);
+}
+
+.business-info h6 {
+    margin-bottom: 0.25rem;
+    color: #333;
+    font-weight: 600;
+}
+
+.business-stats {
+    margin-top: 0.5rem;
+}
+
+.business-stats small {
+    color: #666;
+    font-size: 0.8rem;
+}
+
+/* Unlimited Indicator */
+.unlimited-indicator {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    color: white;
+    padding: 1px 4px;
+    border-radius: 3px;
+    font-size: 0.7rem;
+    font-weight: bold;
+    margin-left: 2px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .upgrade-options {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .upgrade-card {
+        padding: 1.5rem;
+    }
+    
+    .upgrade-header h5 {
+        font-size: 1.25rem;
+    }
+    
+    .price {
+        font-size: 1.5rem;
+    }
+}
+
+/* Enhanced Tab Styling */
+.nav-pills .nav-link {
+    border-radius: 8px;
+    margin-right: 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.nav-pills .nav-link:hover {
+    transform: translateY(-2px);
+}
+
+.nav-pills .nav-link.active {
+    background: linear-gradient(135deg, #007bff, #0056b3);
+    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+}
+
+/* Subscription Badge in Dashboard */
+.subscription-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.subscription-badge.badge-basic {
+    background: #6c757d;
+    color: white;
+}
+
+.subscription-badge.badge-premium {
+    background: linear-gradient(135deg, #ffd700, #ffed4e);
+    color: #000;
+}
+
+.subscription-badge.badge-premium-plus {
+    background: linear-gradient(135deg, #007bff, #0056b3);
+    color: white;
+    animation: badgeGlow 2s ease-in-out infinite alternate;
+}
+
+@keyframes badgeGlow {
+    0% {
+        box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+    }
+    100% {
+        box-shadow: 0 0 10px rgba(0, 123, 255, 0.6);
+    }
+}
+
+/* Feature Comparison Table */
+.feature-comparison {
+    margin-top: 2rem;
+}
+
+.feature-comparison table {
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.feature-comparison th {
+    background: #f8f9fa;
+    font-weight: 600;
+    text-align: center;
+    padding: 1rem;
+}
+
+.feature-comparison td {
+    padding: 0.75rem;
+    text-align: center;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.feature-comparison .feature-name {
+    text-align: left;
+    font-weight: 500;
+}
+
+.feature-comparison .check {
+    color: #28a745;
+    font-weight: bold;
+}
+
+.feature-comparison .cross {
+    color: #dc3545;
+    font-weight: bold;
+}
+
+.feature-comparison .unlimited {
+    color: #007bff;
+    font-weight: bold;
+} 

@@ -1,0 +1,28 @@
+POST data: Array
+(
+    [business_id] => 10
+    [author_name] => vccvvv
+    [author_title] => vvvv
+    [rating] => 3
+    [content] => vvvvv
+)
+
+Business ID: 10
+Business ownership verified
+POST data: Array
+(
+)
+
+POST data: Array
+(
+    [business_id] => 12
+    [author_name] => dd
+    [author_title] => ddd
+    [rating] => 4
+    [content] => dddd
+)
+
+Business ID: 12
+Business ID: 12
+Business ID: 12
+Business ID: 12

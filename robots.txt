@@ -1,0 +1,64 @@
+User-agent: *
+Allow: /
+
+# Allow crawling of main pages
+Allow: /index.php
+Allow: /businesses.php
+Allow: /about.php
+Allow: /recruitment.php
+Allow: /classifieds.php
+Allow: /categories.php
+Allow: /category.php
+
+# Allow crawling of business pages
+Allow: /business.php
+
+# Allow crawling of static assets
+Allow: /css/
+Allow: /js/
+Allow: /images/
+Allow: /uploads/businesses/
+
+# Disallow admin and sensitive areas
+Disallow: /admin/
+Disallow: /config/
+Disallow: /vendor/
+Disallow: /logs/
+Disallow: /database/
+Disallow: /auth/
+Disallow: /payment/
+Disallow: /users/
+Disallow: /actions/
+Disallow: /includes/
+Disallow: /partials/
+Disallow: /sections/
+Disallow: /components/
+Disallow: /scripts/
+Disallow: /sql/
+
+# Disallow temporary and debug files
+Disallow: /test.php
+Disallow: /debug.php
+Disallow: /setup.php
+Disallow: /verify.php
+Disallow: /make_admin.php
+Disallow: /test_*.php
+Disallow: /debug_*.php
+Disallow: /simple_*.php
+Disallow: /working_*.php
+Disallow: /final_*.php
+Disallow: /migrate_*.php
+Disallow: /fix_*.php
+Disallow: /add_*.php
+Disallow: /track_*.php
+Disallow: /process_*.php
+Disallow: /submit_*.php
+Disallow: /post_*.php
+Disallow: /filter_*.php
+Disallow: /icon_*.php
+Disallow: /create_*.php
+Disallow: /carousel_*.php
+Disallow: /enhanced_*.php
+
+# Sitemap location
+Sitemap: https://jshuk.com/sitemap.xml 

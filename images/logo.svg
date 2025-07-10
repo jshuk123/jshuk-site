@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="200" height="60" viewBox="0 0 200 60" version="1.1" xmlns="http://www.w3.org/2000/svg">
+    <style>
+        .company-name { font: bold 24px sans-serif; fill: #2c3e50; }
+        .tagline { font: 12px sans-serif; fill: #7f8c8d; }
+    </style>
+    <rect x="10" y="10" width="40" height="40" rx="8" fill="#3498db"/>
+    <text x="60" y="35" class="company-name">JSHUK</text>
+    <text x="60" y="50" class="tagline">Business Solutions</text>
+</svg> 

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JShuk JavaScript Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .test-section { margin: 20px 0; padding: 20px; border: 1px solid #ccc; border-radius: 8px; }
+        .success { color: green; }
+        .error { color: red; }
+        .warning { color: orange; }
+        button { padding: 10px 20px; margin: 5px; border-radius: 5px; border: none; cursor: pointer; }
+        .test-btn { background: #007bff; color: white; }
+        .test-btn:hover { background: #0056b3; }
+    </style>
+</head>
+<body>
+    <h1>JShuk JavaScript Test Page</h1>
+    
+    <div class="test-section">
+        <h2>JavaScript Loading Test</h2>
+        <div id="js-load-status">Checking...</div>
+        <div id="js-functions-status">Checking functions...</div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Mobile Menu Test</h2>
+        <button class="test-btn" onclick="testMobileMenu()">Test Mobile Menu Functions</button>
+        <div id="mobile-menu-status">Click button to test</div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Slider Test</h2>
+        <button class="test-btn" onclick="testSlider()">Test Slider Functions</button>
+        <div id="slider-status">Click button to test</div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Console Log Test</h2>
+        <button class="test-btn" onclick="testConsole()">Test Console Logging</button>
+        <div id="console-status">Click button to test</div>
+    </div>
+
+    <script>
+        // Test JavaScript loading
+        document.addEventListener('DOMContentLoaded', function() {
+            const jsLoadStatus = document.getElementById('js-load-status');
+            const jsFunctionsStatus = document.getElementById('js-functions-status');
+            
+            // Check if main.js loaded
+            if (typeof initializeMobileMenu === 'function') {
+                jsLoadStatus.innerHTML = '<span class="success">✅ main.js loaded successfully</span>';
+            } else {
+                jsLoadStatus.innerHTML = '<span class="error">❌ main.js not loaded or functions not available</span>';
+            }
+            
+            // Check specific functions
+            const functions = ['openMobileMenu', 'closeMobileMenu', 'initializeFeaturedSlider', 'debounce'];
+            const missingFunctions = functions.filter(func => typeof window[func] !== 'function');
+            
+            if (missingFunctions.length === 0) {
+                jsFunctionsStatus.innerHTML = '<span class="success">✅ All required functions available</span>';
+            } else {
+                jsFunctionsStatus.innerHTML = '<span class="error">❌ Missing functions: ' + missingFunctions.join(', ') + '</span>';
+            }
+        });
+        
+        function testMobileMenu() {
+            const status = document.getElementById('mobile-menu-status');
+            
+            if (typeof openMobileMenu === 'function' && typeof closeMobileMenu === 'function') {
+                status.innerHTML = '<span class="success">✅ Mobile menu functions available</span>';
+                
+                // Test function calls (they won't work without DOM elements, but we can test they don't throw errors)
+                try {
+                    openMobileMenu();
+                    closeMobileMenu();
+                    status.innerHTML += '<br><span class="success">✅ Functions executed without errors</span>';
+                } catch (error) {
+                    status.innerHTML += '<br><span class="warning">⚠️ Functions executed but with expected errors (no DOM elements)</span>';
+                }
+            } else {
+                status.innerHTML = '<span class="error">❌ Mobile menu functions not available</span>';
+            }
+        }
+        
+        function testSlider() {
+            const status = document.getElementById('slider-status');
+            
+            if (typeof initializeFeaturedSlider === 'function') {
+                status.innerHTML = '<span class="success">✅ Slider function available</span>';
+                
+                try {
+                    initializeFeaturedSlider();
+                    status.innerHTML += '<br><span class="success">✅ Slider function executed without errors</span>';
+                } catch (error) {
+                    status.innerHTML += '<br><span class="warning">⚠️ Slider function executed but with expected errors (no DOM elements)</span>';
+                }
+            } else {
+                status.innerHTML = '<span class="error">❌ Slider function not available</span>';
+            }
+        }
+        
+        function testConsole() {
+            const status = document.getElementById('console-status');
+            
+            try {
+                console.log('JShuk JavaScript test - console logging works');
+                status.innerHTML = '<span class="success">✅ Console logging works - check browser console</span>';
+            } catch (error) {
+                status.innerHTML = '<span class="error">❌ Console logging failed</span>';
+            }
+        }
+    </script>
+    
+    <!-- Load the actual JavaScript files -->
+    <script src="/assets/js/app.js" defer></script>
+    <script src="/assets/js/main.js" defer></script>
+</body>
+</html> 

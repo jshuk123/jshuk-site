@@ -1,0 +1,17 @@
+.register-container {
+    min-height: calc(100vh - 200px);
+}
+
+.card {
+    border: none;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+}
+
+.card-body {
+    padding: 2.5rem;
+}
+
+.form-control:focus {
+    box-shadow: none;
+    border-color: var(--primary-color);
+} 

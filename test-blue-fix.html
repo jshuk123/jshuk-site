@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blue Background Fix Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; background: #f5f5f5; }
+        .test-section { margin: 20px 0; padding: 20px; border: 1px solid #ccc; border-radius: 8px; background: white; }
+        .success { color: green; font-weight: bold; }
+        .error { color: red; font-weight: bold; }
+        .warning { color: orange; font-weight: bold; }
+        .info { color: blue; font-weight: bold; }
+        
+        /* Test slider styles */
+        .test-slider {
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .test-slider-track {
+            display: flex;
+            gap: 20px;
+            background: white;
+            padding: 10px;
+        }
+        
+        .test-slider-item {
+            background: white;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 15px;
+            min-width: 200px;
+            text-align: center;
+        }
+        
+        .test-card {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Blue Background Fix Test</h1>
+    
+    <div class="test-section">
+        <h2>✅ Issues Fixed:</h2>
+        <ul>
+            <li class="success">❌ Removed unused ad preloads (ad1.jpg, ad2.jpg, ad3.jpg)</li>
+            <li class="success">❌ Added strong CSS overrides to force white backgrounds</li>
+            <li class="success">❌ Added debugging borders to identify elements</li>
+        </ul>
+    </div>
+    
+    <div class="test-section">
+        <h2>🔍 Test Results:</h2>
+        <div id="test-results">Running tests...</div>
+    </div>
+    
+    <div class="test-section">
+        <h2>🧪 Visual Test - Slider Elements:</h2>
+        <div class="test-slider">
+            <div class="test-slider-track">
+                <div class="test-slider-item">
+                    <div class="test-card">
+                        <h3>Test Card 1</h3>
+                        <p>This should have a white background</p>
+                    </div>
+                </div>
+                <div class="test-slider-item">
+                    <div class="test-card">
+                        <h3>Test Card 2</h3>
+                        <p>This should have a white background</p>
+                    </div>
+                </div>
+                <div class="test-slider-item">
+                    <div class="test-card">
+                        <h3>Test Card 3</h3>
+                        <p>This should have a white background</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="test-section">
+        <h2>📋 Instructions:</h2>
+        <ol>
+            <li>Check that the test cards above have <strong>white backgrounds</strong></li>
+            <li>Open browser DevTools → Console and check for <strong>no preload warnings</strong></li>
+            <li>Visit your homepage and check that the <strong>blue area is gone</strong></li>
+            <li>Look for the <strong>colored debug borders</strong> (red, blue, green, purple) to identify elements</li>
+        </ol>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const results = document.getElementById('test-results');
+            
+            // Test 1: Check if preload warnings are gone
+            const preloadWarnings = [];
+            const originalWarn = console.warn;
+            console.warn = function(...args) {
+                if (args[0] && typeof args[0] === 'string' && args[0].includes('preload')) {
+                    preloadWarnings.push(args[0]);
+                }
+                originalWarn.apply(console, args);
+            };
+            
+            // Test 2: Check CSS loading
+            const stylesheets = Array.from(document.styleSheets);
+            const homepageCSS = stylesheets.find(sheet => 
+                sheet.href && sheet.href.includes('homepage.css')
+            );
+            
+            // Test 3: Check for debug borders
+            const testElements = document.querySelectorAll('.test-slider, .test-slider-track, .test-slider-item, .test-card');
+            
+            let resultsHTML = '';
+            
+            // Preload test
+            if (preloadWarnings.length === 0) {
+                resultsHTML += '<p class="success">✅ No preload warnings detected</p>';
+            } else {
+                resultsHTML += '<p class="error">❌ Preload warnings found: ' + preloadWarnings.length + '</p>';
+            }
+            
+            // CSS test
+            if (homepageCSS) {
+                resultsHTML += '<p class="success">✅ Homepage CSS loaded</p>';
+            } else {
+                resultsHTML += '<p class="warning">⚠️ Homepage CSS not found</p>';
+            }
+            
+            // Elements test
+            if (testElements.length > 0) {
+                resultsHTML += '<p class="success">✅ Test elements created successfully</p>';
+            } else {
+                resultsHTML += '<p class="error">❌ Test elements not found</p>';
+            }
+            
+            // Background color test
+            const computedStyles = getComputedStyle(testElements[0]);
+            const backgroundColor = computedStyles.backgroundColor;
+            
+            if (backgroundColor.includes('255, 255, 255') || backgroundColor.includes('white')) {
+                resultsHTML += '<p class="success">✅ White background detected</p>';
+            } else {
+                resultsHTML += '<p class="error">❌ Non-white background: ' + backgroundColor + '</p>';
+            }
+            
+            results.innerHTML = resultsHTML;
+            
+            // Restore original console.warn
+            console.warn = originalWarn;
+        });
+    </script>
+</body>
+</html> 

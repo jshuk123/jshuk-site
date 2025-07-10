@@ -1,0 +1,150 @@
+/* Hero Section */
+.hero-section {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="white" opacity="0.1"/><circle cx="75" cy="75" r="1" fill="white" opacity="0.1"/><circle cx="50" cy="10" r="0.5" fill="white" opacity="0.1"/><circle cx="10" cy="60" r="0.5" fill="white" opacity="0.1"/><circle cx="90" cy="40" r="0.5" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+    opacity: 0.3;
+}
+
+/* Cards */
+.plan-summary-card, .payment-card {
+    border-radius: 1rem;
+    overflow: hidden;
+}
+
+.bg-gradient-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+/* Pricing Display */
+.pricing-display {
+    padding: 1.5rem 0;
+}
+
+.pricing-display .h3, .pricing-display .h4 {
+    font-weight: 700;
+    color: #212529;
+}
+
+.trial-info .alert, .upgrade-info .alert, .downgrade-info .alert {
+    border-radius: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+/* Features List */
+.features-list {
+    margin: 0;
+    padding: 0;
+}
+
+.feature-item {
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #f8f9fa;
+    display: flex;
+    align-items: center;
+}
+
+.feature-item:last-child {
+    border-bottom: none;
+}
+
+.feature-item i {
+    width: 1.5rem;
+    text-align: center;
+    font-size: 1rem;
+}
+
+.feature-item span {
+    flex: 1;
+    font-size: 0.95rem;
+}
+
+/* Security Badge */
+.security-badge {
+    padding: 1rem;
+    background-color: #f8f9fa;
+    border-radius: 0.5rem;
+    border: 1px solid #e9ecef;
+}
+
+/* Loading Spinner */
+.loading-spinner {
+    min-height: 300px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Responsive Design */
+@media (max-width: 991.98px) {
+    .hero-section {
+        padding: 3rem 0;
+    }
+    
+    .plan-summary-card {
+        margin-bottom: 2rem;
+    }
+}
+
+/* Animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.plan-summary-card, .payment-card {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+.payment-card {
+    animation-delay: 0.1s;
+}
+
+/* Stripe Checkout Container */
+#checkout {
+    border-radius: 0.5rem;
+    overflow: hidden;
+}
+
+/* Alert Styling */
+.alert {
+    border: none;
+    border-radius: 0.5rem;
+}
+
+.alert-info {
+    background-color: #d1ecf1;
+    color: #0c5460;
+}
+
+.alert-success {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.alert-primary {
+    background-color: #cce7ff;
+    color: #004085;
+}
+
+.alert-warning {
+    background-color: #fff3cd;
+    color: #856404;
+} 

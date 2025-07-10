@@ -1,0 +1,30 @@
+/* Elite JShuk Tooltip Theme */
+.tippy-box[data-theme~='jshuk-elite'] {
+  font-size: 1.05rem;
+  color: #1a3353;
+  background: linear-gradient(135deg, #fffbe6 0%, #ffe066 100%);
+  border: 2px solid #ffd700;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(26, 51, 83, 0.18), 0 2px 8px #ffd70033;
+  padding: 1rem 1.5rem;
+  font-weight: 600;
+  position: relative;
+  letter-spacing: 0.01em;
+  transition: box-shadow 0.2s, background 0.2s;
+}
+.tippy-box[data-theme~='jshuk-elite']::before {
+  content: '';
+  display: block;
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 5px;
+  background: linear-gradient(90deg, #ffd700 0%, #ffcc00 100%);
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
+}
+.tippy-box[data-theme~='jshuk-elite'] .tippy-content {
+  padding-top: 0.5rem;
+}
+.tippy-box[data-theme~='jshuk-elite'] .tippy-arrow {
+  color: #ffd700;
+} 

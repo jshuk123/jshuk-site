@@ -1,0 +1,254 @@
+/* Hero Section */
+.hero-section {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="white" opacity="0.1"/><circle cx="75" cy="75" r="1" fill="white" opacity="0.1"/><circle cx="50" cy="10" r="0.5" fill="white" opacity="0.1"/><circle cx="10" cy="60" r="0.5" fill="white" opacity="0.1"/><circle cx="90" cy="40" r="0.5" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+    opacity: 0.3;
+}
+
+/* Current Subscription Card */
+.current-subscription-card .card {
+    border-radius: 1rem;
+    overflow: hidden;
+}
+
+.bg-gradient-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+/* Plan Cards */
+.plan-card {
+    border-radius: 1rem;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.plan-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 1rem 3rem rgba(0,0,0,0.2) !important;
+}
+
+.premium-plan {
+    border: 2px solid #667eea;
+    transform: scale(1.05);
+}
+
+.premium-plan:hover {
+    transform: scale(1.05) translateY(-10px);
+}
+
+.premium-badge {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: rgba(255,255,255,0.2);
+    padding: 0.5rem 1rem;
+    border-radius: 2rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+.price-display {
+    font-size: 3rem;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.price-display .currency {
+    font-size: 1.5rem;
+    vertical-align: top;
+}
+
+.price-display .amount {
+    font-size: 3.5rem;
+}
+
+.price-display .period {
+    font-size: 1rem;
+    font-weight: 400;
+    opacity: 0.8;
+}
+
+.trial-badge {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    color: white;
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    text-align: center;
+    font-weight: 600;
+}
+
+.features-list {
+    margin: 0;
+    padding: 0;
+}
+
+.feature-item {
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #f8f9fa;
+    display: flex;
+    align-items: center;
+}
+
+.feature-item:last-child {
+    border-bottom: none;
+}
+
+.feature-item i {
+    width: 1.5rem;
+    text-align: center;
+}
+
+/* Advertising Slots */
+.ad-slot-card {
+    border-radius: 1rem;
+    transition: all 0.3s ease;
+}
+
+.ad-slot-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0.5rem 1.5rem rgba(0,0,0,0.15) !important;
+}
+
+.premium-slot {
+    border: 2px solid #667eea;
+}
+
+.pricing-options {
+    display: grid;
+    gap: 0.75rem;
+}
+
+.pricing-option {
+    padding: 1rem;
+    border-radius: 0.5rem;
+    background-color: #f8f9fa;
+    text-align: center;
+}
+
+.pricing-option.highlight {
+    background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+    border: 1px solid #4caf50;
+}
+
+.price-label {
+    font-size: 0.875rem;
+    color: #6c757d;
+    margin-bottom: 0.5rem;
+}
+
+.price-value {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #212529;
+}
+
+.pricing-option.highlight .price-value {
+    color: #198754;
+}
+
+.pricing-info .pricing-item {
+    text-align: center;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    background-color: #f8f9fa;
+}
+
+.pricing-info .pricing-item.highlight {
+    background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+}
+
+/* Benefits Section */
+.benefit-item {
+    display: flex;
+    align-items: flex-start;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    background-color: #f8f9fa;
+    transition: all 0.3s ease;
+}
+
+.benefit-item:hover {
+    background-color: #e9ecef;
+    transform: translateX(5px);
+}
+
+.benefit-item i {
+    font-size: 1.5rem;
+    margin-top: 0.25rem;
+}
+
+/* Badges */
+.badge.bg-primary-subtle {
+    background-color: #cfe2ff !important;
+    color: #0d6efd !important;
+}
+
+.badge.bg-success-subtle {
+    background-color: #d1e7dd !important;
+    color: #198754 !important;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .premium-plan {
+        transform: none;
+    }
+    
+    .premium-plan:hover {
+        transform: translateY(-10px);
+    }
+    
+    .price-display {
+        font-size: 2.5rem;
+    }
+    
+    .price-display .amount {
+        font-size: 3rem;
+    }
+    
+    .hero-section {
+        padding: 3rem 0;
+    }
+}
+
+/* Loading States */
+.btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.plan-card, .ad-slot-card {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+.plan-card:nth-child(2) {
+    animation-delay: 0.1s;
+}
+
+.plan-card:nth-child(3) {
+    animation-delay: 0.2s;
+}

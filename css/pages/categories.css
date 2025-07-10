@@ -1,0 +1,588 @@
+/* Category Carousel - Modern Scrollable Design */
+
+/* Category Section Styling */
+.categories-section {
+  background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+  border-top: 1px solid #eee;
+  border-bottom: 1px solid #eee;
+}
+
+.category-group-header {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+/* Desktop & Tablet Carousel */
+.category-carousel {
+  position: relative;
+  max-width: 100%;
+  margin: 0 auto;
+  overflow: hidden;
+}
+
+.category-carousel-container {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.category-carousel-track {
+  display: flex;
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  gap: 1rem;
+  padding: 1.5rem;
+}
+
+.category-carousel-item {
+  flex: 0 0 calc(25% - 0.75rem);
+  min-width: 200px;
+}
+
+/* Category Cards */
+.category-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 1.5rem 1rem;
+  background: #fff;
+  border-radius: 1rem;
+  border: 1px solid #e0e0e0;
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  height: 100%;
+  min-height: 160px;
+  position: relative;
+  overflow: hidden;
+}
+
+.category-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, #ffd000 0%, #ffc400 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 0;
+}
+
+.category-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+  border-color: #ffd000;
+}
+
+.category-card:hover::before {
+  opacity: 0.05;
+}
+
+.category-card:hover .category-icon-circle {
+  transform: scale(1.1);
+  background: linear-gradient(135deg, #ffd000 0%, #ffc400 100%);
+  color: #fff;
+}
+
+.category-card:hover .category-name {
+  color: #333;
+}
+
+/* ✅ 3. Dimmed Categories */
+/* .dimmed-category {
+  opacity: 0.5;
+  pointer-events: none;
+  filter: grayscale(50%);
+} */
+
+/* .dimmed-category:hover {
+  transform: none !important;
+  box-shadow: none !important;
+  border-color: #e0e0e0 !important;
+} */
+
+/* ✅ 5. Category Badges */
+.category-badge-container {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  z-index: 10;
+}
+
+.category-badge {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  border-radius: 12px;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.category-badge-popular {
+  background: linear-gradient(135deg, #27ae60, #2ecc71);
+}
+
+.category-badge-active {
+  background: linear-gradient(135deg, #3498db, #2980b9);
+}
+
+.category-badge-empty {
+  background: linear-gradient(135deg, #f39c12, #e67e22);
+}
+
+/* ✅ 10. CTA Card Styling */
+.category-card-cta {
+  background: linear-gradient(135deg, #ffd000 0%, #ffc400 100%) !important;
+  border: 2px dashed rgba(255, 255, 255, 0.6) !important;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.category-card-cta:hover {
+  transform: translateY(-3px) scale(1.02) !important;
+  box-shadow: 0 8px 25px rgba(255, 208, 0, 0.3) !important;
+  border-color: rgba(255, 255, 255, 0.8) !important;
+}
+
+.category-card-cta .category-icon-circle {
+  background: rgba(255, 255, 255, 0.2) !important;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.category-card-cta:hover .category-icon-circle {
+  background: rgba(255, 255, 255, 0.3) !important;
+  transform: scale(1.1);
+}
+
+/* ✅ 8. Mobile Tooltip Styles */
+.mobile-tooltip {
+  position: fixed;
+  z-index: 9999;
+  max-width: 280px;
+  background: #333;
+  color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  animation: tooltipFadeIn 0.3s ease-out;
+}
+
+.mobile-tooltip-content {
+  padding: 1rem;
+  position: relative;
+}
+
+.mobile-tooltip-content p {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.mobile-tooltip-close {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background 0.2s ease;
+}
+
+.mobile-tooltip-close:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+@keyframes tooltipFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Category Icon Circle */
+.category-icon-circle {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  z-index: 1;
+  border: 2px solid transparent;
+}
+
+.category-icon-circle i {
+  font-size: 1.5rem;
+  color: #666;
+  transition: color 0.3s ease;
+}
+
+.category-card:hover .category-icon-circle i {
+  color: #fff;
+}
+
+/* --- FINAL FIX: Make all category icons brand yellow, never grey --- */
+.category-icon-circle i {
+  color: #ffd000 !important;
+  font-size: 1.5rem;
+  transition: color 0.3s ease;
+}
+
+/* --- Font Awesome Icon Visibility Fix --- */
+.category-icon-circle {
+  width: 56px;
+  height: 56px;
+  background-color: #f1f3f6;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Category Content */
+.category-content {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* ✅ 1. Enhanced Category Name Styling */
+.category-name {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 0.5rem;
+  transition: color 0.3s ease;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  line-height: 1.2;
+}
+
+.category-listings {
+  font-size: 0.875rem;
+  color: #666;
+  font-weight: 500;
+}
+
+/* Carousel Controls */
+.carousel-control {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  z-index: 10;
+  opacity: 0.8;
+}
+
+.carousel-control:hover {
+  background: #ffd000;
+  border-color: #ffd000;
+  box-shadow: 0 6px 20px rgba(255, 208, 0, 0.3);
+  transform: translateY(-50%) scale(1.1);
+}
+
+.carousel-control:active {
+  transform: translateY(-50%) scale(0.95);
+}
+
+.carousel-control.prev {
+  left: -22px;
+}
+
+.carousel-control.next {
+  right: -22px;
+}
+
+.carousel-control i {
+  font-size: 1rem;
+  color: #666;
+  transition: color 0.3s ease;
+}
+
+.carousel-control:hover i {
+  color: #fff;
+}
+
+/* Mobile Scrollable Categories */
+.category-scroll-mobile {
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  padding: 1rem 0;
+  gap: 1rem;
+  scroll-snap-type: x mandatory;
+}
+
+.category-scroll-mobile::-webkit-scrollbar {
+  display: none;
+}
+
+.category-card-mobile {
+  flex: 0 0 200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 1.5rem 1rem;
+  background: #fff;
+  border-radius: 1rem;
+  border: 1px solid #e0e0e0;
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.3s ease;
+  scroll-snap-align: start;
+  min-height: 160px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.category-card-mobile:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  border-color: #ffd000;
+}
+
+.category-card-mobile .category-icon-circle {
+  width: 50px;
+  height: 50px;
+  margin-bottom: 0.75rem;
+}
+
+.category-card-mobile .category-icon-circle i {
+  font-size: 1.25rem;
+}
+
+.category-card-mobile .category-name {
+  font-size: 0.9rem;
+  margin-bottom: 0.25rem;
+}
+
+.category-card-mobile .category-listings {
+  font-size: 0.8rem;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .category-carousel-item {
+    flex: 0 0 calc(33.333% - 0.67rem);
+  }
+}
+
+@media (max-width: 992px) {
+  .category-carousel-item {
+    flex: 0 0 calc(50% - 0.5rem);
+  }
+  
+  .carousel-control {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .carousel-control.prev {
+    left: -20px;
+  }
+  
+  .carousel-control.next {
+    right: -20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .category-group-header {
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+  }
+  
+  .category-carousel-track {
+    padding: 1rem;
+  }
+  
+  .category-card {
+    padding: 1rem 0.75rem;
+    min-height: 140px;
+  }
+  
+  .category-icon-circle {
+    width: 50px;
+    height: 50px;
+    margin-bottom: 0.75rem;
+  }
+  
+  .category-icon-circle i {
+    font-size: 1.25rem;
+  }
+  
+  .category-name {
+    font-size: 0.9rem;
+  }
+  
+  .category-listings {
+    font-size: 0.8rem;
+  }
+  
+  /* ✅ 8. Mobile-specific improvements */
+  .category-badge {
+    font-size: 0.65rem;
+    padding: 0.2rem 0.4rem;
+  }
+  
+  .mobile-tooltip {
+    max-width: 250px;
+    left: 50% !important;
+    transform: translateX(-50%);
+  }
+}
+
+/* Smooth scrolling for mobile */
+@media (max-width: 767px) {
+  .category-scroll-mobile {
+    scroll-behavior: smooth;
+  }
+}
+
+/* Loading animation for carousel */
+.category-carousel-track {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Hover effects for better UX */
+.category-card:focus {
+  outline: 2px solid #ffd000;
+  outline-offset: 2px;
+}
+
+.category-card-mobile:focus {
+  outline: 2px solid #ffd000;
+  outline-offset: 2px;
+}
+
+/* ✅ 9. Enhanced hover effects for non-dimmed categories */
+.category-card:not(.dimmed-category):not(.category-card-cta):hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+}
+
+/* ✅ 6. Refined scroll layout */
+.categories-scroll-wrapper {
+  margin-left: calc(-1 * var(--bs-gutter-x, 1.5rem));
+  margin-right: calc(-1 * var(--bs-gutter-x, 1.5rem));
+  padding-left: var(--bs-gutter-x, 1.5rem);
+  padding-right: var(--bs-gutter-x, 1.5rem);
+}
+
+.category-scroll {
+  display: flex;
+  gap: 1.5rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 0.5rem;
+}
+
+.category-card {
+  flex: 0 0 auto;
+  min-width: 160px;
+  max-width: 200px;
+  scroll-snap-align: start;
+  background: #f8f9fa;
+  transition: transform 0.2s, background 0.2s, box-shadow 0.2s;
+}
+
+.category-card:hover {
+  transform: translateY(-3px);
+  background: #fff;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+/* ✅ 7. Hide empty sections */
+.popular-categories-section:empty {
+  display: none;
+}
+
+/* Accessibility improvements */
+.category-card:focus-visible {
+  outline: 2px solid #ffd000;
+  outline-offset: 2px;
+}
+
+.category-card-cta:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .category-badge {
+    border: 1px solid currentColor;
+  }
+  
+  .dimmed-category {
+    opacity: 0.3;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .category-card,
+  .category-icon-circle,
+  .carousel-control {
+    transition: none;
+  }
+  
+  .category-card:hover {
+    transform: none;
+  }
+} 

@@ -1,0 +1,381 @@
+/* About Page Styles */
+
+/* --- FAQ Section --- */
+.faq-section {
+  padding: 4rem 0;
+  background: #fff;
+}
+
+.faq-section .section-title {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.accordion {
+  max-width: 800px;
+  margin: 0 auto;
+  border: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.accordion-item {
+  border: none;
+  border-bottom: 1px solid #e9ecef;
+  background: #fff;
+  transition: all 0.3s ease;
+}
+
+.accordion-item:last-child {
+  border-bottom: none;
+}
+
+.accordion-item:hover {
+  background: #f8f9fa;
+}
+
+.accordion-header {
+  margin: 0;
+}
+
+.accordion-button {
+  background: #fff;
+  border: none;
+  padding: 1.5rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--primary-color);
+  text-align: left;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.accordion-button:hover {
+  background: #f8f9fa;
+  color: var(--primary-color);
+}
+
+.accordion-button:not(.collapsed) {
+  background: #ffd700;
+  color: var(--primary-color);
+  box-shadow: none;
+}
+
+.accordion-button::after {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23ffd700'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
+  transition: all 0.3s ease;
+}
+
+.accordion-button:not(.collapsed)::after {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23fff'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
+  transform: rotate(180deg);
+}
+
+.accordion-button:focus {
+  box-shadow: 0 0 0 0.2rem rgba(255, 215, 0, 0.25);
+  outline: none;
+}
+
+.accordion-collapse {
+  border: none;
+}
+
+.accordion-body {
+  padding: 1.5rem;
+  background: #fff;
+  color: #666;
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+/* --- How It Works Section --- */
+.how-it-works-section {
+  padding: 4rem 0;
+  background: #f8f9fa;
+}
+
+.how-it-works-section .section-title {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.steps-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.step-card {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 16px;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.step-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #ffd700, #ffed4e);
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
+}
+
+.step-card:hover::before {
+  transform: scaleX(1);
+}
+
+.step-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+}
+
+.step-icon {
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(135deg, #ffd700, #ffed4e);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.5rem;
+  font-size: 2rem;
+  color: var(--primary-color);
+  transition: all 0.3s ease;
+}
+
+.step-card:hover .step-icon {
+  transform: scale(1.1);
+  box-shadow: 0 8px 24px rgba(255, 215, 0, 0.3);
+}
+
+.step-card h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--primary-color);
+  margin-bottom: 1rem;
+}
+
+.step-card p {
+  color: #666;
+  font-size: 1rem;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* --- WhatsApp Hook Section --- */
+.whatsapp-hook {
+  padding: 3rem 0;
+  background: #25d366;
+  color: #fff;
+  text-align: center;
+}
+
+.whatsapp-content {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.whatsapp-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  display: block;
+}
+
+.whatsapp-text h3 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.whatsapp-text p {
+  font-size: 1.1rem;
+  margin-bottom: 1.5rem;
+  opacity: 0.9;
+}
+
+.btn-whatsapp {
+  background: #fff;
+  color: #25d366;
+  border: none;
+  padding: 0.75rem 2rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 50px;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.3s ease;
+}
+
+.btn-whatsapp:hover {
+  background: #f8f9fa;
+  color: #25d366;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+/* --- Responsive Design --- */
+@media (max-width: 900px) {
+  .accordion-button {
+    padding: 1.25rem;
+    font-size: 1rem;
+  }
+  
+  .accordion-body {
+    padding: 1.25rem;
+    font-size: 0.95rem;
+  }
+  
+  .steps-grid {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+  }
+  
+  .step-card {
+    padding: 1.5rem;
+  }
+  
+  .step-icon {
+    width: 70px;
+    height: 70px;
+    font-size: 1.75rem;
+  }
+  
+  .step-card h3 {
+    font-size: 1.1rem;
+  }
+  
+  .whatsapp-text h3 {
+    font-size: 1.25rem;
+  }
+  
+  .whatsapp-text p {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .faq-section,
+  .how-it-works-section {
+    padding: 2rem 0;
+  }
+  
+  .accordion-button {
+    padding: 1rem;
+    font-size: 0.95rem;
+  }
+  
+  .accordion-body {
+    padding: 1rem;
+    font-size: 0.9rem;
+  }
+  
+  .steps-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .step-card {
+    padding: 1.25rem;
+  }
+  
+  .step-icon {
+    width: 60px;
+    height: 60px;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+  }
+  
+  .step-card h3 {
+    font-size: 1rem;
+    margin-bottom: 0.75rem;
+  }
+  
+  .step-card p {
+    font-size: 0.9rem;
+  }
+  
+  .whatsapp-hook {
+    padding: 2rem 0;
+  }
+  
+  .whatsapp-icon {
+    font-size: 2.5rem;
+  }
+  
+  .whatsapp-text h3 {
+    font-size: 1.1rem;
+  }
+  
+  .whatsapp-text p {
+    font-size: 0.9rem;
+  }
+  
+  .btn-whatsapp {
+    padding: 0.625rem 1.5rem;
+    font-size: 0.9rem;
+  }
+}
+
+/* --- Focus states for accessibility --- */
+.accordion-button:focus {
+  outline: 2px solid #ffd700;
+  outline-offset: 2px;
+}
+
+.step-card:focus-within {
+  outline: 2px solid #ffd700;
+  outline-offset: 2px;
+}
+
+/* --- Loading animations --- */
+.accordion-item {
+  animation: slideInUp 0.6s ease-out forwards;
+}
+
+.accordion-item:nth-child(1) { animation-delay: 0.1s; }
+.accordion-item:nth-child(2) { animation-delay: 0.2s; }
+.accordion-item:nth-child(3) { animation-delay: 0.3s; }
+.accordion-item:nth-child(4) { animation-delay: 0.4s; }
+
+.step-card {
+  animation: fadeInUp 0.6s ease-out forwards;
+}
+
+.step-card:nth-child(1) { animation-delay: 0.1s; }
+.step-card:nth-child(2) { animation-delay: 0.2s; }
+.step-card:nth-child(3) { animation-delay: 0.3s; }
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+} 

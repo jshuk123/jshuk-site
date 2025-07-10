@@ -1,0 +1,108 @@
+[2025-05-13 18:55:45] === Starting new testimonial submission ===
+[2025-05-13 18:55:45] Request Method: POST
+[2025-05-13 18:55:45] POST data: Array
+(
+    [business_id] => 12
+    [author_name] => mak
+    [author_title] => custmor
+    [rating] => 4
+    [content] => ddd
+)
+
+[2025-05-13 18:55:45] FILES data: Array
+(
+    [image] => Array
+        (
+            [name] => hector-martinez-EG49vTtKdvI-unsplash.jpg
+            [full_path] => hector-martinez-EG49vTtKdvI-unsplash.jpg
+            [type] => image/jpeg
+            [tmp_name] => C:\xampp\tmp\php2399.tmp
+            [error] => 0
+            [size] => 4310924
+        )
+
+)
+
+[2025-05-13 17:55:45] User ID: 1
+[2025-05-13 17:55:45] Business ID: 12
+[2025-05-13 17:55:45] Business ownership verified
+[2025-05-13 19:01:52] === Starting new testimonial submission ===
+[2025-05-13 19:01:52] Request Method: POST
+[2025-05-13 19:01:52] POST data: Array
+(
+    [business_id] => 12
+    [author_name] => sss
+    [author_title] => ssss
+    [rating] => 3
+    [content] => ssss
+)
+
+[2025-05-13 19:01:52] FILES data: Array
+(
+    [image] => Array
+        (
+            [name] => hector-martinez-EG49vTtKdvI-unsplash.jpg
+            [full_path] => hector-martinez-EG49vTtKdvI-unsplash.jpg
+            [type] => image/jpeg
+            [tmp_name] => C:\xampp\tmp\phpBEA9.tmp
+            [error] => 0
+            [size] => 4310924
+        )
+
+)
+
+[2025-05-13 18:01:52] User ID: 1
+[2025-05-13 18:01:52] Business ID: 12
+[2025-05-13 18:01:52] Business ownership verified
+[2025-05-13 19:02:52] === Starting new testimonial submission ===
+[2025-05-13 19:02:52] Request Method: POST
+[2025-05-13 19:02:52] POST data: Array
+(
+    [business_id] => 12
+    [author_name] => zzz
+    [author_title] => zzz
+    [rating] => 4
+    [content] => zzz
+)
+
+[2025-05-13 19:02:52] FILES data: Array
+(
+    [image] => Array
+        (
+            [name] => hector-martinez-EG49vTtKdvI-unsplash.jpg
+            [full_path] => hector-martinez-EG49vTtKdvI-unsplash.jpg
+            [type] => image/jpeg
+            [tmp_name] => C:\xampp\tmp\phpA996.tmp
+            [error] => 0
+            [size] => 4310924
+        )
+
+)
+
+[2025-05-13 18:02:52] User ID: 1
+[2025-05-13 18:02:52] Business ID: 12
+[2025-05-13 18:02:52] Business ownership verified
+[2025-05-24 07:10:41] === Starting new testimonial submission ===
+[2025-05-24 07:10:41] Request Method: GET
+[2025-05-24 07:10:41] POST data: Array
+(
+)
+
+[2025-05-24 07:10:41] FILES data: Array
+(
+)
+
+[2025-05-24 08:10:41] Database connection successful
+[2025-05-24 08:10:41] Error: User not logged in
+[2025-05-24 16:54:09] === Starting new testimonial submission ===
+[2025-05-24 16:54:09] Request Method: GET
+[2025-05-24 16:54:09] POST data: Array
+(
+)
+
+[2025-05-24 16:54:09] FILES data: Array
+(
+)
+
+[2025-05-24 17:54:09] Database connection successful
+[2025-05-24 17:54:09] Error: User not logged in
