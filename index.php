@@ -278,10 +278,18 @@ require_once 'includes/ad_renderer.php';
   </div>
 </section>
 
+
+
 <!-- FOOTER CTA -->
 <?php include 'sections/footer_cta.php'; ?>
 
-<?php include 'includes/footer_main.php'; ?>
+<?php 
+  // ✅ Deploy confirmation message
+  echo '<p style="color: green; text-align: center;">✅ Deploy test: index.php updated successfully</p>';
+  
+  include 'includes/footer_main.php'; 
+?>
+
 
 <!-- Structured Data for SEO -->
 <script type="application/ld+json">
