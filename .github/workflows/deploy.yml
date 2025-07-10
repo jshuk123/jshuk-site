@@ -1,4 +1,4 @@
-name: FTP Deploy
+name: FTP Deploy to Hostinger
 
 on:
   push:
@@ -29,4 +29,4 @@ jobs:
           logs/**
           *.log
           .env
-          config/environment.php 
+          config/environment.php
