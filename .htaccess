@@ -49,11 +49,7 @@ RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
     Deny from all
 </FilesMatch>
 
-# Block access to configuration files
-<FilesMatch "^(config\.php|environment\.php|\.env)">
-    Order allow,deny
-    Deny from all
-</FilesMatch>
+# Note: Config files are in config/ directory and not directly accessible via web
 
 # Block access to vendor directory
 <Directory "vendor">
