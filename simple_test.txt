@@ -1,0 +1,9 @@
+FTP Test File
+=============
+
+This is a simple test file to verify FTP deployment is working.
+
+If you can see this file at https://jshuk.com/simple_test.txt then the deployment is working.
+
+Timestamp: January 10, 2025
+Test #: 001 
