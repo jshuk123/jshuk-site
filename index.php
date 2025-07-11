@@ -161,6 +161,48 @@ require_once 'includes/ad_renderer.php';
 <!-- CATEGORY SHOWCASE -->
 <?php include 'sections/categories.php'; ?>
 
+<!-- GEMACHIM SECTION: Community Lending Made Easy -->
+<section id="gemachim-section" class="py-5 bg-light">
+  <div class="container">
+    <h2 class="text-center mb-4">🤲 Gemachim: Community Lending Made Easy</h2>
+    <p class="text-center text-muted mb-5">Explore free-loan resources in your area – from baby gear to simcha décor, it's all shared with love.</p>
+    <div class="row">
+      <!-- Example cards -->
+      <div class="col-md-4">
+        <div class="card h-100 shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title">👶 Baby Items</h5>
+            <p class="card-text">Pushchairs, cots, and car seats – all available through your local gemachim.</p>
+            <a href="/gemachim.php?category=baby-maternity" class="btn btn-primary btn-sm mt-3">Browse Baby Gemachs</a>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card h-100 shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title">🍽 Kitchen & Simcha</h5>
+            <p class="card-text">Kitchenware, simcha décor, and more – borrow for your next event or family need.</p>
+            <a href="/gemachim.php?category=kitchen-items" class="btn btn-primary btn-sm mt-3">Browse Kitchen Gemachs</a>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card h-100 shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title">💊 Medical & More</h5>
+            <p class="card-text">Wheelchairs, crutches, and health supplies – supporting community wellness.</p>
+            <a href="/gemachim.php?category=medical-supplies" class="btn btn-primary btn-sm mt-3">Browse Medical Gemachs</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="text-center mt-4">
+      <a href="/gemachim.php" class="btn btn-outline-primary">View All Gemachim</a>
+      <span class="badge bg-warning text-dark ms-3" style="font-size:1rem;vertical-align:middle;">📦 482 Items Borrowed This Month!</span>
+    </div>
+  </div>
+</section>
+
 <!-- FEATURED BUSINESSES SECTION -->
 <?php include 'sections/featured_businesses.php'; ?>
 
