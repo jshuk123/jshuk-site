@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Setup Free Stuff System - JShuk</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f8f9fa;
+        }
+        .container {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+        }
+        .btn {
+            background: #ffd700;
+            color: #1a3353;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            margin: 10px 5px;
+        }
+        .btn:hover {
+            background: #ffcc00;
+        }
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+        .btn-danger:hover {
+            background: #c82333;
+        }
+        .status {
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .status.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        pre {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔄 Setup Free Stuff System</h1>
+        <p>This page will help you set up the Free Stuff / Chessed Giveaway system for JShuk classifieds.</p>
+        
+        <div class="status info">
+            <h3>📋 What will be installed:</h3>
+            <ul>
+                <li>♻️ Free Stuff category in classifieds</li>
+                <li>📦 Pickup method options (porch pickup, contact arrange, collection code)</li>
+                <li>⏰ Collection deadline functionality</li>
+                <li>💝 Chessed and bundle listing options</li>
+                <li>📞 Contact method preferences</li>
+                <li>🔐 Pickup code generation</li>
+                <li>📋 Item status tracking (available, pending, claimed, expired)</li>
+                <li>📝 Item request system</li>
+            </ul>
+        </div>
+        
+        <div class="status info">
+            <h3>⚠️ Important Notes:</h3>
+            <ul>
+                <li>Make sure your database is backed up before running this setup</li>
+                <li>This will add new columns to the existing classifieds table</li>
+                <li>Some sample data will be inserted for testing</li>
+                <li>You may need to refresh your browser cache after setup</li>
+            </ul>
+        </div>
+        
+        <div style="text-align: center; margin: 30px 0;">
+            <a href="scripts/apply_free_stuff_system.php" class="btn" target="_blank">
+                🚀 Run Database Setup
+            </a>
+            <a href="classifieds.php" class="btn">
+                📋 View Classifieds
+            </a>
+            <a href="submit_classified.php" class="btn">
+                ➕ Post New Classified
+            </a>
+        </div>
+        
+        <div class="status info">
+            <h3>🔧 Manual Setup (if automatic fails):</h3>
+            <p>If the automatic setup doesn't work, you can manually run the SQL commands from the file:</p>
+            <pre>sql/add_free_stuff_system.sql</pre>
+        </div>
+        
+        <div class="status info">
+            <h3>🧪 Testing the System:</h3>
+            <ol>
+                <li>Run the database setup</li>
+                <li>Go to <a href="classifieds.php">Classifieds</a> and look for the "♻️ Free Stuff" category</li>
+                <li>Try posting a free item using <a href="submit_classified.php">Submit Classified</a></li>
+                <li>Test the filtering by clicking "Free Items Only"</li>
+                <li>View a free item and test the "Request This Item" functionality</li>
+            </ol>
+        </div>
+        
+        <div style="text-align: center; margin-top: 30px;">
+            <a href="/" class="btn">🏠 Back to Homepage</a>
+        </div>
+    </div>
+</body>
+</html> 
