@@ -109,10 +109,9 @@ for ($i = 5; $i >= 0; $i--) {
     $userGrowth[] = (int)$pdo->query("SELECT COUNT(*) FROM users WHERE DATE_FORMAT(created_at, '%Y-%m') = '$month'")->fetchColumn();
 }
 echo "<!-- Debug: Chart data loaded -->\n";
-
+echo "<!DOCTYPE html>\n";
+echo "<html lang='en'>\n";
 ?>
-<!DOCTYPE html>
-<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -176,20 +175,20 @@ echo "<!-- Debug: Chart data loaded -->\n";
         <main class="col-lg-10 col-md-9 ms-sm-auto px-4 py-4">
             <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
                 <div>
-                    <h1 class="h2 mb-1">Welcome, <?= htmlspecialchars($adminName) ?>!</h1>
-                    <div class="text-muted">Role: <span class="badge bg-primary text-uppercase">Admin</span> <?= $adminEmail ? '| ' . htmlspecialchars($adminEmail) : '' ?></div>
+                    <h1 class="h2 mb-1"><?php echo htmlspecialchars($adminName); ?></h1>
+                    <div class="text-muted">Role: <span class="badge bg-primary text-uppercase">Admin</span> <?php echo $adminEmail ? '| ' . htmlspecialchars($adminEmail) : ''; ?></div>
                 </div>
                 <div class="text-end">
-                    <span class="badge bg-secondary">Session: <?= htmlspecialchars(session_id()) ?></span>
+                    <span class="badge bg-secondary">Session: <?php echo htmlspecialchars(session_id()); ?></span>
                     <?php if ($lastLogin): ?>
-                        <span class="badge bg-info">Last login: <?= htmlspecialchars($lastLogin) ?></span>
+                        <span class="badge bg-info">Last login: <?php echo htmlspecialchars($lastLogin); ?></span>
                     <?php endif; ?>
                 </div>
             </div>
             <!-- Notifications -->
             <div class="mb-4">
                 <?php foreach ($notifications as $note): ?>
-                    <div class="alert alert-<?= $note['type'] ?> notification"><i class="fa <?= $note['icon'] ?> me-2"></i><?= htmlspecialchars($note['msg']) ?></div>
+                    <div class="alert alert-<?php echo $note['type']; ?> notification"><i class="fa <?php echo $note['icon']; ?> me-2"></i><?php echo htmlspecialchars($note['msg']); ?></div>
                 <?php endforeach; ?>
             </div>
             <!-- Stat Cards -->
@@ -199,7 +198,7 @@ echo "<!-- Debug: Chart data loaded -->\n";
                         <div class="card-body d-flex align-items-center">
                             <div class="me-3"><i class="fa fa-store fa-2x text-primary"></i></div>
                             <div>
-                                <div class="fw-bold fs-5"><?= $stats['total_businesses'] ?></div>
+                                <div class="fw-bold fs-5"><?php echo $stats['total_businesses']; ?></div>
                                 <div class="text-muted">Total Businesses</div>
                             </div>
                         </div>
@@ -210,7 +209,7 @@ echo "<!-- Debug: Chart data loaded -->\n";
                         <div class="card-body d-flex align-items-center">
                             <div class="me-3"><i class="fa fa-clock fa-2x text-warning"></i></div>
                             <div>
-                                <div class="fw-bold fs-5"><?= $stats['pending_businesses'] ?></div>
+                                <div class="fw-bold fs-5"><?php echo $stats['pending_businesses']; ?></div>
                                 <div class="text-muted">Pending Businesses</div>
                             </div>
                         </div>
@@ -221,7 +220,7 @@ echo "<!-- Debug: Chart data loaded -->\n";
                         <div class="card-body d-flex align-items-center">
                             <div class="me-3"><i class="fa fa-users fa-2x text-success"></i></div>
                             <div>
-                                <div class="fw-bold fs-5"><?= $stats['total_users'] ?></div>
+                                <div class="fw-bold fs-5"><?php echo $stats['total_users']; ?></div>
                                 <div class="text-muted">Total Users</div>
                             </div>
                         </div>
@@ -232,7 +231,7 @@ echo "<!-- Debug: Chart data loaded -->\n";
                         <div class="card-body d-flex align-items-center">
                             <div class="me-3"><i class="fa fa-star fa-2x text-info"></i></div>
                             <div>
-                                <div class="fw-bold fs-5"><?= $stats['total_reviews'] ?></div>
+                                <div class="fw-bold fs-5"><?php echo $stats['total_reviews']; ?></div>
                                 <div class="text-muted">Total Reviews</div>
                             </div>
                         </div>
@@ -272,10 +271,10 @@ echo "<!-- Debug: Chart data loaded -->\n";
                                 <tbody>
                                 <?php foreach ($recentBusinesses as $b): ?>
                                     <tr>
-                                        <td><?= htmlspecialchars($b['business_name']) ?></td>
-                                        <td><?= htmlspecialchars($b['username']) ?></td>
+                                        <td><?php echo htmlspecialchars($b['business_name']); ?></td>
+                                        <td><?php echo htmlspecialchars($b['username']); ?></td>
                                         <td><span class="badge bg-success">Active</span></td>
-                                        <td><?= date('M j, Y', strtotime($b['created_at'])) ?></td>
+                                        <td><?php echo date('M j, Y', strtotime($b['created_at'])); ?></td>
                                     </tr>
                                 <?php endforeach; ?>
                                 </tbody>
@@ -292,10 +291,10 @@ echo "<!-- Debug: Chart data loaded -->\n";
                                 <tbody>
                                 <?php foreach ($recentUsers as $u): ?>
                                     <tr>
-                                        <td><?= htmlspecialchars($u['username']) ?></td>
-                                        <td><?= htmlspecialchars($u['email']) ?></td>
-                                        <td><span class="badge bg-<?= $u['role'] === 'admin' ? 'primary' : 'secondary' ?> text-uppercase"><?= htmlspecialchars($u['role']) ?></span></td>
-                                        <td><?= date('M j, Y', strtotime($u['created_at'])) ?></td>
+                                        <td><?php echo htmlspecialchars($u['username']); ?></td>
+                                        <td><?php echo htmlspecialchars($u['email']); ?></td>
+                                        <td><span class="badge bg-<?php echo $u['role'] === 'admin' ? 'primary' : 'secondary'; ?> text-uppercase"><?php echo htmlspecialchars($u['role']); ?></span></td>
+                                        <td><?php echo date('M j, Y', strtotime($u['created_at'])); ?></td>
                                     </tr>
                                 <?php endforeach; ?>
                                 </tbody>
@@ -314,11 +313,11 @@ echo "<!-- Debug: Chart data loaded -->\n";
                                 <tbody>
                                 <?php foreach ($recentReviews as $r): ?>
                                     <tr>
-                                        <td><?= htmlspecialchars($r['username']) ?></td>
-                                        <td><?= htmlspecialchars($r['business_name']) ?></td>
-                                        <td><span class="badge bg-warning text-dark"><?= htmlspecialchars($r['rating']) ?></span></td>
-                                        <td><?= htmlspecialchars(mb_strimwidth($r['comment'], 0, 40, '...')) ?></td>
-                                        <td><?= date('M j, Y', strtotime($r['created_at'])) ?></td>
+                                        <td><?php echo htmlspecialchars($r['username']); ?></td>
+                                        <td><?php echo htmlspecialchars($r['business_name']); ?></td>
+                                        <td><span class="badge bg-warning text-dark"><?php echo htmlspecialchars($r['rating']); ?></span></td>
+                                        <td><?php echo htmlspecialchars(mb_strimwidth($r['comment'], 0, 40, '...')); ?></td>
+                                        <td><?php echo date('M j, Y', strtotime($r['created_at'])); ?></td>
                                     </tr>
                                 <?php endforeach; ?>
                                 </tbody>
@@ -348,11 +347,11 @@ const ctx = document.getElementById('growthChart').getContext('2d');
 const growthChart = new Chart(ctx, {
     type: 'line',
     data: {
-        labels: <?= json_encode($chartLabels) ?>,
+        labels: <?php echo json_encode($chartLabels); ?>,
         datasets: [
             {
                 label: 'Businesses',
-                data: <?= json_encode($businessGrowth) ?>,
+                data: <?php echo json_encode($businessGrowth); ?>,
                 borderColor: '#0d6efd',
                 backgroundColor: 'rgba(13,110,253,0.1)',
                 tension: 0.3,
@@ -362,7 +361,7 @@ const growthChart = new Chart(ctx, {
             },
             {
                 label: 'Users',
-                data: <?= json_encode($userGrowth) ?>,
+                data: <?php echo json_encode($userGrowth); ?>,
                 borderColor: '#198754',
                 backgroundColor: 'rgba(25,135,84,0.1)',
                 tension: 0.3,
@@ -393,4 +392,5 @@ function saveNotes() {
 document.getElementById('adminNotes').value = localStorage.getItem('adminNotes') || '';
 </script>
 </body>
-</html> 
+</html>
+<?php echo "<!-- Debug: End of file reached -->"; ?> 
