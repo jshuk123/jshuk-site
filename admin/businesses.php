@@ -1,91 +1,133 @@
 <?php
+// Start output buffering and session management
+ob_start();
+
+// Error reporting
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
-file_put_contents(__DIR__ . '/../logs/debug.log', date('c') . " - businesses.php loaded\n", FILE_APPEND);
-session_start();
-require_once '../config/config.php';
 
-// Check admin access
-function checkAdminAccess() {
-    if (!isset($_SESSION['user_id'])) {
-        header('Location: ../index.php');
-        exit();
-    }
-    global $pdo;
-    $stmt = $pdo->prepare("SELECT role FROM users WHERE id = ?");
-    $stmt->execute([$_SESSION['user_id']]);
-    $user = $stmt->fetch();
-    if ($user['role'] !== 'admin') {
-        header('Location: ../index.php');
-        exit();
-    }
+// Start session if not already started
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
 }
-checkAdminAccess();
 
-// Handle business actions
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (isset($_POST['action'])) {
-        $businessId = $_POST['business_id'] ?? null;
-        switch ($_POST['action']) {
-            case 'change_status':
-                $newStatus = $_POST['status'] ?? 'pending';
-                $stmt = $pdo->prepare("UPDATE businesses SET biz_status = ? WHERE id = ?");
-                $stmt->execute([$newStatus, $businessId]);
-                break;
-            case 'toggle_featured':
-                $stmt = $pdo->prepare("UPDATE businesses SET is_featured = NOT is_featured WHERE id = ?");
-                $stmt->execute([$businessId]);
-                break;
-            case 'delete':
-                $stmt = $pdo->prepare("DELETE FROM business_images WHERE business_id = ?");
-                $stmt->execute([$businessId]);
-                $stmt = $pdo->prepare("DELETE FROM businesses WHERE id = ?");
-                $stmt->execute([$businessId]);
-                break;
+try {
+    require_once '../config/config.php';
+
+    // Check admin access
+    function checkAdminAccess() {
+        if (!isset($_SESSION['user_id'])) {
+            header('Location: ../auth/login.php');
+            ob_end_clean();
+            exit();
+        }
+        global $pdo;
+        $stmt = $pdo->prepare("SELECT role FROM users WHERE id = ?");
+        $stmt->execute([$_SESSION['user_id']]);
+        $user = $stmt->fetch();
+        if (!$user || $user['role'] !== 'admin') {
+            header('Location: ../index.php');
+            ob_end_clean();
+            exit();
         }
     }
-}
+    checkAdminAccess();
 
-// Pagination and filtering
-$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-$limit = 10;
-$offset = ($page - 1) * $limit;
-$statusFilter = isset($_GET['status']) ? $_GET['status'] : '';
-$whereClause = '';
-$params = [];
-if ($statusFilter !== '') {
-    $whereClause = "WHERE b.status = ?";
-    $params[] = $statusFilter;
-}
-$stmt = $pdo->prepare("SELECT COUNT(*) FROM businesses b $whereClause");
-$stmt->execute($params);
-$total = $stmt->fetchColumn();
-$totalPages = ceil($total / $limit);
+    // Handle business actions
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        if (isset($_POST['action'])) {
+            $businessId = $_POST['business_id'] ?? null;
+            switch ($_POST['action']) {
+                case 'change_status':
+                    $newStatus = $_POST['status'] ?? 'pending';
+                    // Try both possible column names for status
+                    try {
+                        $stmt = $pdo->prepare("UPDATE businesses SET status = ? WHERE id = ?");
+                        $stmt->execute([$newStatus, $businessId]);
+                    } catch (PDOException $e) {
+                        $stmt = $pdo->prepare("UPDATE businesses SET biz_status = ? WHERE id = ?");
+                        $stmt->execute([$newStatus, $businessId]);
+                    }
+                    break;
+                case 'toggle_featured':
+                    $stmt = $pdo->prepare("UPDATE businesses SET is_featured = NOT COALESCE(is_featured, 0) WHERE id = ?");
+                    $stmt->execute([$businessId]);
+                    break;
+                case 'delete':
+                    $stmt = $pdo->prepare("DELETE FROM business_images WHERE business_id = ?");
+                    $stmt->execute([$businessId]);
+                    $stmt = $pdo->prepare("DELETE FROM businesses WHERE id = ?");
+                    $stmt->execute([$businessId]);
+                    break;
+            }
+        }
+    }
 
-$query = "
-    SELECT b.*, u.username, c.name as category_name,
-           (SELECT COUNT(*) FROM reviews r WHERE r.business_id = b.id) as review_count,
-           (SELECT AVG(rating) FROM reviews r WHERE r.business_id = b.id) as avg_rating
-    FROM businesses b
-    LEFT JOIN users u ON b.user_id = u.id
-    LEFT JOIN business_categories c ON b.category_id = c.id
-    $whereClause
-    ORDER BY b.created_at DESC 
-    LIMIT $limit OFFSET $offset
-";
-$stmt = $pdo->prepare($query);
-$stmt->execute($params);
-$businesses = $stmt->fetchAll();
+    // Pagination and filtering
+    $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+    $limit = 10;
+    $offset = ($page - 1) * $limit;
+    $statusFilter = isset($_GET['status']) ? $_GET['status'] : '';
+    $whereClause = '';
+    $params = [];
+    
+    // Try to determine which status column exists
+    $statusColumn = 'status';
+    try {
+        $pdo->query("SELECT status FROM businesses LIMIT 1");
+    } catch (PDOException $e) {
+        $statusColumn = 'biz_status';
+    }
+    
+    if ($statusFilter !== '') {
+        $whereClause = "WHERE b.$statusColumn = ?";
+        $params[] = $statusFilter;
+    }
+    
+    $stmt = $pdo->prepare("SELECT COUNT(*) FROM businesses b $whereClause");
+    $stmt->execute($params);
+    $total = $stmt->fetchColumn();
+    $totalPages = ceil($total / $limit);
 
-// Fetch main image for each business
-$img_stmt = $pdo->prepare("SELECT file_path FROM business_images WHERE business_id = ? AND sort_order = 0 LIMIT 1");
-foreach ($businesses as &$business) {
-    $img_stmt->execute([$business['id']]);
-    $main_image_path = $img_stmt->fetchColumn();
-    $business['main_image'] = $main_image_path ? $main_image_path : 'images/default-business.jpg';
+    $query = "
+        SELECT b.*, u.username, c.name as category_name,
+               COALESCE(b.$statusColumn, 'active') as business_status,
+               COALESCE(b.is_featured, 0) as is_featured,
+               (SELECT COUNT(*) FROM reviews r WHERE r.business_id = b.id) as review_count,
+               (SELECT AVG(rating) FROM reviews r WHERE r.business_id = b.id) as avg_rating
+        FROM businesses b
+        LEFT JOIN users u ON b.user_id = u.id
+        LEFT JOIN business_categories c ON b.category_id = c.id
+        $whereClause
+        ORDER BY b.created_at DESC 
+        LIMIT $limit OFFSET $offset
+    ";
+    $stmt = $pdo->prepare($query);
+    $stmt->execute($params);
+    $businesses = $stmt->fetchAll();
+
+    // Fetch main image for each business
+    $img_stmt = $pdo->prepare("SELECT file_path FROM business_images WHERE business_id = ? AND sort_order = 0 LIMIT 1");
+    foreach ($businesses as &$business) {
+        $img_stmt->execute([$business['id']]);
+        $main_image_path = $img_stmt->fetchColumn();
+        $business['main_image'] = $main_image_path ? $main_image_path : 'images/default-business.jpg';
+    }
+    unset($business);
+
+} catch (Exception $e) {
+    error_log("Admin businesses page error: " . $e->getMessage());
+    ob_end_clean();
+    
+    if (defined('APP_DEBUG') && APP_DEBUG) {
+        echo "<h1>Error</h1>";
+        echo "<p>An error occurred: " . htmlspecialchars($e->getMessage()) . "</p>";
+    } else {
+        header("Location: ../500.php");
+    }
+    exit();
 }
-unset($business);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -188,9 +230,9 @@ unset($business);
                                             <input type="hidden" name="action" value="change_status">
                                             <input type="hidden" name="business_id" value="<?php echo $business['id']; ?>">
                                             <select name="status" class="form-select form-select-sm" onchange="this.form.submit()">
-                                                <option value="active" <?php echo $business['biz_status'] === 'active' ? 'selected' : ''; ?>>Active</option>
-                                                <option value="pending" <?php echo $business['biz_status'] === 'pending' ? 'selected' : ''; ?>>Pending</option>
-                                                <option value="inactive" <?php echo $business['biz_status'] === 'inactive' ? 'selected' : ''; ?>>Inactive</option>
+                                                <option value="active" <?php echo $business['business_status'] === 'active' ? 'selected' : ''; ?>>Active</option>
+                                                <option value="pending" <?php echo $business['business_status'] === 'pending' ? 'selected' : ''; ?>>Pending</option>
+                                                <option value="inactive" <?php echo $business['business_status'] === 'inactive' ? 'selected' : ''; ?>>Inactive</option>
                                             </select>
                                         </form>
                                     </td>
@@ -264,3 +306,7 @@ unset($business);
 </script>
 </body>
 </html>
+<?php
+// End output buffering and flush
+ob_end_flush();
+?>

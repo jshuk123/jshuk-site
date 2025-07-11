@@ -1,77 +1,111 @@
 <?php
-session_start();
-require_once '../config/config.php';
+// Start output buffering and session management
+ob_start();
 
-// Check admin access
-function checkAdminAccess() {
-    if (!isset($_SESSION['user_id'])) {
-        header('Location: ../index.php');
-        exit();
-    }
-
-    global $pdo;
-    $stmt = $pdo->prepare("SELECT role FROM users WHERE id = ?");
-    $stmt->execute([$_SESSION['user_id']]);
-    $user = $stmt->fetch();
-
-    if (!$user || $user['role'] !== 'admin') {
-        header('Location: ../index.php');
-        exit();
-    }
+// Start session if not already started
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
 }
 
-checkAdminAccess();
+try {
+    require_once '../config/config.php';
 
-// Handle user actions
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (isset($_POST['action'])) {
-        $userId = $_POST['user_id'] ?? null;
-        switch ($_POST['action']) {
-            case 'toggle_status':
-                if ($userId == $_SESSION['user_id']) {
-                    $_SESSION['admin_error'] = "You cannot suspend your own account.";
-                    break;
-                }
+    // Check admin access
+    function checkAdminAccess() {
+        if (!isset($_SESSION['user_id'])) {
+            header('Location: ../auth/login.php');
+            ob_end_clean();
+            exit();
+        }
 
-                $stmt = $pdo->prepare("SELECT is_active FROM users WHERE id = ?");
-                $stmt->execute([$userId]);
-                $currentStatus = $stmt->fetchColumn();
+        global $pdo;
+        $stmt = $pdo->prepare("SELECT role FROM users WHERE id = ?");
+        $stmt->execute([$_SESSION['user_id']]);
+        $user = $stmt->fetch();
 
-                $stmt = $pdo->prepare("UPDATE users SET is_active = ?, suspended_at = ? WHERE id = ?");
-                $newStatus = !$currentStatus;
-                $suspendedAt = $newStatus ? null : date('Y-m-d H:i:s');
-                $stmt->execute([$newStatus, $suspendedAt, $userId]);
-
-                $_SESSION['admin_message'] = "User has been " . ($newStatus ? 'activated' : 'suspended') . " successfully.";
-                header("Location: users.php");
-                exit();
-
-            case 'change_role':
-                if ($userId == $_SESSION['user_id']) {
-                    $_SESSION['admin_error'] = "You cannot change your own role.";
-                    break;
-                }
-
-                $newRole = $_POST['role'] ?? 'user';
-                if (in_array($newRole, ['user', 'admin'])) {
-                    $stmt = $pdo->prepare("UPDATE users SET role = ? WHERE id = ?");
-                    $stmt->execute([$newRole, $userId]);
-                    $_SESSION['admin_message'] = "User role updated successfully.";
-                }
-                header("Location: users.php");
-                exit();
+        if (!$user || $user['role'] !== 'admin') {
+            header('Location: ../index.php');
+            ob_end_clean();
+            exit();
         }
     }
+
+    checkAdminAccess();
+
+    // Handle user actions
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        if (isset($_POST['action'])) {
+            $userId = $_POST['user_id'] ?? null;
+            switch ($_POST['action']) {
+                case 'toggle_status':
+                    if ($userId == $_SESSION['user_id']) {
+                        $_SESSION['admin_error'] = "You cannot suspend your own account.";
+                        break;
+                    }
+
+                    $stmt = $pdo->prepare("SELECT COALESCE(is_active, 1) as is_active FROM users WHERE id = ?");
+                    $stmt->execute([$userId]);
+                    $currentStatus = $stmt->fetchColumn();
+
+                    $stmt = $pdo->prepare("UPDATE users SET is_active = ?, suspended_at = ? WHERE id = ?");
+                    $newStatus = !$currentStatus;
+                    $suspendedAt = $newStatus ? null : date('Y-m-d H:i:s');
+                    $stmt->execute([$newStatus, $suspendedAt, $userId]);
+
+                    $_SESSION['admin_message'] = "User has been " . ($newStatus ? 'activated' : 'suspended') . " successfully.";
+                    header("Location: users.php");
+                    ob_end_clean();
+                    exit();
+
+                case 'change_role':
+                    if ($userId == $_SESSION['user_id']) {
+                        $_SESSION['admin_error'] = "You cannot change your own role.";
+                        break;
+                    }
+
+                    $newRole = $_POST['role'] ?? 'user';
+                    if (in_array($newRole, ['user', 'admin'])) {
+                        $stmt = $pdo->prepare("UPDATE users SET role = ? WHERE id = ?");
+                        $stmt->execute([$newRole, $userId]);
+                        $_SESSION['admin_message'] = "User role updated successfully.";
+                    }
+                    header("Location: users.php");
+                    ob_end_clean();
+                    exit();
+            }
+        }
+    }
+
+    // Pagination
+    $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+    $limit = 10;
+    $offset = ($page - 1) * $limit;
+
+    $total = $pdo->query("SELECT COUNT(*) FROM users")->fetchColumn();
+    $totalPages = ceil($total / $limit);
+    
+    // Enhanced query with fallback for missing columns
+    $query = "SELECT *, 
+                     COALESCE(is_active, 1) as is_active,
+                     COALESCE(is_banned, 0) as is_banned,
+                     COALESCE(ban_reason, '') as ban_reason
+              FROM users 
+              ORDER BY created_at DESC 
+              LIMIT $limit OFFSET $offset";
+    $users = $pdo->query($query)->fetchAll();
+
+} catch (Exception $e) {
+    error_log("Admin users page error: " . $e->getMessage());
+    ob_end_clean();
+    
+    if (defined('APP_DEBUG') && APP_DEBUG) {
+        echo "<h1>Error</h1>";
+        echo "<p>An error occurred: " . htmlspecialchars($e->getMessage()) . "</p>";
+    } else {
+        header("Location: ../500.php");
+    }
+    exit();
 }
-
-// Pagination
-$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-$limit = 10;
-$offset = ($page - 1) * $limit;
-
-$total = $pdo->query("SELECT COUNT(*) FROM users")->fetchColumn();
-$totalPages = ceil($total / $limit);
-$users = $pdo->query("SELECT * FROM users ORDER BY created_at DESC LIMIT $limit OFFSET $offset")->fetchAll();
 ?>
 
 <!DOCTYPE html>
@@ -325,4 +359,8 @@ $users = $pdo->query("SELECT * FROM users ORDER BY created_at DESC LIMIT $limit 
 <?php endif; ?>
 </body>
 </html>
+<?php
+// End output buffering and flush
+ob_end_flush();
+?>
 
