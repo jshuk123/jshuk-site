@@ -4,25 +4,36 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 ini_set('log_errors', 1);
 
+echo "<!-- Debug: Starting admin index -->\n";
 session_start();
+echo "<!-- Debug: Session started -->\n";
 require_once '../config/config.php';
+echo "<!-- Debug: Config loaded -->\n";
 
 function checkAdminAccess() {
+    echo "<!-- Debug: Checking admin access -->\n";
     if (!isset($_SESSION['user_id'])) {
+        echo "<!-- Debug: No user_id, redirecting -->\n";
         header('Location: ../login.php');
         exit();
     }
+    echo "<!-- Debug: User ID: " . $_SESSION['user_id'] . " -->\n";
     global $pdo;
     if (!$pdo) {
+        echo "<!-- Debug: Database connection failed -->\n";
         exit('Database connection failed!');
     }
+    echo "<!-- Debug: Database connected -->\n";
     $stmt = $pdo->prepare("SELECT role FROM users WHERE id = ?");
     $stmt->execute([$_SESSION['user_id']]);
     $user = $stmt->fetch();
+    echo "<!-- Debug: User role: " . ($user['role'] ?? 'not found') . " -->\n";
     if ($user['role'] !== 'admin') {
+        echo "<!-- Debug: Not admin, redirecting -->\n";
         header('Location: ../index.php');
         exit();
     }
+    echo "<!-- Debug: Admin access granted -->\n";
 }
 checkAdminAccess();
 
@@ -32,6 +43,7 @@ $adminEmail = $_SESSION['email'] ?? '';
 $adminRole = $_SESSION['role'] ?? 'admin';
 $lastLogin = $_SESSION['last_login'] ?? '';
 
+echo "<!-- Debug: Getting statistics -->\n";
 // Get key statistics
 try {
     $stats = [
@@ -41,7 +53,9 @@ try {
         'total_reviews' => $pdo->query("SELECT COUNT(*) FROM reviews")->fetchColumn(),
         'pending_reviews' => $pdo->query("SELECT COUNT(*) FROM reviews")->fetchColumn(), // Temporarily show all as pending
     ];
+    echo "<!-- Debug: Statistics loaded successfully -->\n";
 } catch (PDOException $e) {
+    echo "<!-- Debug: Error loading statistics: " . $e->getMessage() . " -->\n";
     // Fallback if status columns don't exist
     $stats = [
         'total_businesses' => $pdo->query("SELECT COUNT(*) FROM businesses")->fetchColumn(),
@@ -83,6 +97,7 @@ $notifications = [
     ['type' => 'success', 'icon' => 'fa-user-check', 'msg' => 'New user registered.'],
 ];
 
+echo "<!-- Debug: Loading chart data -->\n";
 // Example data for Chart.js (business/user growth)
 $chartLabels = [];
 $businessGrowth = [];
@@ -93,6 +108,7 @@ for ($i = 5; $i >= 0; $i--) {
     $businessGrowth[] = (int)$pdo->query("SELECT COUNT(*) FROM businesses WHERE DATE_FORMAT(created_at, '%Y-%m') = '$month'")->fetchColumn();
     $userGrowth[] = (int)$pdo->query("SELECT COUNT(*) FROM users WHERE DATE_FORMAT(created_at, '%Y-%m') = '$month'")->fetchColumn();
 }
+echo "<!-- Debug: Chart data loaded -->\n";
 
 ?>
 <!DOCTYPE html>
