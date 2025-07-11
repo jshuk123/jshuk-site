@@ -24,12 +24,12 @@ if (file_exists($env_file)) {
 
 // Set default environment variables if not already set
 $defaults = [
-    'APP_ENV' => 'production',
+    'APP_ENV' => 'development',  // Changed to development for better error reporting
     'DB_HOST' => 'localhost',
     'DB_NAME' => 'u544457429_jshuk_db',
     'DB_USER' => 'u544457429_jshuk01',
-    'DB_PASS' => 'Jshuk613!', // Use the correct password
-    'SITE_URL' => 'https://jshuk.com',
+    'DB_PASS' => '',  // Remove hardcoded password
+    'SITE_URL' => 'http://localhost',  // Changed to localhost for development
     'GOOGLE_MAPS_API_KEY' => '',
     'STRIPE_PUBLISHABLE_KEY' => '',
     'STRIPE_SECRET_KEY' => '',
@@ -40,9 +40,18 @@ $defaults = [
     'SMTP_ENCRYPTION' => 'tls'
 ];
 
+// Only set defaults if not already set in environment
 foreach ($defaults as $key => $default_value) {
-    if (!getenv($key)) {
+    if (!getenv($key) && !isset($_ENV[$key])) {
         putenv("$key=$default_value");
         $_ENV[$key] = $default_value;
     }
+}
+
+// Enable error reporting in development
+if (getenv('APP_ENV') === 'development') {
+    error_reporting(E_ALL);
+    ini_set('display_errors', 1);
+    ini_set('log_errors', 1);
+    ini_set('error_log', __DIR__ . '/../logs/php_errors.log');
 } 

@@ -6,7 +6,7 @@
 
 // Prevent direct access
 if (!defined('APP_DEBUG')) {
-    die('Direct access not allowed');
+    define('APP_DEBUG', getenv('APP_ENV') === 'development');
 }
 
 class Database {
@@ -28,15 +28,15 @@ class Database {
     private function connect() {
         try {
             // Get database configuration from environment variables
-            $host = getenv('DB_HOST') ?: 'localhost';
-            $dbname = getenv('DB_NAME') ?: 'u544457429_jshuk_db';
-            $username = getenv('DB_USER') ?: 'u544457429_jshuk01';
-            $password = getenv('DB_PASS') ?: 'Jshuk613!';  // Default password if env var not set
+            $host = getenv('DB_HOST');
+            $dbname = getenv('DB_NAME');
+            $username = getenv('DB_USER');
+            $password = getenv('DB_PASS');
             $charset = 'utf8mb4';
             
             // Validate required parameters
-            if (empty($dbname) || empty($username)) {
-                throw new Exception('Database configuration incomplete');
+            if (empty($host) || empty($dbname) || empty($username) || empty($password)) {
+                throw new Exception('Database configuration incomplete. Please check environment variables.');
             }
             
             $dsn = "mysql:host={$host};dbname={$dbname};charset={$charset}";
@@ -46,7 +46,7 @@ class Database {
                 PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
                 PDO::ATTR_EMULATE_PREPARES => false,
                 PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci",
-                PDO::ATTR_PERSISTENT => false, // Disable persistent connections for security
+                PDO::ATTR_PERSISTENT => false,
                 PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true
             ];
             
@@ -61,7 +61,7 @@ class Database {
             $this->connected = true;
             
             if (APP_DEBUG) {
-                error_log("Database connection established successfully");
+                error_log("Database connected successfully");
             }
             
         } catch (PDOException $e) {
@@ -75,10 +75,6 @@ class Database {
                 error_log($error_message);
                 throw new Exception("Database connection failed. Please try again later.");
             }
-        } catch (Exception $e) {
-            $this->connected = false;
-            error_log("Database configuration error: " . $e->getMessage());
-            throw $e;
         }
     }
     
@@ -107,10 +103,8 @@ class Database {
         $this->connected = false;
     }
     
-    // Prevent cloning
     private function __clone() {}
     
-    // Prevent unserialization
     public function __wakeup() {
         throw new Exception("Cannot unserialize singleton");
     }
@@ -121,37 +115,16 @@ try {
     $db = Database::getInstance();
     $pdo = $db->getConnection();
     
-    if (APP_DEBUG && $db->isConnected()) {
-        // echo "✅ Database connection established successfully.";
+    if (APP_DEBUG) {
+        error_log("Database connection established");
     }
     
 } catch (Exception $e) {
+    error_log("Database connection error: " . $e->getMessage());
     if (APP_DEBUG) {
-        echo "❌ " . $e->getMessage();
+        throw $e;
     } else {
-        echo "❌ Database connection failed. Please try again later.";
-    }
-    exit();
-}
-
-// Ensure $pdo is always available globally
-if (!isset($pdo)) {
-    try {
-        $host = getenv('DB_HOST') ?: 'localhost';
-        $dbname = getenv('DB_NAME') ?: 'u544457429_jshuk_db';
-        $username = getenv('DB_USER') ?: 'u544457429_jshuk01';
-        $password = getenv('DB_PASS') ?: 'Jshuk613!';
-        
-        $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $username, $password);
-        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        
-        if (APP_DEBUG) {
-            error_log("Fallback database connection established");
-        }
-    } catch (PDOException $e) {
-        if (APP_DEBUG) {
-            error_log("Fallback database connection failed: " . $e->getMessage());
-        }
+        die("Database connection failed. Please try again later.");
     }
 }
 ?>
