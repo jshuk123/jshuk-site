@@ -112,9 +112,21 @@
         
         <div class="status info">
             <h3>🔧 Manual Setup (if automatic fails):</h3>
-            <p>If the automatic setup doesn't work due to duplicate column errors, use the simple version:</p>
+            <p>If you encounter errors, follow these steps:</p>
+            
+            <h4>Step 1: Check Current Table Structure</h4>
+            <p>First, run this diagnostic script to see what exists:</p>
+            <pre>sql/check_table_structure.sql</pre>
+            
+            <h4>Step 2: Fix Categories Table (if needed)</h4>
+            <p>If the categories table has missing columns, run:</p>
+            <pre>sql/fix_categories_table.sql</pre>
+            
+            <h4>Step 3: Complete Setup</h4>
+            <p>Then use the simple version for the rest:</p>
             <pre>sql/add_free_stuff_system_simple.sql</pre>
-            <p><strong>Instructions:</strong></p>
+            
+            <p><strong>Instructions for Simple Setup:</strong></p>
             <ol>
                 <li>Open the simple SQL file in your database manager (phpMyAdmin, etc.)</li>
                 <li>Run PART 1 first (creates tables)</li>
