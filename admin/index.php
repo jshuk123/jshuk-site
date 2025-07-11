@@ -71,22 +71,30 @@ try {
     ];
 }
 
+echo "<!-- Debug: About to load recent businesses -->\n";
+
 // Get recent activity/logs (last 5 businesses, users, reviews)
 try {
+    echo "<!-- Debug: Loading recent businesses query -->\n";
     $recentBusinesses = $pdo->query("
         SELECT b.business_name, b.created_at, u.username 
         FROM businesses b 
         LEFT JOIN users u ON b.user_id = u.id 
         ORDER BY b.created_at DESC LIMIT 5
     ")->fetchAll();
+    echo "<!-- Debug: Recent businesses loaded -->\n";
 } catch (PDOException $e) {
+    echo "<!-- Debug: Error loading recent businesses: " . $e->getMessage() . " -->\n";
     $recentBusinesses = [];
 }
+echo "<!-- Debug: Loading recent users -->\n";
 $recentUsers = $pdo->query("
     SELECT username, email, created_at, role 
     FROM users 
     ORDER BY created_at DESC LIMIT 5
 ")->fetchAll();
+echo "<!-- Debug: Recent users loaded -->\n";
+echo "<!-- Debug: Loading recent reviews -->\n";
 $recentReviews = $pdo->query("
     SELECT r.comment, r.rating, r.created_at, u.username, b.business_name 
     FROM reviews r 
@@ -94,26 +102,32 @@ $recentReviews = $pdo->query("
     LEFT JOIN businesses b ON r.business_id = b.id 
     ORDER BY r.created_at DESC LIMIT 5
 ")->fetchAll();
+echo "<!-- Debug: Recent reviews loaded -->\n";
 
+echo "<!-- Debug: Setting up notifications -->\n";
 // Example notifications/messages (could be dynamic)
 $notifications = [
     ['type' => 'info', 'icon' => 'fa-info-circle', 'msg' => 'System maintenance scheduled for Sunday 2am.'],
     ['type' => 'warning', 'icon' => 'fa-exclamation-triangle', 'msg' => '2 businesses pending approval.'],
     ['type' => 'success', 'icon' => 'fa-user-check', 'msg' => 'New user registered.'],
 ];
+echo "<!-- Debug: Notifications set up -->\n";
 
 echo "<!-- Debug: Loading chart data -->\n";
 // Example data for Chart.js (business/user growth)
 $chartLabels = [];
 $businessGrowth = [];
 $userGrowth = [];
+echo "<!-- Debug: Starting chart data loop -->\n";
 for ($i = 5; $i >= 0; $i--) {
     $month = date('Y-m', strtotime("-$i months"));
     $chartLabels[] = date('M Y', strtotime($month));
+    echo "<!-- Debug: Processing month $month -->\n";
     $businessGrowth[] = (int)$pdo->query("SELECT COUNT(*) FROM businesses WHERE DATE_FORMAT(created_at, '%Y-%m') = '$month'")->fetchColumn();
     $userGrowth[] = (int)$pdo->query("SELECT COUNT(*) FROM users WHERE DATE_FORMAT(created_at, '%Y-%m') = '$month'")->fetchColumn();
 }
 echo "<!-- Debug: Chart data loaded -->\n";
+echo "<!-- Debug: About to start HTML output -->\n";
 echo "<!DOCTYPE html>\n";
 echo "<html lang='en'>\n";
 ?>
