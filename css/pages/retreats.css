@@ -1,0 +1,875 @@
+/* =========================
+   Retreats & Simcha Rentals Styles
+   ========================= */
+
+/* Hero Section */
+.retreats-hero {
+    background: linear-gradient(135deg, #1a3353 0%, #2C4E6D 100%);
+    color: white;
+    padding: 4rem 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.retreats-hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="75" cy="75" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="50" cy="10" r="0.5" fill="rgba(255,255,255,0.1)"/><circle cx="10" cy="60" r="0.5" fill="rgba(255,255,255,0.1)"/><circle cx="90" cy="40" r="0.5" fill="rgba(255,255,255,0.1)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+    opacity: 0.3;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+}
+
+.hero-title {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    background: linear-gradient(45deg, #ffd700, #ffed4e);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.hero-subtitle {
+    font-size: 1.25rem;
+    margin-bottom: 2rem;
+    opacity: 0.9;
+}
+
+/* Progress Counter */
+.progress-counter {
+    display: flex;
+    justify-content: center;
+    gap: 3rem;
+    margin-bottom: 2rem;
+}
+
+.counter-item {
+    text-align: center;
+}
+
+.counter-item i {
+    font-size: 2rem;
+    color: #ffd700;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.counter-number {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #ffd700;
+    display: block;
+    line-height: 1;
+}
+
+.counter-label {
+    font-size: 0.9rem;
+    opacity: 0.8;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Hero CTA */
+.hero-cta {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.hero-cta .btn {
+    padding: 0.75rem 2rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border-radius: 50px;
+    transition: all 0.3s ease;
+}
+
+/* Category Grid */
+.retreat-categories {
+    padding: 4rem 0;
+    background: #f8f9fa;
+}
+
+.section-title {
+    text-align: center;
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #1a3353;
+    margin-bottom: 3rem;
+}
+
+.category-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.category-card {
+    background: white;
+    border-radius: 15px;
+    padding: 2rem 1.5rem;
+    text-align: center;
+    text-decoration: none;
+    color: #1a3353;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+    position: relative;
+    overflow: hidden;
+}
+
+.category-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,215,0,0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+.category-card:hover::before {
+    left: 100%;
+}
+
+.category-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    border-color: #ffd700;
+}
+
+.category-card.active {
+    border-color: #ffd700;
+    background: linear-gradient(135deg, #1a3353, #2C4E6D);
+    color: white;
+}
+
+.category-icon {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, #ffd700, #ffed4e);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.category-card:hover .category-icon {
+    transform: scale(1.1);
+}
+
+.category-card.active .category-icon {
+    background: white;
+    color: #1a3353;
+}
+
+.category-emoji {
+    font-size: 2rem;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.category-icon i {
+    font-size: 1.5rem;
+    color: #1a3353;
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+}
+
+.category-card.active .category-icon i {
+    color: #1a3353;
+}
+
+.category-name {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+/* Main Content Area */
+.retreats-main {
+    padding: 4rem 0;
+}
+
+/* View Mode Toggle */
+.view-mode-toggle {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+    justify-content: flex-end;
+}
+
+.view-mode-toggle .btn {
+    border-radius: 25px;
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+}
+
+.view-mode-toggle .btn.active {
+    background-color: #1a3353;
+    border-color: #1a3353;
+    color: white;
+}
+
+/* Filter Sidebar */
+.filter-sidebar {
+    background: white;
+    border-radius: 15px;
+    padding: 2rem;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    position: sticky;
+    top: 2rem;
+}
+
+.filter-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1a3353;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #f0f0f0;
+}
+
+.filter-group {
+    margin-bottom: 1.5rem;
+}
+
+.filter-label {
+    display: block;
+    font-weight: 600;
+    color: #1a3353;
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+}
+
+.form-control, .form-select {
+    border: 2px solid #e9ecef;
+    border-radius: 10px;
+    padding: 0.75rem 1rem;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: #1a3353;
+    box-shadow: 0 0 0 0.2rem rgba(26, 51, 83, 0.25);
+}
+
+.form-check-input:checked {
+    background-color: #1a3353;
+    border-color: #1a3353;
+}
+
+/* Price Range */
+.price-range {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.price-separator {
+    color: #6c757d;
+    font-weight: 600;
+}
+
+/* Featured Retreat */
+.featured-retreat {
+    background: linear-gradient(135deg, #fff9e6, #fff5d6);
+    border: 2px solid #ffd700;
+    border-radius: 20px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.featured-badge {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: linear-gradient(45deg, #ffd700, #ffed4e);
+    color: #1a3353;
+    padding: 0.5rem 1rem;
+    border-radius: 25px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    z-index: 2;
+}
+
+.featured-badge i {
+    margin-right: 0.25rem;
+}
+
+.featured-content {
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+}
+
+.featured-image {
+    flex: 0 0 200px;
+    height: 150px;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.featured-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.featured-details {
+    flex: 1;
+}
+
+.featured-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1a3353;
+    margin-bottom: 0.5rem;
+}
+
+.featured-category {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+    color: #6c757d;
+}
+
+.featured-category .category-emoji {
+    font-size: 1.2rem;
+}
+
+.featured-description {
+    color: #6c757d;
+    margin-bottom: 1rem;
+    line-height: 1.6;
+}
+
+.featured-location {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+
+.featured-location i {
+    color: #1a3353;
+}
+
+.featured-price {
+    margin-bottom: 1rem;
+}
+
+.price-amount {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1a3353;
+}
+
+.price-unit {
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+
+/* Results Header */
+.results-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #f0f0f0;
+}
+
+.results-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #1a3353;
+    margin: 0;
+}
+
+.results-count {
+    color: #6c757d;
+    font-size: 0.95rem;
+}
+
+/* Retreats Listings */
+.retreats-listings {
+    display: grid;
+    gap: 2rem;
+}
+
+.retreats-listings.grid-view {
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+}
+
+.retreats-listings.map-view {
+    grid-template-columns: 1fr;
+}
+
+.retreat-card {
+    background: white;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.retreat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    border-color: #ffd700;
+}
+
+.retreat-image {
+    position: relative;
+    height: 250px;
+    overflow: hidden;
+}
+
+.retreat-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.retreat-card:hover .retreat-image img {
+    transform: scale(1.05);
+}
+
+.retreat-badges {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    display: flex;
+    gap: 0.5rem;
+    z-index: 2;
+}
+
+.badge {
+    background: rgba(255, 255, 255, 0.9);
+    color: #1a3353;
+    padding: 0.25rem 0.5rem;
+    border-radius: 15px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    backdrop-filter: blur(10px);
+}
+
+.verified-badge {
+    background: rgba(40, 167, 69, 0.9);
+    color: white;
+}
+
+.available-badge {
+    background: rgba(255, 193, 7, 0.9);
+    color: #1a3353;
+}
+
+.trusted-badge {
+    background: rgba(13, 110, 253, 0.9);
+    color: white;
+}
+
+.featured-badge {
+    background: rgba(255, 215, 0, 0.9);
+    color: #1a3353;
+}
+
+.category-badge {
+    position: absolute;
+    bottom: 1rem;
+    left: 1rem;
+    background: rgba(26, 51, 83, 0.9);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    backdrop-filter: blur(10px);
+}
+
+.retreat-content {
+    padding: 1.5rem;
+}
+
+.retreat-header {
+    margin-bottom: 1rem;
+}
+
+.retreat-title {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #1a3353;
+    margin-bottom: 0.5rem;
+    line-height: 1.3;
+}
+
+.retreat-location {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+
+.retreat-location i {
+    color: #1a3353;
+}
+
+.retreat-description {
+    color: #6c757d;
+    margin-bottom: 1rem;
+    line-height: 1.5;
+}
+
+.retreat-details {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+}
+
+.detail-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    color: #6c757d;
+}
+
+.detail-item i {
+    color: #1a3353;
+    width: 16px;
+}
+
+.retreat-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 1rem;
+    border-top: 1px solid #f0f0f0;
+}
+
+.retreat-price {
+    text-align: right;
+}
+
+.price-amount {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #1a3353;
+    display: block;
+}
+
+.price-unit {
+    color: #6c757d;
+    font-size: 0.8rem;
+}
+
+.retreat-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.retreat-actions .btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
+    border-radius: 20px;
+}
+
+/* No Results */
+.no-results {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: #6c757d;
+}
+
+.no-results i {
+    font-size: 4rem;
+    color: #dee2e6;
+    margin-bottom: 1rem;
+}
+
+.no-results h4 {
+    font-size: 1.5rem;
+    color: #1a3353;
+    margin-bottom: 1rem;
+}
+
+/* CTA Section */
+.retreat-cta {
+    background: linear-gradient(135deg, #1a3353 0%, #2C4E6D 100%);
+    color: white;
+    padding: 4rem 0;
+    text-align: center;
+}
+
+.cta-content h2 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+.cta-content p {
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+    opacity: 0.9;
+}
+
+.cta-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.cta-buttons .btn {
+    padding: 0.75rem 2rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border-radius: 50px;
+}
+
+/* Mobile Floating CTA */
+.mobile-floating-cta {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    z-index: 1000;
+    display: none;
+}
+
+.mobile-floating-cta .btn {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .hero-title {
+        font-size: 2rem;
+    }
+    
+    .progress-counter {
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+    
+    .category-grid {
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 1rem;
+    }
+    
+    .featured-content {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .featured-image {
+        flex: none;
+        width: 100%;
+        max-width: 300px;
+    }
+    
+    .retreats-listings.grid-view {
+        grid-template-columns: 1fr;
+    }
+    
+    .retreat-details {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .filter-sidebar {
+        position: static;
+        margin-bottom: 2rem;
+    }
+    
+    .results-header {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+    }
+    
+    .retreat-footer {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+    }
+    
+    .retreat-price {
+        text-align: center;
+    }
+    
+    .mobile-floating-cta {
+        display: block;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero-cta {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .hero-cta .btn {
+        width: 100%;
+        max-width: 300px;
+    }
+    
+    .category-card {
+        padding: 1.5rem 1rem;
+    }
+    
+    .category-icon {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .category-emoji {
+        font-size: 1.5rem;
+    }
+    
+    .category-icon i {
+        font-size: 1rem;
+    }
+    
+    .retreat-actions {
+        flex-direction: column;
+        width: 100%;
+    }
+    
+    .retreat-actions .btn {
+        width: 100%;
+    }
+    
+    .mobile-floating-cta {
+        bottom: 1rem;
+        right: 1rem;
+    }
+    
+    .mobile-floating-cta .btn {
+        width: 50px;
+        height: 50px;
+        font-size: 1.2rem;
+    }
+    
+    .cta-buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .cta-buttons .btn {
+        width: 100%;
+        max-width: 300px;
+    }
+}
+
+/* Map View Styles */
+.retreats-listings.map-view {
+    min-height: 500px;
+    background: #f8f9fa;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #6c757d;
+    font-size: 1.1rem;
+}
+
+.retreats-listings.map-view::before {
+    content: 'Map view coming soon...';
+}
+
+/* Loading States */
+.retreat-card.loading {
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+.retreat-card.loading::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+    animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+    .category-card::before,
+    .retreat-card:hover,
+    .retreat-image img,
+    .category-icon,
+    .mobile-floating-cta .btn {
+        animation: none;
+        transition: none;
+    }
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+    .retreat-card {
+        border: 2px solid #000;
+    }
+    
+    .badge {
+        border: 1px solid #000;
+    }
+    
+    .form-control, .form-select {
+        border: 2px solid #000;
+    }
+} 
