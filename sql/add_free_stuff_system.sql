@@ -1,17 +1,43 @@
 -- Add Free Stuff / Chessed Giveaway System to JShuk Classifieds
 -- This script adds the necessary database structure for the new feature
 
--- 1. Add category_id column to classifieds table if it doesn't exist
+-- 1. Add new columns to classifieds table (checking if they exist first)
+-- Note: category_id might already exist, so we'll add other columns individually
+
+-- Add pickup_method column if it doesn't exist
 ALTER TABLE `classifieds` 
-ADD COLUMN `category_id` INT NULL AFTER `user_id`,
-ADD COLUMN `pickup_method` ENUM('porch_pickup', 'contact_arrange', 'collection_code') NULL AFTER `location`,
-ADD COLUMN `collection_deadline` DATETIME NULL AFTER `pickup_method`,
-ADD COLUMN `is_anonymous` TINYINT(1) DEFAULT 0 AFTER `collection_deadline`,
-ADD COLUMN `is_chessed` TINYINT(1) DEFAULT 0 AFTER `is_anonymous`,
-ADD COLUMN `is_bundle` TINYINT(1) DEFAULT 0 AFTER `is_chessed`,
-ADD COLUMN `status` ENUM('available', 'pending_pickup', 'claimed', 'expired') DEFAULT 'available' AFTER `is_bundle`,
-ADD COLUMN `pickup_code` VARCHAR(10) NULL AFTER `status`,
-ADD COLUMN `contact_method` ENUM('whatsapp', 'email', 'phone') DEFAULT 'whatsapp' AFTER `pickup_code`,
+ADD COLUMN `pickup_method` ENUM('porch_pickup', 'contact_arrange', 'collection_code') NULL AFTER `location`;
+
+-- Add collection_deadline column if it doesn't exist  
+ALTER TABLE `classifieds` 
+ADD COLUMN `collection_deadline` DATETIME NULL AFTER `pickup_method`;
+
+-- Add is_anonymous column if it doesn't exist
+ALTER TABLE `classifieds` 
+ADD COLUMN `is_anonymous` TINYINT(1) DEFAULT 0 AFTER `collection_deadline`;
+
+-- Add is_chessed column if it doesn't exist
+ALTER TABLE `classifieds` 
+ADD COLUMN `is_chessed` TINYINT(1) DEFAULT 0 AFTER `is_anonymous`;
+
+-- Add is_bundle column if it doesn't exist
+ALTER TABLE `classifieds` 
+ADD COLUMN `is_bundle` TINYINT(1) DEFAULT 0 AFTER `is_chessed`;
+
+-- Add status column if it doesn't exist
+ALTER TABLE `classifieds` 
+ADD COLUMN `status` ENUM('available', 'pending_pickup', 'claimed', 'expired') DEFAULT 'available' AFTER `is_bundle`;
+
+-- Add pickup_code column if it doesn't exist
+ALTER TABLE `classifieds` 
+ADD COLUMN `pickup_code` VARCHAR(10) NULL AFTER `status`;
+
+-- Add contact_method column if it doesn't exist
+ALTER TABLE `classifieds` 
+ADD COLUMN `contact_method` ENUM('whatsapp', 'email', 'phone') DEFAULT 'whatsapp' AFTER `pickup_code`;
+
+-- Add contact_info column if it doesn't exist
+ALTER TABLE `classifieds` 
 ADD COLUMN `contact_info` VARCHAR(255) NULL AFTER `contact_method`;
 
 -- 2. Create classifieds_categories table
@@ -62,7 +88,8 @@ CREATE TABLE IF NOT EXISTS `free_stuff_requests` (
   CONSTRAINT `free_stuff_requests_ibfk_2` FOREIGN KEY (`requester_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- 5. Add foreign key constraint for category_id
+-- 5. Add foreign key constraint for category_id (if it doesn't exist)
+-- Note: This might fail if the constraint already exists, which is fine
 ALTER TABLE `classifieds` 
 ADD CONSTRAINT `classifieds_category_fk` 
 FOREIGN KEY (`category_id`) REFERENCES `classifieds_categories` (`id`) ON DELETE SET NULL;

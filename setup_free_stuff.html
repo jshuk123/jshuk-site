@@ -112,8 +112,19 @@
         
         <div class="status info">
             <h3>🔧 Manual Setup (if automatic fails):</h3>
-            <p>If the automatic setup doesn't work, you can manually run the SQL commands from the file:</p>
-            <pre>sql/add_free_stuff_system.sql</pre>
+            <p>If the automatic setup doesn't work due to duplicate column errors, use the simple version:</p>
+            <pre>sql/add_free_stuff_system_simple.sql</pre>
+            <p><strong>Instructions:</strong></p>
+            <ol>
+                <li>Open the simple SQL file in your database manager (phpMyAdmin, etc.)</li>
+                <li>Run PART 1 first (creates tables)</li>
+                <li>Run PART 2 (inserts categories)</li>
+                <li>Run each command in PART 3 separately (adds columns one by one)</li>
+                <li>Run PART 4 (creates indexes)</li>
+                <li>Run PART 5 (adds sample data)</li>
+                <li>Run PART 6 (adds foreign key constraint)</li>
+            </ol>
+            <p><em>Note: If any command fails with "column already exists" error, just skip that command and continue.</em></p>
         </div>
         
         <div class="status info">
