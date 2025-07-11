@@ -1,0 +1,378 @@
+/* ===== LOST & FOUND PAGE STYLES ===== */
+
+/* Hero Section */
+.hero-section {
+    background: linear-gradient(135deg, #1a3353 0%, #2C4E6D 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="75" cy="75" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="50" cy="10" r="0.5" fill="rgba(255,255,255,0.1)"/><circle cx="10" cy="60" r="0.5" fill="rgba(255,255,255,0.1)"/><circle cx="90" cy="40" r="0.5" fill="rgba(255,255,255,0.1)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+    opacity: 0.3;
+}
+
+.hero-section .container {
+    position: relative;
+    z-index: 2;
+}
+
+/* Filter Section */
+.lostfound-filter-form {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    border: 1px solid rgba(0,0,0,0.05);
+}
+
+.lostfound-filter-form .form-control,
+.lostfound-filter-form .form-select {
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.lostfound-filter-form .form-control:focus,
+.lostfound-filter-form .form-select:focus {
+    border-color: #ffd000;
+    box-shadow: 0 0 0 0.2rem rgba(255, 208, 0, 0.25);
+}
+
+.lostfound-filter-form .input-group-text {
+    background: #f8f9fa;
+    border: 2px solid #e9ecef;
+    border-right: none;
+    color: #6c757d;
+}
+
+.lostfound-filter-form .input-group .form-control {
+    border-left: none;
+}
+
+/* Lost & Found Cards */
+.lostfound-card {
+    border: none;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.lostfound-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15) !important;
+}
+
+.lostfound-card .card-badge {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    z-index: 10;
+}
+
+.lostfound-card .badge {
+    font-size: 0.75rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: 20px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.lostfound-card .badge.bg-danger {
+    background: linear-gradient(135deg, #dc3545, #c82333) !important;
+}
+
+.lostfound-card .badge.bg-primary {
+    background: linear-gradient(135deg, #007bff, #0056b3) !important;
+}
+
+.lostfound-card .badge.bg-success {
+    background: linear-gradient(135deg, #28a745, #1e7e34) !important;
+}
+
+/* Card Image Container */
+.card-img-top-container {
+    position: relative;
+    height: 200px;
+    overflow: hidden;
+    background: #f8f9fa;
+}
+
+.lostfound-card .card-img-top {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: all 0.3s ease;
+}
+
+.lostfound-card:hover .card-img-top {
+    transform: scale(1.05);
+}
+
+/* Blur Image Effect */
+.blur-image {
+    filter: blur(8px);
+    transform: scale(1.1);
+}
+
+.blur-image:hover {
+    filter: blur(4px);
+}
+
+/* Card Meta Information */
+.card-meta {
+    font-size: 0.875rem;
+}
+
+.card-meta i {
+    width: 16px;
+    text-align: center;
+}
+
+/* Card Footer */
+.lostfound-card .card-footer {
+    border-top: 1px solid rgba(0,0,0,0.05);
+    background: rgba(248, 249, 250, 0.5);
+}
+
+.contact-buttons {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.contact-buttons .btn {
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    font-size: 0.875rem;
+}
+
+/* Status-specific card styling */
+.lostfound-card[data-status="reunited"] {
+    opacity: 0.7;
+}
+
+.lostfound-card[data-status="reunited"]:hover {
+    opacity: 1;
+}
+
+/* Mobile Sticky Button */
+@media (max-width: 767.98px) {
+    .position-fixed.bottom-0.end-0 {
+        bottom: 1rem !important;
+        right: 1rem !important;
+    }
+    
+    .position-fixed.bottom-0.end-0 .btn {
+        width: 60px;
+        height: 60px;
+        font-size: 1.25rem;
+    }
+}
+
+/* Filter Responsive */
+@media (max-width: 768px) {
+    .lostfound-filter-form {
+        padding: 1rem;
+    }
+    
+    .lostfound-filter-form .row > div {
+        margin-bottom: 1rem;
+    }
+    
+    .lostfound-filter-form .form-check-inline {
+        display: block;
+        margin-bottom: 0.5rem;
+    }
+}
+
+/* Card Grid Responsive */
+@media (max-width: 576px) {
+    .lostfound-card .card-body {
+        padding: 1rem;
+    }
+    
+    .lostfound-card .card-footer {
+        padding: 1rem;
+    }
+    
+    .contact-buttons {
+        flex-wrap: wrap;
+    }
+    
+    .contact-buttons .btn {
+        width: 32px;
+        height: 32px;
+        font-size: 0.75rem;
+    }
+}
+
+/* Modal Styles */
+.modal-content {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+}
+
+.modal-header {
+    background: linear-gradient(135deg, #1a3353 0%, #2C4E6D 100%);
+    color: white;
+    border-bottom: none;
+    border-radius: 12px 12px 0 0;
+}
+
+.modal-header .btn-close {
+    filter: invert(1);
+}
+
+.modal-body {
+    padding: 2rem;
+}
+
+.modal-footer {
+    border-top: 1px solid #e9ecef;
+    padding: 1.5rem 2rem;
+}
+
+/* Form Styles */
+.form-label {
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 0.5rem;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: #ffd000;
+    box-shadow: 0 0 0 0.2rem rgba(255, 208, 0, 0.25);
+}
+
+.form-text {
+    font-size: 0.875rem;
+    color: #6c757d;
+}
+
+/* Button Styles */
+.btn-warning {
+    background: linear-gradient(135deg, #ffd000, #ffc107);
+    border: none;
+    color: #212529;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-warning:hover {
+    background: linear-gradient(135deg, #ffc107, #e0a800);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 193, 7, 0.4);
+}
+
+.btn-outline-light:hover {
+    background: rgba(255,255,255,0.1);
+    border-color: rgba(255,255,255,0.3);
+}
+
+/* Animation Classes */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.lostfound-card {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+.lostfound-card:nth-child(1) { animation-delay: 0.1s; }
+.lostfound-card:nth-child(2) { animation-delay: 0.2s; }
+.lostfound-card:nth-child(3) { animation-delay: 0.3s; }
+.lostfound-card:nth-child(4) { animation-delay: 0.4s; }
+.lostfound-card:nth-child(5) { animation-delay: 0.5s; }
+.lostfound-card:nth-child(6) { animation-delay: 0.6s; }
+
+/* Loading States */
+.loading {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid #f3f3f3;
+    border-top: 2px solid #ffd000;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Empty State */
+.text-center.py-5 {
+    background: white;
+    border-radius: 12px;
+    margin: 2rem 0;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+.text-center.py-5 i {
+    color: #dee2e6;
+}
+
+/* Mitzvah Counter */
+.mt-4.p-3.bg-white.bg-opacity-10.rounded {
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.2);
+}
+
+.mt-4.p-3.bg-white.bg-opacity-10.rounded .h4 {
+    color: #ffd000;
+    font-weight: 700;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+    .lostfound-card,
+    .btn-warning,
+    .lostfound-card .card-img-top {
+        transition: none;
+        animation: none;
+    }
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+    .lostfound-card {
+        border: 2px solid #000;
+    }
+    
+    .lostfound-card .card-footer {
+        background: #f0f0f0;
+    }
+} 

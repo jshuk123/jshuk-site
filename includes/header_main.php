@@ -179,6 +179,11 @@ try {
                     <li class="nav-item">
                         <a class="nav-link <?= ($current_page == 'classifieds') ? 'active' : '' ?>" href="/classifieds.php" aria-current="<?= ($current_page == 'classifieds') ? 'page' : 'false' ?>">Classifieds</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link <?= ($current_page == 'lostfound') ? 'active' : '' ?>" href="/lostfound.php" aria-current="<?= ($current_page == 'lostfound') ? 'page' : 'false' ?>">
+                            <i class="fas fa-search me-1"></i>Lost & Found
+                        </a>
+                    </li>
                     
                     <!-- User Authentication Section -->
                     <?php if ($is_logged_in): ?>
@@ -288,6 +293,12 @@ try {
                     <a href="/classifieds.php" class="mobile-nav-link <?= ($current_page == 'classifieds') ? 'active' : '' ?>" aria-current="<?= ($current_page == 'classifieds') ? 'page' : 'false' ?>">
                         <i class="fas fa-tags"></i>
                         <span>Classifieds</span>
+                    </a>
+                </li>
+                <li class="mobile-nav-item">
+                    <a href="/lostfound.php" class="mobile-nav-link <?= ($current_page == 'lostfound') ? 'active' : '' ?>" aria-current="<?= ($current_page == 'lostfound') ? 'page' : 'false' ?>">
+                        <i class="fas fa-search"></i>
+                        <span>Lost & Found</span>
                     </a>
                 </li>
                 
