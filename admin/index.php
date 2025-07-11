@@ -6,6 +6,11 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 ini_set('log_errors', 1);
 
+// Custom error handler to catch hidden fatal errors
+set_error_handler(function($errno, $errstr, $errfile, $errline) {
+    echo "<pre>PHP ERROR [$errno] $errstr in $errfile on line $errline</pre>";
+});
+
 echo "<!-- Debug: Starting admin index -->\n";
 require_once '../config/config.php';
 echo "<!-- Debug: Config loaded -->\n";
@@ -329,6 +334,8 @@ echo "<html lang='en'>\n";
         </main>
     </div>
 </div>
+<!-- Temporarily commented out JavaScript to test if it's causing the crash -->
+<!--
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script>
@@ -391,6 +398,8 @@ function saveNotes() {
 }
 document.getElementById('adminNotes').value = localStorage.getItem('adminNotes') || '';
 </script>
+-->
+<?php echo "<!-- Debug: End of file reached -->"; ?>
+<?php ob_end_flush(); ?>
 </body>
-</html>
-<?php echo "<!-- Debug: End of file reached -->"; ?> 
+</html> 
