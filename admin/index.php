@@ -5,8 +5,6 @@ ini_set('display_errors', 1);
 ini_set('log_errors', 1);
 
 echo "<!-- Debug: Starting admin index -->\n";
-session_start();
-echo "<!-- Debug: Session started -->\n";
 require_once '../config/config.php';
 echo "<!-- Debug: Config loaded -->\n";
 

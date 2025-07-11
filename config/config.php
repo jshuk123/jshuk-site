@@ -133,7 +133,7 @@ try {
 if (session_status() === PHP_SESSION_NONE) {
     // Secure session configuration
     ini_set('session.cookie_httponly', 1);
-    ini_set('session.cookie_secure', 1);
+    ini_set('session.cookie_secure', isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on');
     ini_set('session.cookie_samesite', 'Lax');
     ini_set('session.use_strict_mode', 1);
     ini_set('session.gc_maxlifetime', SESSION_LIFETIME);
@@ -142,7 +142,7 @@ if (session_status() === PHP_SESSION_NONE) {
         'lifetime' => SESSION_LIFETIME,
         'path' => '/',
         'domain' => '',
-        'secure' => true,
+        'secure' => isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on',
         'httponly' => true,
         'samesite' => 'Lax'
     ]);
