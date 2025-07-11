@@ -4,35 +4,25 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 ini_set('log_errors', 1);
 
-echo "Starting admin index...<br>";
 session_start();
-echo "Session started...<br>";
 require_once '../config/config.php';
-echo "Config loaded...<br>";
 
 function checkAdminAccess() {
-    echo "Checking admin access...<br>";
     if (!isset($_SESSION['user_id'])) {
-        echo "No user_id in session, redirecting to login...<br>";
         header('Location: ../login.php');
         exit();
     }
-    echo "User ID found: " . $_SESSION['user_id'] . "<br>";
     global $pdo;
     if (!$pdo) {
-        echo "Database connection failed!<br>";
-        exit();
+        exit('Database connection failed!');
     }
     $stmt = $pdo->prepare("SELECT role FROM users WHERE id = ?");
     $stmt->execute([$_SESSION['user_id']]);
     $user = $stmt->fetch();
-    echo "User role: " . ($user['role'] ?? 'not found') . "<br>";
     if ($user['role'] !== 'admin') {
-        echo "Not admin, redirecting to index...<br>";
         header('Location: ../index.php');
         exit();
     }
-    echo "Admin access granted!<br>";
 }
 checkAdminAccess();
 
@@ -42,7 +32,6 @@ $adminEmail = $_SESSION['email'] ?? '';
 $adminRole = $_SESSION['role'] ?? 'admin';
 $lastLogin = $_SESSION['last_login'] ?? '';
 
-echo "Getting statistics...<br>";
 // Get key statistics
 try {
     $stats = [
@@ -52,9 +41,7 @@ try {
         'total_reviews' => $pdo->query("SELECT COUNT(*) FROM reviews")->fetchColumn(),
         'pending_reviews' => $pdo->query("SELECT COUNT(*) FROM reviews")->fetchColumn(), // Temporarily show all as pending
     ];
-    echo "Statistics loaded successfully!<br>";
 } catch (PDOException $e) {
-    echo "Error loading statistics: " . $e->getMessage() . "<br>";
     // Fallback if status columns don't exist
     $stats = [
         'total_businesses' => $pdo->query("SELECT COUNT(*) FROM businesses")->fetchColumn(),
