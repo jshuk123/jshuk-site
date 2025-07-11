@@ -42,13 +42,34 @@ try {
     $lastLogin = $_SESSION['last_login'] ?? '';
     
     // Get key statistics
-    $stats = [
-        'total_businesses' => $pdo->query("SELECT COUNT(*) FROM businesses")->fetchColumn(),
-        'pending_businesses' => $pdo->query("SELECT COUNT(*) FROM businesses WHERE status = 'pending'")->fetchColumn(),
-        'total_users' => $pdo->query("SELECT COUNT(*) FROM users")->fetchColumn(),
-        'total_reviews' => $pdo->query("SELECT COUNT(*) FROM reviews")->fetchColumn(),
-        'pending_reviews' => $pdo->query("SELECT COUNT(*) FROM reviews WHERE status = 'pending'")->fetchColumn()
-    ];
+    $stats = [];
+    try {
+        $stats['total_businesses'] = $pdo->query("SELECT COUNT(*) FROM businesses")->fetchColumn();
+        $stats['total_users'] = $pdo->query("SELECT COUNT(*) FROM users")->fetchColumn();
+        $stats['total_reviews'] = $pdo->query("SELECT COUNT(*) FROM reviews")->fetchColumn();
+        
+        // Try to get pending counts, but fall back if status column doesn't exist
+        try {
+            $stats['pending_businesses'] = $pdo->query("SELECT COUNT(*) FROM businesses WHERE status = 'pending'")->fetchColumn();
+        } catch (PDOException $e) {
+            $stats['pending_businesses'] = 0; // Column doesn't exist
+        }
+        
+        try {
+            $stats['pending_reviews'] = $pdo->query("SELECT COUNT(*) FROM reviews WHERE status = 'pending'")->fetchColumn();
+        } catch (PDOException $e) {
+            $stats['pending_reviews'] = 0; // Column doesn't exist
+        }
+    } catch (PDOException $e) {
+        // Fallback if any queries fail
+        $stats = [
+            'total_businesses' => 0,
+            'pending_businesses' => 0,
+            'total_users' => 0,
+            'total_reviews' => 0,
+            'pending_reviews' => 0
+        ];
+    }
     
     // Get recent activity
     $recentBusinesses = $pdo->query("
@@ -313,7 +334,6 @@ try {
             </div>
         </div>
         <!-- Temporarily commented out JavaScript to test if it's causing the crash -->
-        <!--
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
         <script>
@@ -376,11 +396,12 @@ try {
         }
         document.getElementById('adminNotes').value = localStorage.getItem('adminNotes') || '';
         </script>
-        -->
-        <?php
-        // End output buffering and send content
-        ob_end_flush();
-        
+    </body>
+    </html>
+    <?php
+    // End output buffering and send content
+    ob_end_flush();
+    
 } catch (Exception $e) {
     // Log error
     error_log("Admin panel error: " . $e->getMessage());
@@ -389,7 +410,7 @@ try {
     ob_end_clean();
     
     // Show error page
-    if (APP_DEBUG) {
+    if (defined('APP_DEBUG') && APP_DEBUG) {
         echo "<h1>Error</h1>";
         echo "<p>An error occurred: " . htmlspecialchars($e->getMessage()) . "</p>";
         echo "<p>Check the error logs for more details.</p>";
