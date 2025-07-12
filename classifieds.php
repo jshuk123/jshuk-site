@@ -13,7 +13,7 @@ require_once 'config/config.php';
 $error_message = '';
 $classifieds = [];
 $params = [];
-$where_clauses = ["is_active = 1"];
+$where_clauses = ["c.is_active = 1"];
 
 // Handle search filter
 if (!empty($_GET['q'])) {
