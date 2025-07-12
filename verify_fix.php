@@ -75,42 +75,74 @@ try {
     }
     echo "</div>";
     
-    // Test the main query
+    // Check users table structure
+    echo "<div class='section'>";
+    echo "<h3>🔍 Users Table Structure:</h3>";
+    
+    $stmt = $pdo->query("SHOW COLUMNS FROM users");
+    $user_columns = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+    $user_name_column = null;
+    foreach ($user_columns as $col) {
+        if (in_array($col['Field'], ['name', 'username', 'full_name', 'first_name'])) {
+            $user_name_column = $col['Field'];
+            break;
+        }
+    }
+    
+    if ($user_name_column) {
+        echo "<p class='success'>✅ Found user name column: <strong>{$user_name_column}</strong></p>";
+    } else {
+        echo "<p class='error'>❌ No suitable user name column found</p>";
+        echo "<p>Available columns:</p>";
+        echo "<ul>";
+        foreach ($user_columns as $col) {
+            echo "<li>{$col['Field']} ({$col['Type']})</li>";
+        }
+        echo "</ul>";
+    }
+    echo "</div>";
+    
+    // Test the main query with correct user column
     echo "<div class='section'>";
     echo "<h3>🧪 Testing Main Query:</h3>";
     
-    $query = "
-        SELECT 
-            c.*,
-            cat.name as category_name,
-            cat.slug as category_slug,
-            cat.icon as category_icon,
-            u.name as user_name
-        FROM classifieds c
-        LEFT JOIN classifieds_categories cat ON c.category_id = cat.id
-        LEFT JOIN users u ON c.user_id = u.id
-        WHERE c.is_active = 1
-        ORDER BY c.created_at DESC
-        LIMIT 5
-    ";
-    
-    $stmt = $pdo->query($query);
-    $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    
-    if ($results) {
-        echo "<p class='success'>✅ Main query successful! Found " . count($results) . " results</p>";
+    if ($user_name_column) {
+        $query = "
+            SELECT 
+                c.*,
+                cat.name as category_name,
+                cat.slug as category_slug,
+                cat.icon as category_icon,
+                u.{$user_name_column} as user_name
+            FROM classifieds c
+            LEFT JOIN classifieds_categories cat ON c.category_id = cat.id
+            LEFT JOIN users u ON c.user_id = u.id
+            WHERE c.is_active = 1
+            ORDER BY c.created_at DESC
+            LIMIT 5
+        ";
         
-        // Show sample data
-        $sample = $results[0];
-        echo "<h4>📋 Sample Result:</h4>";
-        echo "<ul>";
-        foreach ($sample as $key => $value) {
-            $value = $value ?: 'NULL';
-            echo "<li><strong>{$key}:</strong> {$value}</li>";
+        $stmt = $pdo->query($query);
+        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        if ($results) {
+            echo "<p class='success'>✅ Main query successful! Found " . count($results) . " results</p>";
+            
+            // Show sample data
+            $sample = $results[0];
+            echo "<h4>📋 Sample Result:</h4>";
+            echo "<ul>";
+            foreach ($sample as $key => $value) {
+                $value = $value ?: 'NULL';
+                echo "<li><strong>{$key}:</strong> {$value}</li>";
+            }
+            echo "</ul>";
+        } else {
+            echo "<p class='error'>❌ Main query failed or returned no results</p>";
         }
-        echo "</ul>";
     } else {
-        echo "<p class='error'>❌ Main query failed or returned no results</p>";
+        echo "<p class='error'>❌ Cannot test main query - no user name column found</p>";
     }
     echo "</div>";
     
@@ -118,38 +150,47 @@ try {
     echo "<div class='section'>";
     echo "<h3>🧪 Testing Free Stuff Query:</h3>";
     
-    $free_stuff_query = "
-        SELECT 
-            c.*,
-            cat.name as category_name,
-            cat.slug as category_slug,
-            cat.icon as category_icon,
-            u.name as user_name
-        FROM classifieds c
-        LEFT JOIN classifieds_categories cat ON c.category_id = cat.id
-        LEFT JOIN users u ON c.user_id = u.id
-        WHERE c.is_active = 1 
-        AND c.is_chessed = 1
-        AND c.status = 'available'
-        ORDER BY c.created_at DESC
-        LIMIT 5
-    ";
-    
-    $stmt = $pdo->query($free_stuff_query);
-    $free_results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    
-    echo "<p class='success'>✅ Free Stuff query successful! Found " . count($free_results) . " free items</p>";
+    if ($user_name_column) {
+        $free_stuff_query = "
+            SELECT 
+                c.*,
+                cat.name as category_name,
+                cat.slug as category_slug,
+                cat.icon as category_icon,
+                u.{$user_name_column} as user_name
+            FROM classifieds c
+            LEFT JOIN classifieds_categories cat ON c.category_id = cat.id
+            LEFT JOIN users u ON c.user_id = u.id
+            WHERE c.is_active = 1 
+            AND c.is_chessed = 1
+            AND c.status = 'available'
+            ORDER BY c.created_at DESC
+            LIMIT 5
+        ";
+        
+        $stmt = $pdo->query($free_stuff_query);
+        $free_results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        echo "<p class='success'>✅ Free Stuff query successful! Found " . count($free_results) . " free items</p>";
+    } else {
+        echo "<p class='error'>❌ Cannot test Free Stuff query - no user name column found</p>";
+    }
     echo "</div>";
     
     // Final status
     echo "<div class='section'>";
-    if (empty($missing_columns) && $results) {
+    if (empty($missing_columns) && $user_name_column) {
         echo "<h3>🎉 SUCCESS!</h3>";
         echo "<p>All columns are present and queries are working. The Free Stuff system should now be fully functional!</p>";
         echo "<p><a href='classifieds.php?category=free-stuff' style='background: #28a745; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;'>🚀 Go to Free Stuff Section</a></p>";
     } else {
         echo "<h3>⚠️ ISSUES DETECTED</h3>";
-        echo "<p>Please run the fix_missing_columns.sql script to add the missing columns.</p>";
+        if (!empty($missing_columns)) {
+            echo "<p>Please run the fix_missing_columns.sql script to add the missing columns.</p>";
+        }
+        if (!$user_name_column) {
+            echo "<p>The users table structure needs to be checked. Please contact support.</p>";
+        }
         echo "<p><a href='sql/fix_missing_columns.sql' style='background: #007bff; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;'>📄 View SQL Script</a></p>";
     }
     echo "</div>";
