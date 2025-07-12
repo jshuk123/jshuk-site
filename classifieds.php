@@ -1,6 +1,10 @@
 <?php
+// Aggressive debug: force error display and flush output
 ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
+if (function_exists('ob_end_flush')) { while (ob_get_level()) ob_end_flush(); }
+
 session_start();
 
 require_once 'config/config.php';
@@ -46,8 +50,10 @@ try {
     $stmt->execute($params);
     $classifieds = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
-    error_log("Classifieds Page Error: " . $e->getMessage());
+    echo "<pre>SQL Error: " . htmlspecialchars($e->getMessage()) . "</pre>";
     $error_message = "A database error occurred. Please try again later.";
+    flush();
+    exit;
 }
 
 $pageTitle = "Classifieds | Buy & Sell in the Jewish Community";
@@ -781,5 +787,4 @@ document.addEventListener('DOMContentLoaded', function() {
 .classified-card-wrapper:nth-child(4) { animation-delay: 0.4s; }
 .classified-card-wrapper:nth-child(5) { animation-delay: 0.5s; }
 .classified-card-wrapper:nth-child(6) { animation-delay: 0.6s; }
-</style> 
 </style> 
