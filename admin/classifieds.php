@@ -41,7 +41,8 @@ $stmt = $pdo->prepare("SELECT c.*, u.username, cat.name AS category_name FROM cl
 $stmt->execute($params);
 $classifieds = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-include '../config/header.php';
+// Removed missing header/footer includes
+// include '../config/header.php';
 ?>
 <div class="container py-5">
     <h1 class="mb-4">Manage Classifieds</h1>
@@ -77,13 +78,13 @@ include '../config/header.php';
                 <?php foreach ($classifieds as $c): ?>
                     <tr>
                         <td><?= $c['id'] ?></td>
-                        <td><?= htmlspecialchars($c['title']) ?></td>
+                        <td><?= htmlspecialchars($c['title'] ?? '') ?></td>
                         <td><?= htmlspecialchars($c['username'] ?? 'N/A') ?></td>
-                        <td><?= htmlspecialchars($c['category_name']) ?></td>
-                        <td><span class="badge bg-<?= $c['status'] === 'pending' ? 'warning' : ($c['status'] === 'active' ? 'success' : 'danger') ?>"> <?= htmlspecialchars(ucfirst($c['status'])) ?> </span></td>
-                        <td><?= htmlspecialchars($c['created_at']) ?></td>
+                        <td><?= htmlspecialchars($c['category_name'] ?? '') ?></td>
+                        <td><span class="badge bg-<?= $c['status'] === 'pending' ? 'warning' : ($c['status'] === 'active' ? 'success' : 'danger') ?>"> <?= htmlspecialchars(ucfirst($c['status'] ?? '')) ?> </span></td>
+                        <td><?= htmlspecialchars($c['created_at'] ?? '') ?></td>
                         <td>
-                            <?php if ($c['status'] === 'pending'): ?>
+                            <?php if (($c['status'] ?? '') === 'pending'): ?>
                                 <a href="?action=approve&id=<?= $c['id'] ?>" class="btn btn-success btn-sm">Approve</a>
                                 <a href="?action=reject&id=<?= $c['id'] ?>" class="btn btn-warning btn-sm">Reject</a>
                             <?php endif; ?>
@@ -93,14 +94,14 @@ include '../config/header.php';
                     </tr>
                     <tr class="collapse" id="details<?= $c['id'] ?>">
                         <td colspan="7">
-                            <strong>Description:</strong> <?= nl2br(htmlspecialchars($c['description'])) ?><br>
-                            <?php if ($c['image']): ?>
+                            <strong>Description:</strong> <?= nl2br(htmlspecialchars($c['description'] ?? '')) ?><br>
+                            <?php if (!empty($c['image'])): ?>
                                 <img src="../<?= htmlspecialchars($c['image']) ?>" alt="Classified image" style="max-width:200px;max-height:200px;">
                             <?php endif; ?>
-                            <br><strong>Price:</strong> <?= htmlspecialchars($c['price']) ?>
-                            <br><strong>Location:</strong> <?= htmlspecialchars($c['location']) ?>
-                            <br><strong>Contact Email:</strong> <?= htmlspecialchars($c['contact_email']) ?>
-                            <br><strong>Contact Phone:</strong> <?= htmlspecialchars($c['contact_phone']) ?>
+                            <br><strong>Price:</strong> <?= htmlspecialchars($c['price'] ?? '') ?>
+                            <br><strong>Location:</strong> <?= htmlspecialchars($c['location'] ?? '') ?>
+                            <br><strong>Contact Email:</strong> <?= htmlspecialchars($c['contact_email'] ?? '') ?>
+                            <br><strong>Contact Phone:</strong> <?= htmlspecialchars($c['contact_phone'] ?? '') ?>
                         </td>
                     </tr>
                 <?php endforeach; ?>
@@ -108,4 +109,4 @@ include '../config/header.php';
         </table>
     </div>
 </div>
-<?php include '../config/footer.php'; ?> 
+<?php /* include '../config/footer.php'; */ ?> 
