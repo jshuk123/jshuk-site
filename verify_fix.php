@@ -48,8 +48,8 @@ try {
     $existing_columns = [];
     
     foreach ($columns as $column) {
-        $stmt = $pdo->prepare("SHOW COLUMNS FROM classifieds LIKE ?");
-        $stmt->execute([$column]);
+        // Use direct query instead of prepared statement for SHOW COLUMNS
+        $stmt = $pdo->query("SHOW COLUMNS FROM classifieds LIKE '{$column}'");
         
         if ($stmt->rowCount() > 0) {
             $existing_columns[] = $column;
