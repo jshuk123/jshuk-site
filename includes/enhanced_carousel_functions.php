@@ -310,7 +310,9 @@ function generateCarouselHTML($slides, $carouselId = 'enhanced-carousel', $optio
     $html .= '<div class="swiper-wrapper">';
     
     foreach ($slides as $slide) {
-        $html .= '<div class="swiper-slide carousel-slide" style="background-image: url(\'' . htmlspecialchars($slide['image_url']) . '\')">';
+        // Ensure image_url has a leading slash
+        $img = '/' . ltrim($slide['image_url'], '/');
+        $html .= '<div class="swiper-slide carousel-slide" style="background-image: url(\'' . htmlspecialchars($img) . '\')">';
         $html .= '<div class="carousel-overlay">';
         $html .= '<div class="carousel-content">';
         $html .= '<h2 class="carousel-title">' . htmlspecialchars($slide['title']) . '</h2>';
