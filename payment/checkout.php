@@ -62,13 +62,44 @@ function getPlanDetails($pdo, $plan_id) {
  * Get user details with validation
  */
 function getUserDetails($pdo, $user_id) {
-    $stmt = $pdo->prepare("
-        SELECT id, email, first_name, last_name, stripe_customer_id, status 
-        FROM users 
-        WHERE id = ? AND status = 'active'
-    ");
-    $stmt->execute([$user_id]);
-    return $stmt->fetch();
+    try {
+        // Check if users table exists
+        $stmt = $pdo->prepare("SHOW TABLES LIKE 'users'");
+        $stmt->execute();
+        if (!$stmt->fetch()) {
+            return null;
+        }
+        
+        // Check if stripe_customer_id column exists
+        $stmt = $pdo->prepare("SHOW COLUMNS FROM users LIKE 'stripe_customer_id'");
+        $stmt->execute();
+        $has_stripe_column = $stmt->fetch();
+        
+        if ($has_stripe_column) {
+            $stmt = $pdo->prepare("
+                SELECT id, email, first_name, last_name, stripe_customer_id, status 
+                FROM users 
+                WHERE id = ? AND status = 'active'
+            ");
+        } else {
+            $stmt = $pdo->prepare("
+                SELECT id, email, first_name, last_name, status 
+                FROM users 
+                WHERE id = ? AND status = 'active'
+            ");
+        }
+        $stmt->execute([$user_id]);
+        $user = $stmt->fetch();
+        
+        // Add stripe_customer_id as null if column doesn't exist
+        if ($user && !$has_stripe_column) {
+            $user['stripe_customer_id'] = null;
+        }
+        
+        return $user;
+    } catch (PDOException $e) {
+        return null;
+    }
 }
 
 /**
@@ -219,9 +250,18 @@ try {
             ]
         ]);
 
-        // Update user with Stripe customer ID
-        $stmt = $pdo->prepare("UPDATE users SET stripe_customer_id = ? WHERE id = ?");
-        $stmt->execute([$customer->id, $user['id']]);
+        // Update user with Stripe customer ID (only if column exists)
+        try {
+            $stmt = $pdo->prepare("SHOW COLUMNS FROM users LIKE 'stripe_customer_id'");
+            $stmt->execute();
+            if ($stmt->fetch()) {
+                $stmt = $pdo->prepare("UPDATE users SET stripe_customer_id = ? WHERE id = ?");
+                $stmt->execute([$customer->id, $user['id']]);
+            }
+        } catch (PDOException $e) {
+            // Column doesn't exist, skip the update
+            error_log("stripe_customer_id column doesn't exist, skipping update");
+        }
     }
 
     // Build checkout parameters

@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS subscription_plans (
     name VARCHAR(100) NOT NULL COMMENT 'Plan name (e.g., Basic, Premium, Elite)',
     price DECIMAL(10,2) NOT NULL COMMENT 'Monthly price in GBP',
     annual_price DECIMAL(10,2) DEFAULT NULL COMMENT 'Annual price in GBP (for discounts)',
-    interval VARCHAR(20) NOT NULL DEFAULT 'monthly' COMMENT 'billing interval: monthly, yearly',
+    billing_interval VARCHAR(20) NOT NULL DEFAULT 'monthly' COMMENT 'billing interval: monthly, yearly',
     description TEXT COMMENT 'Plan description',
     features JSON COMMENT 'Plan features as JSON array',
     image_limit INT DEFAULT NULL COMMENT 'Number of images allowed (NULL = unlimited)',
@@ -111,10 +111,10 @@ CREATE TABLE IF NOT EXISTS advertising_bookings (
 );
 
 -- Insert some default subscription plans
-INSERT INTO subscription_plans (name, price, annual_price, description, features, image_limit, testimonial_limit, status) VALUES
-('Basic', 0.00, 0.00, 'Free plan for basic business listings', '["Basic business profile", "Contact information", "Business description"]', 3, 2, 'active'),
-('Premium', 9.99, 99.99, 'Enhanced visibility and features', '["Priority search placement", "Unlimited images", "Unlimited testimonials", "WhatsApp integration"]', NULL, NULL, 'active'),
-('Elite', 19.99, 199.99, 'Maximum exposure and premium features', '["Top search placement", "Featured in newsletter", "Premium WhatsApp status", "Priority support", "Analytics dashboard"]', NULL, NULL, 'active')
+INSERT INTO subscription_plans (name, price, annual_price, description, features, image_limit, testimonial_limit) VALUES
+('Basic', 0.00, 0.00, 'Free plan for basic business listings', '["Basic business profile", "Contact information", "Business description"]', 3, 2),
+('Premium', 9.99, 99.99, 'Enhanced visibility and features', '["Priority search placement", "Unlimited images", "Unlimited testimonials", "WhatsApp integration"]', NULL, NULL),
+('Elite', 19.99, 199.99, 'Maximum exposure and premium features', '["Top search placement", "Featured in newsletter", "Premium WhatsApp status", "Priority support", "Analytics dashboard"]', NULL, NULL)
 ON DUPLICATE KEY UPDATE updated_at = CURRENT_TIMESTAMP;
 
 -- Insert some default advertising slots
