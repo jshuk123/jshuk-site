@@ -1,6 +1,39 @@
 <?php
-require_once '../../config/config.php';
-require_once '../admin_auth_check.php';
+// Start output buffering
+ob_start();
+
+// Error reporting
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+ini_set('log_errors', 1);
+ini_set('error_log', __DIR__ . '/../../logs/php_errors.log');
+
+// Start session if not already started
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+try {
+    // Load configuration
+    require_once '../../config/config.php';
+    
+    // Check admin access
+    if (!isset($_SESSION['user_id'])) {
+        header('Location: ../../auth/login.php');
+        ob_end_clean();
+        exit();
+    }
+    
+    // Verify admin role
+    $stmt = $pdo->prepare("SELECT role FROM users WHERE id = ?");
+    $stmt->execute([$_SESSION['user_id']]);
+    $user = $stmt->fetch();
+    
+    if (!$user || $user['role'] !== 'admin') {
+        header('Location: ../../index.php');
+        ob_end_clean();
+        exit();
+    }
 
 $user_id = $_GET['id'] ?? null;
 $message = '';

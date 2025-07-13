@@ -1,6 +1,39 @@
 <?php
-require_once '../../config/config.php';
-require_once '../admin_auth_check.php';
+// Start output buffering
+ob_start();
+
+// Error reporting
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+ini_set('log_errors', 1);
+ini_set('error_log', __DIR__ . '/../../logs/php_errors.log');
+
+// Start session if not already started
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+try {
+    // Load configuration
+    require_once '../../config/config.php';
+    
+    // Check admin access
+    if (!isset($_SESSION['user_id'])) {
+        header('Location: ../../auth/login.php');
+        ob_end_clean();
+        exit();
+    }
+    
+    // Verify admin role
+    $stmt = $pdo->prepare("SELECT role FROM users WHERE id = ?");
+    $stmt->execute([$_SESSION['user_id']]);
+    $user = $stmt->fetch();
+    
+    if (!$user || $user['role'] !== 'admin') {
+        header('Location: ../../index.php');
+        ob_end_clean();
+        exit();
+    }
 
 $id = $_GET['id'] ?? null;
 $editing = false;
@@ -84,7 +117,77 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 $pageTitle = ($editing ? 'Edit' : 'Add') . " Subscription Plan";
-include '../admin_header.php';
+} catch (Exception $e) {
+    error_log("Admin pricing panel error: " . $e->getMessage());
+    ob_end_clean();
+    
+    if (defined('APP_DEBUG') && APP_DEBUG) {
+        echo "<h1>Error</h1>";
+        echo "<p>An error occurred: " . htmlspecialchars($e->getMessage()) . "</p>";
+        echo "<p>Check the error logs for more details.</p>";
+    } else {
+        header("Location: ../../500.php");
+    }
+    exit();
+}
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><?= $pageTitle ?> - Admin Panel</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body { background: #f4f6fa; transition: background 0.3s, color 0.3s; }
+        .sidebar { min-height: 100vh; background: #212529; }
+        .sidebar .nav-link { color: #fff; }
+        .sidebar .nav-link.active, .sidebar .nav-link:hover { background: #343a40; color: #ffc107; }
+        .stat-card { border-radius: 1rem; transition: transform 0.2s; }
+        .stat-card:hover { transform: translateY(-5px) scale(1.02); }
+        .notification { border-radius: 0.5rem; margin-bottom: 0.5rem; }
+        .recent-table th, .recent-table td { vertical-align: middle; }
+        .dark-mode { background: #181a1b !important; color: #e0e0e0 !important; }
+        .dark-mode .sidebar { background: #181a1b !important; }
+        .dark-mode .card, .dark-mode .table, .dark-mode .modal-content { background: #23272b !important; color: #e0e0e0; }
+        .dark-mode .card-header, .dark-mode .table th { background: #23272b !important; color: #ffc107; }
+        .dark-mode .nav-link { color: #e0e0e0 !important; }
+        .dark-mode .nav-link.active, .dark-mode .nav-link:hover { background: #23272b !important; color: #ffc107 !important; }
+        .dark-mode .btn, .dark-mode .form-control { background: #23272b; color: #e0e0e0; border-color: #444; }
+        .dark-mode .btn-primary { background: #ffc107; color: #23272b; border: none; }
+        .dark-mode .btn-danger { background: #dc3545; color: #fff; border: none; }
+        .dark-mode .alert { background: #23272b; color: #ffc107; border-color: #444; }
+        @media (max-width: 991px) {
+            .sidebar { min-height: auto; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <nav class="col-lg-2 col-md-3 d-md-block sidebar py-4 px-3">
+                <div class="d-flex flex-column align-items-start">
+                    <a href="../index.php" class="mb-4 text-white text-decoration-none fs-4 fw-bold"><i class="fa fa-crown me-2"></i>Admin Panel</a>
+                    <ul class="nav nav-pills flex-column w-100 mb-auto">
+                        <li class="nav-item mb-1"><a href="../index.php" class="nav-link"><i class="fas fa-home me-2"></i>Dashboard</a></li>
+                        <li class="nav-item mb-1"><a href="../businesses.php" class="nav-link"><i class="fas fa-store me-2"></i>Businesses</a></li>
+                        <li class="nav-item mb-1"><a href="../users.php" class="nav-link"><i class="fas fa-users me-2"></i>Users</a></li>
+                        <li class="nav-item mb-1"><a href="../categories.php" class="nav-link"><i class="fas fa-tags me-2"></i>Categories</a></li>
+                        <li class="nav-item mb-1"><a href="../recruitment.php" class="nav-link"><i class="fas fa-briefcase me-2"></i>Jobs</a></li>
+                        <li class="nav-item mb-1"><a href="../classifieds.php" class="nav-link"><i class="fas fa-list-alt me-2"></i>Classifieds</a></li>
+                        <li class="nav-item mb-1"><a href="../reviews.php" class="nav-link"><i class="fas fa-star me-2"></i>Reviews</a></li>
+                        <li class="nav-item mb-1"><a href="../ads.php" class="nav-link"><i class="fas fa-ad me-2"></i>Ads</a></li>
+                        <li class="nav-item mb-1"><a href="../carousel_manager.php" class="nav-link"><i class="fas fa-images me-2"></i>Carousel</a></li>
+                        <li class="nav-item mb-1"><a href="index.php" class="nav-link active"><i class="fas fa-tags me-2"></i>Pricing</a></li>
+                    </ul>
+                    <hr class="text-white w-100">
+                    <a href="../../logout.php" class="btn btn-danger w-100"><i class="fa fa-sign-out-alt me-2"></i>Log out</a>
+                </div>
+            </nav>
+            <!-- Main content -->
+            <main class="col-lg-10 col-md-9 ms-sm-auto px-4 py-4">
 ?>
 
 <div class="container-fluid">
@@ -243,4 +346,22 @@ include '../admin_header.php';
 })();
 </script>
 
-<?php include '../admin_footer.php'; ?> 
+            </main>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Dark mode toggle
+        document.getElementById('toggleDarkMode')?.addEventListener('click', function() {
+            document.body.classList.toggle('dark-mode');
+            localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
+        });
+
+        // Load dark mode preference
+        if (localStorage.getItem('darkMode') === 'true') {
+            document.body.classList.add('dark-mode');
+        }
+    </script>
+</body>
+</html> 
