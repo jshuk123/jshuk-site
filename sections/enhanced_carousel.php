@@ -32,9 +32,14 @@ $skipped_slides = [];
 $today = date('Y-m-d');
 foreach ($slides as $slide) {
     $reasons = [];
+    $file_path = __DIR__ . '/../' . $slide['image_url'];
+    $file_exists = file_exists($file_path);
+    if ($debug) {
+        echo '<div style="background:orange;font-size:13px;">Checking file_exists for: ' . htmlspecialchars($file_path) . ' => ' . ($file_exists ? 'TRUE' : 'FALSE') . '</div>';
+    }
     if (empty($slide['image_url']) || strpos($slide['image_url'], 'data:') !== false) {
         $reasons[] = 'Missing or invalid image_url';
-    } else if (!file_exists(__DIR__ . '/../' . $slide['image_url'])) {
+    } else if (!$file_exists) {
         $reasons[] = 'Image file does not exist: ' . $slide['image_url'];
     }
     if (!$slide['active']) {
