@@ -43,7 +43,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             if (!empty($_FILES['image']['tmp_name'])) {
                 $upload_dir = '../uploads/carousel/';
                 if (!is_dir($upload_dir)) {
-                    mkdir($upload_dir, 0755, true);
+                    if (!mkdir($upload_dir, 0755, true)) {
+                        $error = "Failed to create upload directory: $upload_dir";
+                        echo '<div style="color:red">[DEBUG] Could not create upload directory: ' . htmlspecialchars($upload_dir) . '</div>';
+                    } else {
+                        echo '<div style="color:green">[DEBUG] Created upload directory: ' . htmlspecialchars($upload_dir) . '</div>';
+                    }
                 }
                 
                 $file_extension = strtolower(pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION));
@@ -51,16 +56,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                 
                 if (!in_array($file_extension, $allowed_extensions)) {
                     $error = "Invalid file type. Allowed: " . implode(', ', $allowed_extensions);
+                    echo '<div style="color:red">[DEBUG] Invalid file type: ' . htmlspecialchars($file_extension) . '</div>';
                 } else {
                     $filename = 'carousel_' . time() . '_' . uniqid() . '.' . $file_extension;
                     $target_path = $upload_dir . $filename;
+                    echo '<div style="color:blue">[DEBUG] Attempting to upload to: ' . htmlspecialchars($target_path) . '</div>';
                     
                     if (move_uploaded_file($_FILES['image']['tmp_name'], $target_path)) {
                         $image_url = 'uploads/carousel/' . $filename;
+                        echo '<div style="color:green">[DEBUG] Upload successful: ' . htmlspecialchars($image_url) . '</div>';
                     } else {
                         $error = "Failed to upload image.";
+                        echo '<div style="color:red">[DEBUG] move_uploaded_file failed. TMP: ' . htmlspecialchars($_FILES['image']['tmp_name']) . '</div>';
+                        if (!is_writable($upload_dir)) {
+                            echo '<div style="color:red">[DEBUG] Upload directory is not writable: ' . htmlspecialchars($upload_dir) . '</div>';
+                        }
                     }
                 }
+            } else {
+                echo '<div style="color:orange">[DEBUG] No image uploaded (empty tmp_name)</div>';
             }
             
             if (empty($error)) {
@@ -261,22 +275,17 @@ $adminName = $_SESSION['user_name'] ?? 'Admin';
                 
                 <ul class="nav flex-column">
                     <li class="nav-item">
-                        <a class="nav-link active" href="#dashboard">
-                            <i class="fas fa-tachometer-alt me-2"></i>Dashboard
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#slides">
+                        <a class="nav-link" href="enhanced_carousel_manager.php">
                             <i class="fas fa-images me-2"></i>Manage Slides
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#analytics">
+                        <a class="nav-link" href="enhanced_carousel_manager.php?tab=analytics">
                             <i class="fas fa-chart-bar me-2"></i>Analytics
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#settings">
+                        <a class="nav-link" href="enhanced_carousel_manager.php?tab=settings">
                             <i class="fas fa-cog me-2"></i>Settings
                         </a>
                     </li>
@@ -296,7 +305,7 @@ $adminName = $_SESSION['user_name'] ?? 'Admin';
             <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
                 <h1 class="h2">Enhanced Carousel Manager</h1>
                 <div class="btn-toolbar mb-2 mb-md-0">
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addSlideModal">
+                    <button type="button" class="btn btn-primary" id="addSlideBtn">
                         <i class="fas fa-plus me-2"></i>Add New Slide
                     </button>
                 </div>
@@ -309,7 +318,6 @@ $adminName = $_SESSION['user_name'] ?? 'Admin';
                     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                 </div>
             <?php endif; ?>
-
             <?php if (isset($error)): ?>
                 <div class="alert alert-danger alert-dismissible fade show" role="alert">
                     <?= htmlspecialchars($error) ?>
@@ -448,28 +456,22 @@ $adminName = $_SESSION['user_name'] ?? 'Admin';
                                             </td>
                                             <td><?= $slide['priority'] ?></td>
                                             <td>
-                                                <span class="badge <?= $slide['active'] ? 'bg-success' : 'bg-secondary' ?>">
+                                                <span class="badge <?= $slide['active'] ? 'bg-success' : 'bg-danger' ?>">
                                                     <?= $slide['active'] ? 'Active' : 'Inactive' ?>
                                                 </span>
                                             </td>
                                             <td>
-                                                <?php if ($slide['start_date'] || $slide['end_date']): ?>
-                                                    <small>
-                                                        <?php if ($slide['start_date']): ?>
-                                                            From: <?= date('M j, Y', strtotime($slide['start_date'])) ?><br>
-                                                        <?php endif; ?>
-                                                        <?php if ($slide['end_date']): ?>
-                                                            To: <?= date('M j, Y', strtotime($slide['end_date'])) ?>
-                                                        <?php endif; ?>
-                                                    </small>
-                                                <?php else: ?>
-                                                    <span class="text-muted">No dates set</span>
+                                                <?php if ($slide['start_date']): ?>
+                                                    <span><?= htmlspecialchars($slide['start_date']) ?></span>
+                                                <?php endif; ?>
+                                                <?php if ($slide['end_date']): ?>
+                                                    <span>→ <?= htmlspecialchars($slide['end_date']) ?></span>
                                                 <?php endif; ?>
                                             </td>
                                             <td>
                                                 <div class="btn-group btn-group-sm">
                                                     <button class="btn btn-outline-primary" onclick="editSlide(<?= $slide['id'] ?>)">
-                                                        <i class="fas fa-edit"></i>
+                                                        <i class="fas fa-edit"></i> Edit
                                                     </button>
                                                     <form method="post" style="display: inline;">
                                                         <input type="hidden" name="action" value="toggle">
