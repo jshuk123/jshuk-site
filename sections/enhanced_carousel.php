@@ -68,7 +68,37 @@ try {
 echo '</div>';
 // --- END DIAGNOSTIC ---
 
-$slides = getCarouselSlides($pdo, $zone, $limit, $location);
+// 🔥 BULLETPROOF CAROUSEL SLIDE LOADER
+$location = $_SESSION['user_location'] ?? 'all';
+$today = date('Y-m-d');
+$zone = 'homepage';
+
+try {
+    $query = $pdo->prepare("
+        SELECT * FROM carousel_slides
+        WHERE active = 1
+          AND (location = :loc OR location = 'all')
+          AND (start_date IS NULL OR start_date <= :today)
+          AND (end_date IS NULL OR end_date >= :today)
+          AND zone = :zone
+        ORDER BY priority DESC, sponsored DESC, id DESC
+    ");
+
+    $query->execute([
+        ':loc' => $location,
+        ':today' => $today,
+        ':zone' => $zone
+    ]);
+
+    $slides = $query->fetchAll(PDO::FETCH_ASSOC);
+
+    echo "<div style='background:#dff0d8;padding:10px;z-index:9999;position:relative;'>✅ Loaded " . count($slides) . " slides</div>";
+
+} catch (PDOException $e) {
+    echo "<div style='background:#f8d7da;color:#721c24;padding:10px;z-index:9999;position:relative;'>
+        ❌ SQL Error: " . htmlspecialchars($e->getMessage()) . "</div>";
+    $slides = [];
+}
 
 // Debug info: collect skipped slides and reasons
 $debug = (isset($_GET['debug']) && $_GET['debug'] == '1') || (isset($_SESSION['is_admin']) && $_SESSION['is_admin']);
