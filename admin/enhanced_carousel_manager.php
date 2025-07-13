@@ -545,7 +545,7 @@ $adminName = $_SESSION['user_name'] ?? 'Admin';
                 <h5 class="modal-title">Add New Carousel Slide</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
-            <form method="post" enctype="multipart/form-data">
+            <form method="post" enctype="multipart/form-data" id="addSlideForm">
                 <div class="modal-body">
                     <input type="hidden" name="action" value="add">
                     
@@ -654,6 +654,118 @@ $adminName = $_SESSION['user_name'] ?? 'Admin';
     </div>
 </div>
 
+<!-- Edit Slide Modal -->
+<div class="modal fade" id="editSlideModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Carousel Slide</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="post" enctype="multipart/form-data" id="editSlideForm">
+                <div class="modal-body">
+                    <input type="hidden" name="action" value="edit">
+                    <input type="hidden" name="slide_id" id="edit_slide_id">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="edit_title" class="form-label">Title *</label>
+                                <input type="text" class="form-control" id="edit_title" name="title" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="edit_priority" class="form-label">Priority</label>
+                                <input type="number" class="form-control" id="edit_priority" name="priority" min="0" max="100" value="0">
+                                <div class="form-text">Higher numbers appear first</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="edit_subtitle" class="form-label">Subtitle</label>
+                        <textarea class="form-control" id="edit_subtitle" name="subtitle" rows="2"></textarea>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="edit_cta_text" class="form-label">CTA Button Text</label>
+                                <input type="text" class="form-control" id="edit_cta_text" name="cta_text" placeholder="e.g., Learn More, Shop Now">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="edit_cta_link" class="form-label">CTA Link</label>
+                                <input type="url" class="form-control" id="edit_cta_link" name="cta_link" placeholder="https://...">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="edit_location" class="form-label">Target Location</label>
+                                <select class="form-select" id="edit_location" name="location">
+                                    <option value="all">All Locations</option>
+                                    <option value="london">London</option>
+                                    <option value="manchester">Manchester</option>
+                                    <option value="gateshead">Gateshead</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="edit_zone" class="form-label">Zone</label>
+                                <select class="form-select" id="edit_zone" name="zone">
+                                    <option value="homepage">Homepage</option>
+                                    <option value="businesses">Businesses Page</option>
+                                    <option value="post-business">Post Business</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="edit_image" class="form-label">Background Image</label>
+                                <input type="file" class="form-control" id="edit_image" name="image" accept="image/*">
+                                <div class="form-text">Leave blank to keep current image. Recommended: 1920x600px, max 5MB</div>
+                                <img id="edit_image_preview" src="" alt="Current Image" style="max-width:100%;max-height:100px;margin-top:5px;display:none;">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="edit_start_date" class="form-label">Start Date</label>
+                                <input type="date" class="form-control" id="edit_start_date" name="start_date">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="edit_end_date" class="form-label">End Date</label>
+                                <input type="date" class="form-control" id="edit_end_date" name="end_date">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="edit_sponsored" name="sponsored">
+                            <label class="form-check-label" for="edit_sponsored">Sponsored Content</label>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="edit_active" name="active">
+                            <label class="form-check-label" for="edit_active">Active</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"></script>
 <script>
@@ -664,8 +776,29 @@ document.getElementById('toggleDarkMode').addEventListener('click', function() {
 
 // Edit slide function
 function editSlide(slideId) {
-    // Implement edit functionality
-    alert('Edit functionality for slide ' + slideId + ' will be implemented next');
+    // Find the slide data from the PHP-rendered JS object
+    const slides = <?php echo json_encode($slides); ?>;
+    const slide = slides.find(s => s.id == slideId);
+    if (!slide) return;
+    document.getElementById('edit_slide_id').value = slide.id;
+    document.getElementById('edit_title').value = slide.title;
+    document.getElementById('edit_priority').value = slide.priority;
+    document.getElementById('edit_subtitle').value = slide.subtitle;
+    document.getElementById('edit_cta_text').value = slide.cta_text;
+    document.getElementById('edit_cta_link').value = slide.cta_link;
+    document.getElementById('edit_location').value = slide.location;
+    document.getElementById('edit_zone').value = slide.zone;
+    document.getElementById('edit_start_date').value = slide.start_date ? slide.start_date.split('T')[0] : '';
+    document.getElementById('edit_end_date').value = slide.end_date ? slide.end_date.split('T')[0] : '';
+    document.getElementById('edit_sponsored').checked = !!parseInt(slide.sponsored);
+    document.getElementById('edit_active').checked = !!parseInt(slide.active);
+    if (slide.image_url) {
+        document.getElementById('edit_image_preview').src = slide.image_url;
+        document.getElementById('edit_image_preview').style.display = 'block';
+    } else {
+        document.getElementById('edit_image_preview').style.display = 'none';
+    }
+    new bootstrap.Modal(document.getElementById('editSlideModal')).show();
 }
 
 // Auto-hide alerts after 5 seconds
