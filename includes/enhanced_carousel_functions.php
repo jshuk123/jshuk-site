@@ -213,7 +213,11 @@ function hasActiveSlides($pdo, $zone = 'homepage', $location = null) {
               AND (end_date IS NULL OR end_date >= :today)
         ");
         
-        $stmt->execute([':loc' => $location, ':zone' => $zone, ':today' => $today]);
+        // Use bindParam consistently instead of execute array
+        $stmt->bindParam(':loc', $location, PDO::PARAM_STR);
+        $stmt->bindParam(':zone', $zone, PDO::PARAM_STR);
+        $stmt->bindParam(':today', $today, PDO::PARAM_STR);
+        $stmt->execute();
         
         return $stmt->fetchColumn() > 0;
         

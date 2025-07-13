@@ -41,7 +41,7 @@ try {
     $all_slides = $test_stmt2->fetchAll(PDO::FETCH_ASSOC);
     echo 'All slides: <pre>' . print_r($all_slides, true) . '</pre>';
     
-    // Test 3: Test the exact query that should work
+    // Test 3: Test the exact query that should work - FIXED PARAMETER BINDING
     $test_query = $pdo->prepare("
         SELECT * FROM carousel_slides
         WHERE active = 1
@@ -52,6 +52,8 @@ try {
         ORDER BY priority DESC, sponsored DESC, created_at DESC
         LIMIT :limit
     ");
+    
+    // Use bindParam instead of execute array to match the function
     $test_query->bindParam(':loc', $location, PDO::PARAM_STR);
     $test_query->bindParam(':zone', $zone, PDO::PARAM_STR);
     $test_query->bindParam(':today', date('Y-m-d'), PDO::PARAM_STR);
