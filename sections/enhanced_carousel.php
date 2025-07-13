@@ -7,6 +7,17 @@
 
 require_once __DIR__ . '/../includes/enhanced_carousel_functions.php';
 
+// --- DEBUG: RAW DB DUMP AND SERVER TIME ---
+echo '<div style="background:yellow;z-index:9999;position:relative;">Server date/time: ' . date('Y-m-d H:i:s') . '</div>';
+try {
+    $stmt = $pdo->query("SELECT * FROM carousel_slides ORDER BY id DESC");
+    $all = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    echo '<pre style="background:yellow;z-index:9999;position:relative;">RAW DB DUMP: ' . print_r($all, true) . '</pre>';
+} catch (Exception $e) {
+    echo '<div style="background:yellow;color:red;">DB ERROR: ' . htmlspecialchars($e->getMessage()) . '</div>';
+}
+// --- END DEBUG ---
+
 // Get carousel slides based on current zone and location
 $zone = $zone ?? 'homepage';
 $location = $location ?? null;
