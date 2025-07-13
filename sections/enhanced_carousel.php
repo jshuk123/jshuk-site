@@ -65,7 +65,7 @@ echo '<div class="swiper enhanced-homepage-carousel">';
 echo '<div class="swiper-wrapper">';
 
 // 💡 DYNAMIC SWIPER-COMPATIBLE HTML RENDERING
-foreach ($slides as $index => $slide) {
+foreach ($valid_slides as $index => $slide) {
     $image = '/' . ltrim($slide['image_url'], '/');
     $title = htmlspecialchars($slide['title']);
     $subtitle = htmlspecialchars($slide['subtitle'] ?? '');
