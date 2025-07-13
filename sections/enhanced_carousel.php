@@ -20,7 +20,7 @@ try {
 
 // Get carousel slides based on current zone and location
 $zone = $zone ?? 'homepage';
-$location = $location ?? null;
+$location = 'all'; // Force location to all for debug
 $limit = $limit ?? 10;
 
 $slides = getCarouselSlides($pdo, $zone, $limit, $location);
