@@ -56,7 +56,7 @@ if ($numSlides === 0) {
 }
 
 // Set loop mode based on slide count
-$loop = count($slides) >= 3 ? 'true' : 'false';
+$loop = count($valid_slides) >= 3 ? 'true' : 'false';
 
 // Generate carousel HTML with enhanced features
 echo '<section class="carousel-section" data-scroll>';
@@ -74,6 +74,8 @@ foreach ($valid_slides as $index => $slide) {
     $sponsored = $slide['sponsored'] == 1;
     
     echo '<div class="swiper-slide carousel-slide" style="background-image: url(\'' . $image . '\')" data-slide-id="' . $slide['id'] . '">';
+    // Preload background image
+    echo '<img src="' . htmlspecialchars($image) . '" alt="" style="display:none;" loading="eager" />';
     echo '<div class="carousel-overlay">';
     echo '<div class="carousel-content">';
     echo '<h2 class="carousel-title">' . $title . '</h2>';
@@ -133,15 +135,13 @@ echo '</section>';
 }
 
 .carousel-slide {
+    height: 600px;
     background-size: cover !important;
-    background-position: center !important;
     background-repeat: no-repeat !important;
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    min-height: 600px;
+    background-position: center !important;
+    background-color: #111;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
 }
 
 .carousel-overlay {
@@ -662,6 +662,23 @@ document.addEventListener('DOMContentLoaded', function() {
     
     document.querySelectorAll('.carousel-slide').forEach(function(slide) {
         observer.observe(slide);
+    });
+});
+
+// Fade in slides only after background image is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.swiper-slide').forEach(slide => {
+        const bgUrlMatch = slide.style.backgroundImage.match(/url\(["']?(.*?)["']?\)/);
+        if (bgUrlMatch && bgUrlMatch[1]) {
+            const img = new Image();
+            img.src = bgUrlMatch[1];
+            img.onload = () => {
+                slide.style.opacity = '1';
+            };
+        } else {
+            // If no background image, show the slide anyway
+            slide.style.opacity = '1';
+        }
     });
 });
 </script> 
