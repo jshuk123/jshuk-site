@@ -7,67 +7,6 @@
 
 require_once __DIR__ . '/../includes/enhanced_carousel_functions.php';
 
-// --- DEBUG: RAW DB DUMP AND SERVER TIME ---
-echo '<div style="background:yellow;z-index:9999;position:relative;">Server date/time: ' . date('Y-m-d H:i:s') . '</div>';
-try {
-    $stmt = $pdo->query("SELECT * FROM carousel_slides ORDER BY id DESC");
-    $all = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    echo '<pre style="background:yellow;z-index:9999;position:relative;">RAW DB DUMP: ' . print_r($all, true) . '</pre>';
-} catch (Exception $e) {
-    echo '<div style="background:yellow;color:red;">DB ERROR: ' . htmlspecialchars($e->getMessage()) . '</div>';
-}
-// --- END DEBUG ---
-
-// Get carousel slides based on current zone and location
-$zone = $zone ?? 'homepage';
-$location = 'all'; // Force location to all for debug
-$limit = $limit ?? 10;
-
-// --- DIAGNOSTIC: Test simple query first ---
-echo '<div style="background:red;color:white;z-index:9999;position:relative;padding:10px;">';
-echo '<strong>🔍 DIAGNOSTIC TEST:</strong><br>';
-echo 'Zone: [' . $zone . ']<br>';
-echo 'Location: [' . $location . ']<br>';
-echo 'Today: [' . date('Y-m-d') . ']<br>';
-
-// Test 1: Simple query without filters
-try {
-    $test_stmt = $pdo->query("SELECT COUNT(*) as total FROM carousel_slides");
-    $total_count = $test_stmt->fetchColumn();
-    echo 'Total slides in DB: ' . $total_count . '<br>';
-    
-    // Test 2: Show all slides
-    $test_stmt2 = $pdo->query("SELECT id, title, zone, active, location, start_date, end_date FROM carousel_slides ORDER BY id DESC");
-    $all_slides = $test_stmt2->fetchAll(PDO::FETCH_ASSOC);
-    echo 'All slides: <pre>' . print_r($all_slides, true) . '</pre>';
-    
-    // Test 3: Test the exact query that should work - FIXED PARAMETER BINDING
-    $test_query = $pdo->prepare("
-        SELECT * FROM carousel_slides
-        WHERE active = 1
-          AND (location = :loc OR location = 'all')
-          AND TRIM(zone) = :zone
-          AND (start_date IS NULL OR start_date <= :today)
-          AND (end_date IS NULL OR end_date >= :today)
-        ORDER BY priority DESC, sponsored DESC, created_at DESC
-        LIMIT :limit
-    ");
-    
-    // Use bindParam instead of execute array to match the function
-    $test_query->bindParam(':loc', $location, PDO::PARAM_STR);
-    $test_query->bindParam(':zone', $zone, PDO::PARAM_STR);
-    $test_query->bindParam(':today', date('Y-m-d'), PDO::PARAM_STR);
-    $test_query->bindParam(':limit', $limit, PDO::PARAM_INT);
-    $test_query->execute();
-    $test_slides = $test_query->fetchAll(PDO::FETCH_ASSOC);
-    echo 'Test query result: <pre>' . print_r($test_slides, true) . '</pre>';
-    
-} catch (Exception $e) {
-    echo 'ERROR: ' . htmlspecialchars($e->getMessage()) . '<br>';
-}
-echo '</div>';
-// --- END DIAGNOSTIC ---
-
 // 🔥 BULLETPROOF CAROUSEL SLIDE LOADER
 $location = $_SESSION['user_location'] ?? 'all';
 $today = date('Y-m-d');
@@ -88,107 +27,10 @@ try {
 
     $slides = $query->fetchAll(PDO::FETCH_ASSOC);
 
-    echo "<div style='background:#dff0d8;padding:10px;z-index:9999;position:relative;'>✅ Loaded " . count($slides) . " slides with simple query</div>";
-
 } catch (PDOException $e) {
     echo "<div style='background:#f8d7da;color:#721c24;padding:10px;z-index:9999;position:relative;'>
         ❌ SQL Error: " . htmlspecialchars($e->getMessage()) . "</div>";
     $slides = [];
-}
-
-// Debug info: collect skipped slides and reasons
-$debug = (isset($_GET['debug']) && $_GET['debug'] == '1') || (isset($_SESSION['is_admin']) && $_SESSION['is_admin']);
-$valid_slides = [];
-$skipped_slides = [];
-$today = date('Y-m-d');
-foreach ($slides as $slide) {
-    $reasons = [];
-    $file_path = __DIR__ . '/../' . $slide['image_url'];
-    $file_exists = file_exists($file_path);
-    if ($debug) {
-        echo '<div style="background:orange;font-size:13px;">Checking file_exists for: ' . htmlspecialchars($file_path) . ' => ' . ($file_exists ? 'TRUE' : 'FALSE') . '</div>';
-    }
-    if (empty($slide['image_url']) || strpos($slide['image_url'], 'data:') !== false) {
-        $reasons[] = 'Missing or invalid image_url';
-    } else if (!$file_exists) {
-        $reasons[] = 'Image file does not exist: ' . $slide['image_url'];
-    }
-    if (!$slide['active']) {
-        $reasons[] = 'Inactive';
-    }
-    if (!empty($slide['start_date']) && $slide['start_date'] > $today) {
-        $reasons[] = 'Start date in future';
-    }
-    if (!empty($slide['end_date']) && $slide['end_date'] < $today) {
-        $reasons[] = 'End date in past';
-    }
-    if (!empty($reasons)) {
-        $skipped_slides[] = ['slide' => $slide, 'reasons' => $reasons];
-    } else {
-        $valid_slides[] = $slide;
-    }
-}
-$numSlides = count($valid_slides);
-
-if ($debug) {
-    echo '<div style="background:#fffbe6;border:2px solid #ffe58f;padding:16px;margin-bottom:16px;font-size:15px;">';
-    echo '<strong>🛠️ Carousel Debug Info</strong><br>';
-    echo 'Zone: <b>' . htmlspecialchars((string)$zone) . '</b> | Location: <b>' . htmlspecialchars((string)$location) . '</b> | Today: <b>' . $today . '</b><br>';
-    echo '<b>All slides returned from DB (' . count($slides) . '):</b><br>';
-    if (!empty($slides)) {
-        echo '<ul>';
-        foreach ($slides as $slide) {
-            echo '<li><b>' . htmlspecialchars((string)$slide['title']) . '</b> (ID: ' . htmlspecialchars((string)$slide['id']) . ')';
-            echo '<ul>';
-            foreach ($slide as $k => $v) {
-                echo '<li>' . htmlspecialchars((string)$k) . ': <code>' . htmlspecialchars((string)$v) . '</code></li>';
-            }
-            // Show which filters would skip this slide
-            $reasons = [];
-            if (empty($slide['image_url']) || strpos($slide['image_url'], 'data:') !== false) {
-                $reasons[] = 'Missing or invalid image_url';
-            } else if (!file_exists(__DIR__ . '/../' . $slide['image_url'])) {
-                $reasons[] = 'Image file does not exist: ' . $slide['image_url'];
-            }
-            if (!$slide['active']) {
-                $reasons[] = 'Inactive';
-            }
-            if (!empty($slide['start_date']) && $slide['start_date'] > $today) {
-                $reasons[] = 'Start date in future';
-            }
-            if (!empty($slide['end_date']) && $slide['end_date'] < $today) {
-                $reasons[] = 'End date in past';
-            }
-            if (!empty($reasons)) {
-                echo '<li style="color:#d48806">Skipped: ' . implode('; ', $reasons) . '</li>';
-            } else {
-                echo '<li style="color:green">This slide is valid and will be shown.</li>';
-            }
-            echo '</ul></li>';
-        }
-        echo '</ul>';
-    } else {
-        echo '<i>No slides returned from DB.</i>';
-    }
-    echo 'Valid slides found: <b>' . $numSlides . '</b><br>';
-    if ($numSlides > 0) {
-        echo '<ul>';
-        foreach ($valid_slides as $slide) {
-            echo '<li><b>' . htmlspecialchars((string)$slide['title']) . '</b> (' . htmlspecialchars((string)$slide['image_url']) . ')</li>';
-        }
-        echo '</ul>';
-    }
-    if (!empty($skipped_slides)) {
-        echo '<span style="color:#d48806">Skipped slides:</span><ul>';
-        foreach ($skipped_slides as $skipped) {
-            echo '<li><b>' . htmlspecialchars((string)$skipped['slide']['title']) . '</b>: ' . implode('; ', $skipped['reasons']) . '</li>';
-        }
-        echo '</ul>';
-    }
-    if ($numSlides === 0) {
-        echo '<span style="color:#cf1322">⚠️ Only placeholder is being shown!</span>';
-    }
-    echo '</div>';
 }
 
 // Filter slides to only those with a valid image file

@@ -207,9 +207,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                 if (!is_dir($upload_dir)) {
                     if (!mkdir($upload_dir, 0755, true)) {
                         $error = "Failed to create upload directory: $upload_dir";
-                        echo '<div style="color:red">[DEBUG] Could not create upload directory: ' . htmlspecialchars($upload_dir) . '</div>';
-                    } else {
-                        echo '<div style="color:green">[DEBUG] Created upload directory: ' . htmlspecialchars($upload_dir) . '</div>';
                     }
                 }
                 
@@ -247,7 +244,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                     }
                 }
             } else {
-                echo '<div style="color:orange">[DEBUG] No image uploaded (empty tmp_name)</div>';
+                // echo '<div style="color:orange">[DEBUG] No image uploaded (empty tmp_name)</div>';
             }
             
             if (empty($error)) {
