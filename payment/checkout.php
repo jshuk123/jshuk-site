@@ -124,7 +124,7 @@ function calculateAnnualSavings($monthly_price, $annual_price) {
 /**
  * Format currency with proper locale
  */
-function formatCurrency($amount, $currency = 'GBP') {
+function formatCheckoutCurrency($amount, $currency = 'GBP') {
     return '£' . number_format($amount, 2);
 }
 
@@ -282,7 +282,7 @@ try {
                                                 </div>
                                             </div>
                                             <div class="h4 mb-0">
-                                                Then <?php echo formatCurrency($plan['price']); ?>/month
+                                                Then <?php echo formatCheckoutCurrency($plan['price']); ?>/month
                                             </div>
                                         </div>
                                     <?php elseif ($is_paid_plan && !$trial_eligibility['has_used_trial_for_plan']): ?>
@@ -292,7 +292,7 @@ try {
                                                 <strong>3-Month Free Trial</strong>
                                             </div>
                                             <div class="h4 mb-0">
-                                                Then <?php echo formatCurrency($plan['price']); ?>/month
+                                                Then <?php echo formatCheckoutCurrency($plan['price']); ?>/month
                                             </div>
                                         </div>
                                     <?php elseif ($is_upgrade): ?>
@@ -305,7 +305,7 @@ try {
                                                 </div>
                                             </div>
                                             <div class="h4 mb-0">
-                                                <?php echo formatCurrency($plan['price']); ?>/month
+                                                <?php echo formatCheckoutCurrency($plan['price']); ?>/month
                                             </div>
                                         </div>
                                     <?php elseif ($is_downgrade): ?>
@@ -318,21 +318,21 @@ try {
                                                 </div>
                                             </div>
                                             <div class="h4 mb-0">
-                                                <?php echo formatCurrency($plan['price']); ?>/month
+                                                <?php echo formatCheckoutCurrency($plan['price']); ?>/month
                                             </div>
                                         </div>
                                     <?php else: ?>
                                         <div class="h3 mb-0">
-                                            <?php echo formatCurrency($plan['price']); ?>/month
+                                            <?php echo formatCheckoutCurrency($plan['price']); ?>/month
                                         </div>
                                     <?php endif; ?>
                                     
                                     <?php if ($plan['annual_price']): ?>
                                         <div class="annual-pricing mt-3">
                                             <div class="text-success">
-                                                <strong>Annual: <?php echo formatCurrency($plan['annual_price']); ?>/year</strong>
+                                                <strong>Annual: <?php echo formatCheckoutCurrency($plan['annual_price']); ?>/year</strong>
                                                 <div class="badge bg-success mt-1">
-                                                    Save <?php echo formatCurrency(calculateAnnualSavings($plan['price'], $plan['annual_price'])); ?>
+                                                    Save <?php echo formatCheckoutCurrency(calculateAnnualSavings($plan['price'], $plan['annual_price'])); ?>
                                                 </div>
                                             </div>
                                         </div>

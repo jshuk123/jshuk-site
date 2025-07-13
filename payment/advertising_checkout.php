@@ -102,7 +102,7 @@ function calculateAnnualSavings($monthly_price, $annual_price) {
 /**
  * Format currency with proper locale
  */
-function formatCurrency($amount, $currency = 'GBP') {
+function formatAdvertisingCurrency($amount, $currency = 'GBP') {
     return '£' . number_format($amount, 2);
 }
 
@@ -227,7 +227,7 @@ try {
                                 <div class="pricing-display text-center mb-4">
                                     <div class="monthly-pricing mb-3">
                                         <div class="h3 mb-1">
-                                            <?php echo formatCurrency($slot['monthly_price']); ?>
+                                            <?php echo formatAdvertisingCurrency($slot['monthly_price']); ?>
                                             <small class="text-muted">/month</small>
                                         </div>
                                     </div>
@@ -235,9 +235,9 @@ try {
                                     <?php if ($slot['annual_price']): ?>
                                         <div class="annual-pricing">
                                             <div class="text-success">
-                                                <strong>Annual: <?php echo formatCurrency($slot['annual_price']); ?>/year</strong>
+                                                <strong>Annual: <?php echo formatAdvertisingCurrency($slot['annual_price']); ?>/year</strong>
                                                 <div class="badge bg-success mt-1">
-                                                    Save <?php echo formatCurrency(calculateAnnualSavings($slot['monthly_price'], $slot['annual_price'])); ?>
+                                                    Save <?php echo formatAdvertisingCurrency(calculateAnnualSavings($slot['monthly_price'], $slot['annual_price'])); ?>
                                                 </div>
                                             </div>
                                         </div>

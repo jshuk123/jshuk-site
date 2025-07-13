@@ -160,7 +160,7 @@ function getAdvertisingSlots($pdo) {
 /**
  * Format currency with proper locale
  */
-function formatCurrency($amount, $currency = 'GBP') {
+function formatSubscriptionCurrency($amount, $currency = 'GBP') {
     return '£' . number_format($amount, 2);
 }
 
@@ -239,12 +239,12 @@ include '../includes/header_main.php';
                             </div>
                             <div class="text-end">
                                 <div class="h5 mb-1">
-                                    <?php echo formatCurrency($current_subscription['price']); ?>
+                                    <?php echo formatSubscriptionCurrency($current_subscription['price']); ?>
                                     <small class="opacity-75">/month</small>
                                 </div>
                                 <?php if ($current_subscription['annual_price']): ?>
                                 <div class="small opacity-75">
-                                    Annual: <?php echo formatCurrency($current_subscription['annual_price']); ?>
+                                    Annual: <?php echo formatSubscriptionCurrency($current_subscription['annual_price']); ?>
                                 </div>
                                 <?php endif; ?>
                             </div>
@@ -276,7 +276,7 @@ include '../includes/header_main.php';
                                             (<?php echo $subscription_status['end_date'] ? $subscription_status['end_date']->format('F j, Y') : 'Unknown date'; ?>)
                                         </p>
                                         <p class="mb-0 small opacity-75">
-                                            After trial ends, you'll be charged <?php echo formatCurrency($current_subscription['price']); ?>/month
+                                            After trial ends, you'll be charged <?php echo formatSubscriptionCurrency($current_subscription['price']); ?>/month
                                         </p>
                                     </div>
                                 </div>
@@ -406,11 +406,11 @@ include '../includes/header_main.php';
                                         <?php $annual_savings = calculateAnnualSavings($plan['price'], $plan['annual_price']); ?>
                                         <div class="annual-pricing mt-2">
                                             <small class="text-muted">
-                                                Annual: <?php echo formatCurrency($plan['annual_price']); ?>
+                                                Annual: <?php echo formatSubscriptionCurrency($plan['annual_price']); ?>
                                                 <?php if ($annual_savings > 0): ?>
                                                     <br>
                                                     <span class="badge bg-success">
-                                                        Save <?php echo formatCurrency($annual_savings); ?>
+                                                        Save <?php echo formatSubscriptionCurrency($annual_savings); ?>
                                                     </span>
                                                 <?php endif; ?>
                                             </small>
@@ -586,16 +586,16 @@ include '../includes/header_main.php';
                                     <div class="pricing-options mb-4">
                                         <div class="pricing-option">
                                             <div class="price-label">Monthly</div>
-                                            <div class="price-value"><?php echo formatCurrency($slot['monthly_price']); ?></div>
+                                            <div class="price-value"><?php echo formatSubscriptionCurrency($slot['monthly_price']); ?></div>
                                         </div>
                                         <div class="pricing-option highlight">
                                             <div class="price-label">
                                                 Annual 
                                                 <span class="badge bg-success ms-1">
-                                                    Save <?php echo formatCurrency(calculateAnnualSavings($slot['monthly_price'], $slot['annual_price'])); ?>
+                                                    Save <?php echo formatSubscriptionCurrency(calculateAnnualSavings($slot['monthly_price'], $slot['annual_price'])); ?>
                                                 </span>
                                             </div>
-                                            <div class="price-value"><?php echo formatCurrency($slot['annual_price']); ?></div>
+                                            <div class="price-value"><?php echo formatSubscriptionCurrency($slot['annual_price']); ?></div>
                                         </div>
                                     </div>
 
@@ -659,16 +659,16 @@ include '../includes/header_main.php';
                                             <div class="col-6">
                                                 <div class="pricing-item">
                                                     <div class="label text-muted small">Monthly</div>
-                                                    <div class="value h5 mb-0"><?php echo formatCurrency($slot['monthly_price']); ?></div>
+                                                    <div class="value h5 mb-0"><?php echo formatSubscriptionCurrency($slot['monthly_price']); ?></div>
                                                 </div>
                                             </div>
                                             <div class="col-6">
                                                 <div class="pricing-item highlight">
                                                     <div class="label text-muted small">Annual</div>
                                                     <div class="value h5 mb-0 text-success">
-                                                        <?php echo formatCurrency($slot['annual_price']); ?>
+                                                        <?php echo formatSubscriptionCurrency($slot['annual_price']); ?>
                                                         <span class="badge bg-success-subtle text-success ms-1">
-                                                            Save <?php echo formatCurrency(calculateAnnualSavings($slot['monthly_price'], $slot['annual_price'])); ?>
+                                                            Save <?php echo formatSubscriptionCurrency(calculateAnnualSavings($slot['monthly_price'], $slot['annual_price'])); ?>
                                                         </span>
                                                     </div>
                                                 </div>
