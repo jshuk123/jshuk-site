@@ -44,17 +44,11 @@ if (isset($pdo) && $pdo) {
 }
 
 echo "<h2>Carousel Section Test</h2>";
-if (file_exists('sections/carousel.php')) {
-    echo "✅ carousel.php section exists<br>";
-    
-    // Include the carousel section
-    echo "<h3>Rendering Carousel:</h3>";
-    echo "<div style='border: 2px solid #ccc; padding: 20px; margin: 20px 0;'>";
-    include 'sections/carousel.php';
-    echo "</div>";
-} else {
-    echo "❌ carousel.php section not found<br>";
-}
+// Remove old carousel include
+echo "<h3>Rendering Enhanced Carousel:</h3>";
+$zone = 'homepage';
+$location = null;
+include 'sections/enhanced_carousel.php';
 
 echo "<h2>Next Steps</h2>";
 echo "<p>If the carousel is working above, you can:</p>";

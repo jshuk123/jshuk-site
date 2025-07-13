@@ -537,6 +537,17 @@ $adminName = $_SESSION['user_name'] ?? 'Admin';
     </div>
 </div>
 
+<!-- Enhanced Carousel Preview for Admins -->
+<div class="container my-5">
+    <h3 class="mb-3">Live Homepage Carousel Preview</h3>
+    <?php
+    // Show the enhanced carousel as it appears on the homepage
+    $zone = 'homepage';
+    $location = null;
+    include '../sections/enhanced_carousel.php';
+    ?>
+</div>
+
 <!-- Add/Edit Slide Modal -->
 <div class="modal fade" id="addSlideModal" tabindex="-1">
     <div class="modal-dialog modal-lg">
