@@ -59,48 +59,41 @@ if ($numSlides === 0) {
 $loop = count($valid_slides) >= 3 ? 'true' : 'false';
 
 // Generate carousel HTML with enhanced features
-echo '<section class="carousel-section" data-scroll>';
-echo '<div class="carousel-wrapper">';
-echo '<div class="swiper enhanced-homepage-carousel">';
-echo '<div class="swiper-wrapper">';
-
-// 💡 DYNAMIC SWIPER-COMPATIBLE HTML RENDERING
-foreach ($valid_slides as $slide) {
-    $imgSrc = '/' . ltrim($slide['image_url'], '/');
-    $title = htmlspecialchars($slide['title']);
-    $subtitle = htmlspecialchars($slide['subtitle'] ?? '');
-    $cta = trim($slide['cta_text'] ?? '');
-    $link = trim($slide['cta_link'] ?? '');
-    $sponsored = $slide['sponsored'] == 1;
-    echo '<div class="swiper-slide">';
-    echo '<img src="' . htmlspecialchars($imgSrc) . '" alt="' . $title . '" class="carousel-img" loading="eager" />';
-    echo '<div class="carousel-overlay">';
-    echo '<div class="carousel-content">';
-    echo '<h2 class="carousel-title">' . $title . '</h2>';
-    if (!empty($subtitle)) {
-        echo '<p class="carousel-subtitle">' . $subtitle . '</p>';
-    }
-    if (!empty($cta) && !empty($link)) {
-        echo '<a href="' . htmlspecialchars($link) . '" class="carousel-cta">' . htmlspecialchars($cta) . '</a>';
-    }
-    if ($sponsored) {
-        echo '<span class="sponsored-badge">Sponsored</span>';
-    }
-    echo '</div>'; // carousel-content
-    echo '</div>'; // carousel-overlay
-    echo '</div>'; // swiper-slide
-}
-
-echo '</div>'; // swiper-wrapper
-
-// Add navigation and pagination
-echo '<div class="swiper-button-prev carousel-nav-prev"></div>';
-echo '<div class="swiper-button-next carousel-nav-next"></div>';
-echo '<div class="swiper-pagination carousel-pagination"></div>';
-
-echo '</div>'; // swiper
-echo '</div>'; // carousel-wrapper
-echo '</section>';
+// Add .swiper-container wrapper
+?>
+<section class="carousel-section" data-scroll>
+  <div class="carousel-wrapper">
+    <div class="swiper-container enhanced-homepage-carousel">
+      <div class="swiper-wrapper">
+        <?php foreach ($valid_slides as $slide): ?>
+          <?php if (!empty($slide['image_url'])): ?>
+            <div class="swiper-slide">
+              <img src="/<?= ltrim($slide['image_url'], '/') ?>" class="carousel-img" alt="<?= htmlspecialchars($slide['title']) ?>" />
+              <div class="carousel-overlay">
+                <div class="carousel-content">
+                  <h2 class="carousel-title"><?= htmlspecialchars($slide['title']) ?></h2>
+                  <?php if (!empty($slide['subtitle'])): ?>
+                    <p class="carousel-subtitle"><?= htmlspecialchars($slide['subtitle']) ?></p>
+                  <?php endif; ?>
+                  <?php if (!empty($slide['cta_text']) && !empty($slide['cta_link'])): ?>
+                    <a href="<?= htmlspecialchars($slide['cta_link']) ?>" class="carousel-cta"><?= htmlspecialchars($slide['cta_text']) ?></a>
+                  <?php endif; ?>
+                  <?php if (!empty($slide['sponsored'])): ?>
+                    <span class="sponsored-badge">Sponsored</span>
+                  <?php endif; ?>
+                </div>
+              </div>
+            </div>
+          <?php endif; ?>
+        <?php endforeach; ?>
+      </div> <!-- .swiper-wrapper -->
+      <div class="swiper-button-prev carousel-nav-prev"></div>
+      <div class="swiper-button-next carousel-nav-next"></div>
+      <div class="swiper-pagination carousel-pagination"></div>
+    </div> <!-- .swiper-container -->
+  </div> <!-- .carousel-wrapper -->
+</section>
+<?php
 ?>
 
 <div id="carousel-loader" class="spinner">Loading slides...</div>
