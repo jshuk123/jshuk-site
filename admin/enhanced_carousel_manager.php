@@ -7,6 +7,157 @@
 
 require_once '../config/config.php';
 
+// Image Processing Functions
+function processCarouselImage($source_path, $target_path, $options = []) {
+    $defaults = [
+        'width' => 1920,
+        'height' => 600,
+        'quality' => 85,
+        'crop' => true
+    ];
+    $options = array_merge($defaults, $options);
+    
+    // Get image info
+    $image_info = getimagesize($source_path);
+    if (!$image_info) {
+        return false;
+    }
+    
+    $source_width = $image_info[0];
+    $source_height = $image_info[1];
+    $source_type = $image_info[2];
+    
+    // Create source image resource
+    switch ($source_type) {
+        case IMAGETYPE_JPEG:
+            $source_image = imagecreatefromjpeg($source_path);
+            break;
+        case IMAGETYPE_PNG:
+            $source_image = imagecreatefrompng($source_path);
+            break;
+        case IMAGETYPE_GIF:
+            $source_image = imagecreatefromgif($source_path);
+            break;
+        case IMAGETYPE_WEBP:
+            $source_image = imagecreatefromwebp($source_path);
+            break;
+        default:
+            return false;
+    }
+    
+    if (!$source_image) {
+        return false;
+    }
+    
+    // Calculate dimensions
+    if ($options['crop']) {
+        // Crop to fit exactly
+        $source_ratio = $source_width / $source_height;
+        $target_ratio = $options['width'] / $options['height'];
+        
+        if ($source_ratio > $target_ratio) {
+            // Source is wider, crop width
+            $crop_width = round($source_height * $target_ratio);
+            $crop_height = $source_height;
+            $crop_x = round(($source_width - $crop_width) / 2);
+            $crop_y = 0;
+        } else {
+            // Source is taller, crop height
+            $crop_width = $source_width;
+            $crop_height = round($source_width / $target_ratio);
+            $crop_x = 0;
+            $crop_y = round(($source_height - $crop_height) / 2);
+        }
+    } else {
+        // Resize to fit within bounds
+        $source_ratio = $source_width / $source_height;
+        $target_ratio = $options['width'] / $options['height'];
+        
+        if ($source_ratio > $target_ratio) {
+            // Source is wider, fit to height
+            $new_width = round($options['height'] * $source_ratio);
+            $new_height = $options['height'];
+        } else {
+            // Source is taller, fit to width
+            $new_width = $options['width'];
+            $new_height = round($options['width'] / $source_ratio);
+        }
+        
+        $crop_width = $source_width;
+        $crop_height = $source_height;
+        $crop_x = 0;
+        $crop_y = 0;
+    }
+    
+    // Create target image
+    $target_image = imagecreatetruecolor($options['width'], $options['height']);
+    
+    // Preserve transparency for PNG and GIF
+    if ($source_type == IMAGETYPE_PNG || $source_type == IMAGETYPE_GIF) {
+        imagealphablending($target_image, false);
+        imagesavealpha($target_image, true);
+        $transparent = imagecolorallocatealpha($target_image, 255, 255, 255, 127);
+        imagefilledrectangle($target_image, 0, 0, $options['width'], $options['height'], $transparent);
+    }
+    
+    // Resize and crop
+    imagecopyresampled(
+        $target_image, $source_image,
+        0, 0, $crop_x, $crop_y,
+        $options['width'], $options['height'],
+        $crop_width, $crop_height
+    );
+    
+    // Save the processed image
+    $success = false;
+    switch ($source_type) {
+        case IMAGETYPE_JPEG:
+            $success = imagejpeg($target_image, $target_path, $options['quality']);
+            break;
+        case IMAGETYPE_PNG:
+            $success = imagepng($target_image, $target_path, round($options['quality'] / 10));
+            break;
+        case IMAGETYPE_GIF:
+            $success = imagegif($target_image, $target_path);
+            break;
+        case IMAGETYPE_WEBP:
+            $success = imagewebp($target_image, $target_path, $options['quality']);
+            break;
+    }
+    
+    // Clean up
+    imagedestroy($source_image);
+    imagedestroy($target_image);
+    
+    return $success;
+}
+
+function getImagePreviewUrl($image_path, $width = 300, $height = 100) {
+    if (!file_exists('../' . $image_path)) {
+        return '';
+    }
+    
+    $preview_dir = '../uploads/carousel/previews/';
+    if (!is_dir($preview_dir)) {
+        mkdir($preview_dir, 0755, true);
+    }
+    
+    $filename = basename($image_path);
+    $preview_path = $preview_dir . 'preview_' . $filename;
+    
+    // Generate preview if it doesn't exist
+    if (!file_exists($preview_path)) {
+        processCarouselImage('../' . $image_path, $preview_path, [
+            'width' => $width,
+            'height' => $height,
+            'quality' => 80,
+            'crop' => true
+        ]);
+    }
+    
+    return 'uploads/carousel/previews/preview_' . $filename;
+}
+
 // Check admin authentication
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
@@ -56,20 +207,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                 
                 if (!in_array($file_extension, $allowed_extensions)) {
                     $error = "Invalid file type. Allowed: " . implode(', ', $allowed_extensions);
-                    echo '<div style="color:red">[DEBUG] Invalid file type: ' . htmlspecialchars($file_extension) . '</div>';
                 } else {
                     $filename = 'carousel_' . time() . '_' . uniqid() . '.' . $file_extension;
+                    $temp_path = $upload_dir . 'temp_' . $filename;
                     $target_path = $upload_dir . $filename;
-                    echo '<div style="color:blue">[DEBUG] Attempting to upload to: ' . htmlspecialchars($target_path) . '</div>';
                     
-                    if (move_uploaded_file($_FILES['image']['tmp_name'], $target_path)) {
-                        $image_url = 'uploads/carousel/' . $filename;
-                        echo '<div style="color:green">[DEBUG] Upload successful: ' . htmlspecialchars($image_url) . '</div>';
+                    // First, move uploaded file to temp location
+                    if (move_uploaded_file($_FILES['image']['tmp_name'], $temp_path)) {
+                        // Process the image with cropping and resizing
+                        if (processCarouselImage($temp_path, $target_path, [
+                            'width' => 1920,
+                            'height' => 600,
+                            'quality' => 85,
+                            'crop' => true
+                        ])) {
+                            $image_url = 'uploads/carousel/' . $filename;
+                            // Clean up temp file
+                            unlink($temp_path);
+                        } else {
+                            $error = "Failed to process image. Please try a different image.";
+                            unlink($temp_path);
+                        }
                     } else {
                         $error = "Failed to upload image.";
-                        echo '<div style="color:red">[DEBUG] move_uploaded_file failed. TMP: ' . htmlspecialchars($_FILES['image']['tmp_name']) . '</div>';
                         if (!is_writable($upload_dir)) {
-                            echo '<div style="color:red">[DEBUG] Upload directory is not writable: ' . htmlspecialchars($upload_dir) . '</div>';
+                            $error .= " Upload directory is not writable.";
                         }
                     }
                 }
@@ -444,9 +606,14 @@ $adminName = $_SESSION['user_name'] ?? 'Admin';
                                     <?php foreach ($slides as $slide): ?>
                                         <tr>
                                             <td>
-                                                <img src="<?= htmlspecialchars($slide['image_url']) ?>" 
+                                                <?php 
+                                                $preview_url = getImagePreviewUrl($slide['image_url'], 120, 40);
+                                                $display_url = $preview_url ? $preview_url : $slide['image_url'];
+                                                ?>
+                                                <img src="<?= htmlspecialchars($display_url) ?>" 
                                                      alt="<?= htmlspecialchars($slide['title']) ?>" 
-                                                     style="width: 60px; height: 40px; object-fit: cover; border-radius: 4px;">
+                                                     style="width: 60px; height: 40px; object-fit: cover; border-radius: 4px;"
+                                                     title="Original: <?= htmlspecialchars($slide['image_url']) ?>">
                                             </td>
                                             <td>
                                                 <strong><?= htmlspecialchars($slide['title']) ?></strong>
@@ -632,8 +799,54 @@ $adminName = $_SESSION['user_name'] ?? 'Admin';
                         <div class="col-md-4">
                             <div class="mb-3">
                                 <label for="image" class="form-label">Background Image *</label>
-                                <input type="file" class="form-control" id="image" name="image" accept="image/*" required>
-                                <div class="form-text">Recommended: 1920x600px, max 5MB</div>
+                                <input type="file" class="form-control" id="image" name="image" accept="image/*" required onchange="previewImage(this)">
+                                <div class="form-text">Any size image will be automatically cropped to 1920x600px</div>
+                                
+                                <!-- Image Preview and Cropping Options -->
+                                <div id="imagePreviewContainer" style="display:none; margin-top: 15px;">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h6 class="mb-0">Image Preview & Cropping</h6>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-md-8">
+                                                    <div id="imagePreview" style="position: relative; border: 2px dashed #ccc; background: #f8f9fa; min-height: 200px; display: flex; align-items: center; justify-content: center;">
+                                                        <img id="previewImg" src="" alt="Preview" style="max-width: 100%; max-height: 200px; display: none;">
+                                                        <div id="previewPlaceholder">Select an image to preview</div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Cropping Mode</label>
+                                                        <select class="form-select" id="cropMode" name="crop_mode">
+                                                            <option value="center">Center Crop</option>
+                                                            <option value="top">Top Crop</option>
+                                                            <option value="bottom">Bottom Crop</option>
+                                                            <option value="left">Left Crop</option>
+                                                            <option value="right">Right Crop</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Image Quality</label>
+                                                        <select class="form-select" id="imageQuality" name="image_quality">
+                                                            <option value="95">High (95%)</option>
+                                                            <option value="85" selected>Medium (85%)</option>
+                                                            <option value="75">Low (75%)</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="alert alert-info">
+                                                        <small>
+                                                            <strong>Target Size:</strong> 1920×600px<br>
+                                                            <strong>Format:</strong> Auto-detected<br>
+                                                            <strong>Optimization:</strong> Enabled
+                                                        </small>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -746,9 +959,52 @@ $adminName = $_SESSION['user_name'] ?? 'Admin';
                         <div class="col-md-4">
                             <div class="mb-3">
                                 <label for="edit_image" class="form-label">Background Image</label>
-                                <input type="file" class="form-control" id="edit_image" name="image" accept="image/*">
-                                <div class="form-text">Leave blank to keep current image. Recommended: 1920x600px, max 5MB</div>
-                                <img id="edit_image_preview" src="" alt="Current Image" style="max-width:100%;max-height:100px;margin-top:5px;display:none;">
+                                <input type="file" class="form-control" id="edit_image" name="image" accept="image/*" onchange="previewEditImage(this)">
+                                <div class="form-text">Leave blank to keep current image. Any size will be cropped to 1920x600px</div>
+                                
+                                <!-- Current Image Preview -->
+                                <div id="editCurrentImageContainer" style="margin-top: 10px;">
+                                    <img id="edit_image_preview" src="" alt="Current Image" style="max-width:100%;max-height:100px;border-radius:4px;display:none;">
+                                </div>
+                                
+                                <!-- New Image Preview and Cropping Options -->
+                                <div id="editImagePreviewContainer" style="display:none; margin-top: 15px;">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h6 class="mb-0">New Image Preview & Cropping</h6>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-md-8">
+                                                    <div id="editImagePreview" style="position: relative; border: 2px dashed #ccc; background: #f8f9fa; min-height: 200px; display: flex; align-items: center; justify-content: center;">
+                                                        <img id="editPreviewImg" src="" alt="Preview" style="max-width: 100%; max-height: 200px; display: none;">
+                                                        <div id="editPreviewPlaceholder">Select an image to preview</div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Cropping Mode</label>
+                                                        <select class="form-select" id="editCropMode" name="crop_mode">
+                                                            <option value="center">Center Crop</option>
+                                                            <option value="top">Top Crop</option>
+                                                            <option value="bottom">Bottom Crop</option>
+                                                            <option value="left">Left Crop</option>
+                                                            <option value="right">Right Crop</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Image Quality</label>
+                                                        <select class="form-select" id="editImageQuality" name="image_quality">
+                                                            <option value="95">High (95%)</option>
+                                                            <option value="85" selected>Medium (85%)</option>
+                                                            <option value="75">Low (75%)</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -854,6 +1110,115 @@ setTimeout(function() {
         bsAlert.close();
     });
 }, 5000);
+
+// Image Preview and Cropping Functions
+function previewImage(input) {
+    const file = input.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const previewImg = document.getElementById('previewImg');
+            const previewPlaceholder = document.getElementById('previewPlaceholder');
+            const previewContainer = document.getElementById('imagePreviewContainer');
+            
+            previewImg.src = e.target.result;
+            previewImg.style.display = 'block';
+            previewPlaceholder.style.display = 'none';
+            previewContainer.style.display = 'block';
+            
+            // Show image info
+            showImageInfo(file);
+        };
+        reader.readAsDataURL(file);
+    } else {
+        hideImagePreview();
+    }
+}
+
+function previewEditImage(input) {
+    const file = input.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const previewImg = document.getElementById('editPreviewImg');
+            const previewPlaceholder = document.getElementById('editPreviewPlaceholder');
+            const previewContainer = document.getElementById('editImagePreviewContainer');
+            
+            previewImg.src = e.target.result;
+            previewImg.style.display = 'block';
+            previewPlaceholder.style.display = 'none';
+            previewContainer.style.display = 'block';
+            
+            // Show image info
+            showEditImageInfo(file);
+        };
+        reader.readAsDataURL(file);
+    } else {
+        hideEditImagePreview();
+    }
+}
+
+function hideImagePreview() {
+    const previewImg = document.getElementById('previewImg');
+    const previewPlaceholder = document.getElementById('previewPlaceholder');
+    const previewContainer = document.getElementById('imagePreviewContainer');
+    
+    previewImg.style.display = 'none';
+    previewPlaceholder.style.display = 'block';
+    previewContainer.style.display = 'none';
+}
+
+function hideEditImagePreview() {
+    const previewImg = document.getElementById('editPreviewImg');
+    const previewPlaceholder = document.getElementById('editPreviewPlaceholder');
+    const previewContainer = document.getElementById('editImagePreviewContainer');
+    
+    previewImg.style.display = 'none';
+    previewPlaceholder.style.display = 'block';
+    previewContainer.style.display = 'none';
+}
+
+function showImageInfo(file) {
+    const infoDiv = document.querySelector('#imagePreviewContainer .alert-info');
+    if (infoDiv) {
+        const size = (file.size / 1024 / 1024).toFixed(2);
+        infoDiv.innerHTML = `
+            <small>
+                <strong>Original Size:</strong> ${file.width || 'Unknown'}×${file.height || 'Unknown'}px<br>
+                <strong>File Size:</strong> ${size}MB<br>
+                <strong>Target Size:</strong> 1920×600px<br>
+                <strong>Format:</strong> ${file.type}<br>
+                <strong>Optimization:</strong> Enabled
+            </small>
+        `;
+    }
+}
+
+function showEditImageInfo(file) {
+    const infoDiv = document.querySelector('#editImagePreviewContainer .alert-info');
+    if (infoDiv) {
+        const size = (file.size / 1024 / 1024).toFixed(2);
+        infoDiv.innerHTML = `
+            <small>
+                <strong>Original Size:</strong> ${file.width || 'Unknown'}×${file.height || 'Unknown'}px<br>
+                <strong>File Size:</strong> ${size}MB<br>
+                <strong>Target Size:</strong> 1920×600px<br>
+                <strong>Format:</strong> ${file.type}<br>
+                <strong>Optimization:</strong> Enabled
+            </small>
+        `;
+    }
+}
+
+// Reset image preview when modal is closed
+document.getElementById('addSlideModal').addEventListener('hidden.bs.modal', function() {
+    hideImagePreview();
+    document.getElementById('addSlideForm').reset();
+});
+
+document.getElementById('editSlideModal').addEventListener('hidden.bs.modal', function() {
+    hideEditImagePreview();
+});
 </script>
 
 </body>
