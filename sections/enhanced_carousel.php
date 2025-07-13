@@ -130,8 +130,8 @@ echo '</section>';
 
 .swiper-slide {
   position: relative;
-  height: 600px;
   overflow: hidden;
+  height: 600px;
 }
 .carousel-img {
   width: 100%;
@@ -141,10 +141,17 @@ echo '</section>';
 }
 .carousel-overlay {
   position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0,0,0,0.3);
-  color: white;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   z-index: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.7);
 }
 
 .carousel-content {
