@@ -28,7 +28,7 @@ $user_id = (int)$_SESSION['user_id'];
 
 // Validate and sanitize plan_id
 $plan_id = filter_input(INPUT_GET, 'plan_id', FILTER_VALIDATE_INT);
-$action = filter_input(INPUT_GET, 'action', FILTER_SANITIZE_STRING) ?: 'new';
+$action = htmlspecialchars($_GET['action'] ?? 'new', ENT_QUOTES, 'UTF-8');
 
 if (!$plan_id) {
     header('Location: subscription.php?error=invalid_plan');
@@ -39,12 +39,23 @@ if (!$plan_id) {
  * Get plan details with validation
  */
 function getPlanDetails($pdo, $plan_id) {
-    $stmt = $pdo->prepare("
-        SELECT * FROM subscription_plans 
-        WHERE id = ? AND status = 'active'
-    ");
-    $stmt->execute([$plan_id]);
-    return $stmt->fetch();
+    try {
+        // Check if subscription_plans table exists
+        $stmt = $pdo->prepare("SHOW TABLES LIKE 'subscription_plans'");
+        $stmt->execute();
+        if (!$stmt->fetch()) {
+            return null;
+        }
+        
+        $stmt = $pdo->prepare("
+            SELECT * FROM subscription_plans 
+            WHERE id = ?
+        ");
+        $stmt->execute([$plan_id]);
+        return $stmt->fetch();
+    } catch (PDOException $e) {
+        return null;
+    }
 }
 
 /**
@@ -64,54 +75,92 @@ function getUserDetails($pdo, $user_id) {
  * Get current subscription details
  */
 function getCurrentSubscription($pdo, $user_id) {
-    $stmt = $pdo->prepare("
-        SELECT s.*, p.name as plan_name, p.price, p.trial_period_days
-        FROM user_subscriptions s
-        JOIN subscription_plans p ON s.plan_id = p.id
-        WHERE s.user_id = ? 
-        AND s.status IN ('active', 'trialing', 'past_due')
-        ORDER BY s.created_at DESC 
-        LIMIT 1
-    ");
-    $stmt->execute([$user_id]);
-    return $stmt->fetch();
+    try {
+        // Check if required tables exist
+        $stmt = $pdo->prepare("SHOW TABLES LIKE 'user_subscriptions'");
+        $stmt->execute();
+        if (!$stmt->fetch()) {
+            return null;
+        }
+        
+        $stmt = $pdo->prepare("SHOW TABLES LIKE 'subscription_plans'");
+        $stmt->execute();
+        if (!$stmt->fetch()) {
+            return null;
+        }
+        
+        $stmt = $pdo->prepare("
+            SELECT s.*, p.name as plan_name, p.price, p.trial_period_days
+            FROM user_subscriptions s
+            JOIN subscription_plans p ON s.plan_id = p.id
+            WHERE s.user_id = ? 
+            AND s.status IN ('active', 'trialing', 'past_due')
+            ORDER BY s.created_at DESC 
+            LIMIT 1
+        ");
+        $stmt->execute([$user_id]);
+        return $stmt->fetch();
+    } catch (PDOException $e) {
+        return null;
+    }
 }
 
 /**
  * Check trial eligibility for specific plan
  */
 function checkTrialEligibility($pdo, $user_id, $plan_id) {
-    // Check if user has had a trial for this specific plan
-    $stmt = $pdo->prepare("
-        SELECT COUNT(*) as plan_trial_count
-        FROM user_subscriptions 
-        WHERE user_id = ? 
-        AND plan_id = ?
-        AND trial_end IS NOT NULL
-    ");
-    $stmt->execute([$user_id, $plan_id]);
-    $has_used_trial_for_plan = $stmt->fetch()['plan_trial_count'] > 0;
+    try {
+        // Check if user_subscriptions table exists
+        $stmt = $pdo->prepare("SHOW TABLES LIKE 'user_subscriptions'");
+        $stmt->execute();
+        if (!$stmt->fetch()) {
+            return [
+                'has_used_trial_for_plan' => false,
+                'has_active_trial' => false,
+                'current_trial_plan_id' => null,
+                'trial_end' => null
+            ];
+        }
+        
+        // Check if user has had a trial for this specific plan
+        $stmt = $pdo->prepare("
+            SELECT COUNT(*) as plan_trial_count
+            FROM user_subscriptions 
+            WHERE user_id = ? 
+            AND plan_id = ?
+            AND trial_end IS NOT NULL
+        ");
+        $stmt->execute([$user_id, $plan_id]);
+        $has_used_trial_for_plan = $stmt->fetch()['plan_trial_count'] > 0;
 
-    // Check if user has an active trial on any plan
-    $stmt = $pdo->prepare("
-        SELECT 1 as has_active_trial,
-               plan_id as current_trial_plan_id,
-               trial_end
-        FROM user_subscriptions 
-        WHERE user_id = ? 
-        AND trial_end IS NOT NULL 
-        AND status = 'trialing'
-        AND trial_end > NOW()
-    ");
-    $stmt->execute([$user_id]);
-    $active_trial = $stmt->fetch();
+        // Check if user has an active trial on any plan
+        $stmt = $pdo->prepare("
+            SELECT 1 as has_active_trial,
+                   plan_id as current_trial_plan_id,
+                   trial_end
+            FROM user_subscriptions 
+            WHERE user_id = ? 
+            AND trial_end IS NOT NULL 
+            AND status = 'trialing'
+            AND trial_end > NOW()
+        ");
+        $stmt->execute([$user_id]);
+        $active_trial = $stmt->fetch();
 
-    return [
-        'has_used_trial_for_plan' => $has_used_trial_for_plan,
-        'has_active_trial' => $active_trial ? true : false,
-        'current_trial_plan_id' => $active_trial ? $active_trial['current_trial_plan_id'] : null,
-        'trial_end' => $active_trial ? $active_trial['trial_end'] : null
-    ];
+        return [
+            'has_used_trial_for_plan' => $has_used_trial_for_plan,
+            'has_active_trial' => $active_trial ? true : false,
+            'current_trial_plan_id' => $active_trial ? $active_trial['current_trial_plan_id'] : null,
+            'trial_end' => $active_trial ? $active_trial['trial_end'] : null
+        ];
+    } catch (PDOException $e) {
+        return [
+            'has_used_trial_for_plan' => false,
+            'has_active_trial' => false,
+            'current_trial_plan_id' => null,
+            'trial_end' => null
+        ];
+    }
 }
 
 /**
