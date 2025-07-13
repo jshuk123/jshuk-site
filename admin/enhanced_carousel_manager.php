@@ -787,31 +787,54 @@ document.getElementById('toggleDarkMode').addEventListener('click', function() {
     document.body.classList.toggle('dark-mode');
 });
 
+// Add New Slide button event listener
+document.getElementById('addSlideBtn').addEventListener('click', function() {
+    // Clear the form
+    document.getElementById('addSlideForm').reset();
+    // Show the modal
+    new bootstrap.Modal(document.getElementById('addSlideModal')).show();
+});
+
 // Edit slide function
 function editSlide(slideId) {
-    // Find the slide data from the PHP-rendered JS object
-    const slides = <?php echo json_encode($slides); ?>;
-    const slide = slides.find(s => s.id == slideId);
-    if (!slide) return;
-    document.getElementById('edit_slide_id').value = slide.id;
-    document.getElementById('edit_title').value = slide.title;
-    document.getElementById('edit_priority').value = slide.priority;
-    document.getElementById('edit_subtitle').value = slide.subtitle;
-    document.getElementById('edit_cta_text').value = slide.cta_text;
-    document.getElementById('edit_cta_link').value = slide.cta_link;
-    document.getElementById('edit_location').value = slide.location;
-    document.getElementById('edit_zone').value = slide.zone;
-    document.getElementById('edit_start_date').value = slide.start_date ? slide.start_date.split('T')[0] : '';
-    document.getElementById('edit_end_date').value = slide.end_date ? slide.end_date.split('T')[0] : '';
-    document.getElementById('edit_sponsored').checked = !!parseInt(slide.sponsored);
-    document.getElementById('edit_active').checked = !!parseInt(slide.active);
-    if (slide.image_url) {
-        document.getElementById('edit_image_preview').src = slide.image_url;
-        document.getElementById('edit_image_preview').style.display = 'block';
-    } else {
-        document.getElementById('edit_image_preview').style.display = 'none';
+    try {
+        // Find the slide data from the PHP-rendered JS object
+        const slides = <?php echo json_encode($slides); ?>;
+        const slide = slides.find(s => s.id == slideId);
+        if (!slide) {
+            console.error('Slide not found:', slideId);
+            return;
+        }
+        
+        // Populate the edit form
+        document.getElementById('edit_slide_id').value = slide.id;
+        document.getElementById('edit_title').value = slide.title || '';
+        document.getElementById('edit_priority').value = slide.priority || 0;
+        document.getElementById('edit_subtitle').value = slide.subtitle || '';
+        document.getElementById('edit_cta_text').value = slide.cta_text || '';
+        document.getElementById('edit_cta_link').value = slide.cta_link || '';
+        document.getElementById('edit_location').value = slide.location || 'all';
+        document.getElementById('edit_zone').value = slide.zone || 'homepage';
+        document.getElementById('edit_start_date').value = slide.start_date ? slide.start_date.split('T')[0] : '';
+        document.getElementById('edit_end_date').value = slide.end_date ? slide.end_date.split('T')[0] : '';
+        document.getElementById('edit_sponsored').checked = !!parseInt(slide.sponsored);
+        document.getElementById('edit_active').checked = !!parseInt(slide.active);
+        
+        // Handle image preview
+        const imagePreview = document.getElementById('edit_image_preview');
+        if (slide.image_url) {
+            imagePreview.src = slide.image_url;
+            imagePreview.style.display = 'block';
+        } else {
+            imagePreview.style.display = 'none';
+        }
+        
+        // Show the modal
+        new bootstrap.Modal(document.getElementById('editSlideModal')).show();
+    } catch (error) {
+        console.error('Error in editSlide function:', error);
+        alert('Error loading slide data. Please try again.');
     }
-    new bootstrap.Modal(document.getElementById('editSlideModal')).show();
 }
 
 // Auto-hide alerts after 5 seconds
