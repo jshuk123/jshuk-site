@@ -74,25 +74,21 @@ $today = date('Y-m-d');
 $zone = 'homepage';
 
 try {
+    // Start with the simplest possible query to eliminate parameter binding issues
     $query = $pdo->prepare("
         SELECT * FROM carousel_slides
         WHERE active = 1
-          AND (location = :loc OR location = 'all')
-          AND (start_date IS NULL OR start_date <= :today)
-          AND (end_date IS NULL OR end_date >= :today)
           AND zone = :zone
         ORDER BY priority DESC, sponsored DESC, id DESC
     ");
 
     $query->execute([
-        ':loc' => $location,
-        ':today' => $today,
         ':zone' => $zone
     ]);
 
     $slides = $query->fetchAll(PDO::FETCH_ASSOC);
 
-    echo "<div style='background:#dff0d8;padding:10px;z-index:9999;position:relative;'>✅ Loaded " . count($slides) . " slides</div>";
+    echo "<div style='background:#dff0d8;padding:10px;z-index:9999;position:relative;'>✅ Loaded " . count($slides) . " slides with simple query</div>";
 
 } catch (PDOException $e) {
     echo "<div style='background:#f8d7da;color:#721c24;padding:10px;z-index:9999;position:relative;'>
