@@ -61,40 +61,99 @@ $loop = count($valid_slides) >= 3 ? 'true' : 'false';
 // Generate carousel HTML with enhanced features
 // Add .swiper-container wrapper
 ?>
-<section class="carousel-section" data-scroll>
-  <div class="carousel-wrapper">
-    <div class="swiper-container enhanced-homepage-carousel">
-      <div class="swiper-wrapper">
-        <?php foreach ($valid_slides as $slide): ?>
-          <?php if (!empty($slide['image_url'])): ?>
-            <div class="swiper-slide">
-              <img src="/<?= ltrim($slide['image_url'], '/') ?>" class="carousel-img" alt="<?= htmlspecialchars($slide['title']) ?>" />
-              <div class="carousel-overlay">
-                <div class="carousel-content">
-                  <h2 class="carousel-title"><?= htmlspecialchars($slide['title']) ?></h2>
-                  <?php if (!empty($slide['subtitle'])): ?>
-                    <p class="carousel-subtitle"><?= htmlspecialchars($slide['subtitle']) ?></p>
-                  <?php endif; ?>
-                  <?php if (!empty($slide['cta_text']) && !empty($slide['cta_link'])): ?>
-                    <a href="<?= htmlspecialchars($slide['cta_link']) ?>" class="carousel-cta"><?= htmlspecialchars($slide['cta_text']) ?></a>
-                  <?php endif; ?>
-                  <?php if (!empty($slide['sponsored'])): ?>
-                    <span class="sponsored-badge">Sponsored</span>
-                  <?php endif; ?>
-                </div>
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css"
+/>
+
+<section class="carousel-section">
+  <div class="swiper-container enhanced-homepage-carousel">
+    <div class="swiper-wrapper">
+      <?php foreach ($valid_slides as $slide): ?>
+        <?php if (!empty($slide['image_url'])): ?>
+          <div class="swiper-slide">
+            <img
+              src="/<?= ltrim($slide['image_url'], '/') ?>"
+              alt="<?= htmlspecialchars($slide['title']) ?>"
+              class="carousel-img"
+              loading="eager"
+            />
+            <div class="carousel-overlay">
+              <div class="carousel-content">
+                <h2 class="carousel-title"><?= htmlspecialchars($slide['title']) ?></h2>
+                <p class="carousel-subtitle"><?= htmlspecialchars($slide['subtitle']) ?></p>
+                <?php if (!empty($slide['cta_text']) && !empty($slide['cta_link'])): ?>
+                  <a href="<?= htmlspecialchars($slide['cta_link']) ?>" class="carousel-cta">
+                    <?= htmlspecialchars($slide['cta_text']) ?>
+                  </a>
+                <?php endif; ?>
               </div>
             </div>
-          <?php endif; ?>
-        <?php endforeach; ?>
-      </div> <!-- .swiper-wrapper -->
-      <div class="swiper-button-prev carousel-nav-prev"></div>
-      <div class="swiper-button-next carousel-nav-next"></div>
-      <div class="swiper-pagination carousel-pagination"></div>
-    </div> <!-- .swiper-container -->
-  </div> <!-- .carousel-wrapper -->
+          </div>
+        <?php endif; ?>
+      <?php endforeach; ?>
+    </div>
+
+    <div class="swiper-button-prev"></div>
+    <div class="swiper-button-next"></div>
+    <div class="swiper-pagination"></div>
+  </div>
 </section>
-<?php
-?>
+
+<script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    new Swiper('.enhanced-homepage-carousel', {
+      loop: true,
+      autoplay: {
+        delay: 5000,
+        disableOnInteraction: false
+      },
+      pagination: {
+        el: '.swiper-pagination',
+        clickable: true
+      },
+      navigation: {
+        nextEl: '.swiper-button-next',
+        prevEl: '.swiper-button-prev'
+      },
+      effect: 'slide' // or 'fade'
+    });
+  });
+</script>
+
+<style>
+.swiper-container {
+  width: 100%;
+  height: 600px;
+  position: relative;
+}
+
+.carousel-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.swiper-slide {
+  position: relative;
+  overflow: hidden;
+}
+
+.carousel-overlay {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.3);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  color: white;
+  z-index: 2;
+  text-align: center;
+}
+</style>
 
 <div id="carousel-loader" class="spinner">Loading slides...</div>
 
