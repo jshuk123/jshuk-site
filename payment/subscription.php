@@ -136,7 +136,6 @@ function calculateSubscriptionStatus($subscription) {
 function getActiveSubscriptionPlans($pdo) {
     $stmt = $pdo->prepare("
         SELECT * FROM subscription_plans 
-        WHERE status = 'active' 
         ORDER BY price ASC
     ");
     $stmt->execute();
@@ -150,7 +149,6 @@ function getAdvertisingSlots($pdo) {
     $stmt = $pdo->prepare("
         SELECT * FROM advertising_slots 
         WHERE current_slots < max_slots 
-        AND status = 'active'
         ORDER BY monthly_price ASC
     ");
     $stmt->execute();
