@@ -152,8 +152,13 @@ include 'includes/header_main.php';
 require_once 'includes/ad_renderer.php';
 ?>
 
-<!-- CAROUSEL SECTION (Main Hero) -->
-<?php include 'sections/carousel.php'; ?>
+<!-- ENHANCED CAROUSEL SECTION (Main Hero) -->
+<?php 
+// Set zone and location for enhanced carousel
+$zone = 'homepage';
+$location = null; // Will auto-detect user location
+include 'sections/enhanced_carousel.php'; 
+?>
 
 <!-- SEARCH BAR -->
 <?php include 'sections/search_bar.php'; ?>
