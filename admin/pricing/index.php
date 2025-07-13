@@ -112,7 +112,7 @@ $pageTitle = "Pricing Control Panel";
                         <li class="nav-item mb-1"><a href="../classifieds.php" class="nav-link"><i class="fas fa-list-alt me-2"></i>Classifieds</a></li>
                         <li class="nav-item mb-1"><a href="../reviews.php" class="nav-link"><i class="fas fa-star me-2"></i>Reviews</a></li>
                         <li class="nav-item mb-1"><a href="../ads.php" class="nav-link"><i class="fas fa-ad me-2"></i>Ads</a></li>
-                        <li class="nav-item mb-1"><a href="../carousel_manager.php" class="nav-link"><i class="fas fa-images me-2"></i>Carousel</a></li>
+                        <li class="nav-item mb-1"><a href="../enhanced_carousel_manager.php" class="nav-link"><i class="fas fa-images me-2"></i>Carousel</a></li>
                         <li class="nav-item mb-1"><a href="index.php" class="nav-link active"><i class="fas fa-tags me-2"></i>Pricing</a></li>
                     </ul>
                     <hr class="text-white w-100">
