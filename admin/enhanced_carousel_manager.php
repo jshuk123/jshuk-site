@@ -670,17 +670,19 @@ $adminName = $_SESSION['user_name'] ?? 'Admin';
                                             <td>
                                                 <?php 
                                                 $preview_url = getImagePreviewUrl($slide['image_url'], 120, 40);
-                                                $display_url = $preview_url ? $preview_url : $slide['image_url'];
+                                                $display_url = $preview_url ? ('/' . ltrim($preview_url, '/')) : ('/' . ltrim($slide['image_url'], '/'));
+                                                $fallback_url = '/images/jshuk-logo.png'; // fallback if missing
                                                 ?>
                                                 <img src="<?= htmlspecialchars($display_url) ?>" 
                                                      alt="<?= htmlspecialchars($slide['title']) ?>" 
                                                      style="width: 60px; height: 40px; object-fit: cover; border-radius: 4px;"
+                                                     onerror="this.onerror=null;this.src='<?= $fallback_url ?>';"
                                                      title="Original: <?= htmlspecialchars($slide['image_url']) ?>">
                                             </td>
                                             <td>
                                                 <div style="display: flex; flex-direction: column; align-items: center;">
-                                                    <img src="<?= htmlspecialchars($display_url) ?>" alt="Preview" style="width: 80px; height: 40px; object-fit: cover; border-radius: 4px; margin-bottom: 6px;">
-                                                    <button class="btn btn-sm btn-outline-secondary" onclick="openImageEditModal(<?= $slide['id'] ?>, '<?= htmlspecialchars($slide['image_url'], ENT_QUOTES) ?>')">Edit Image</button>
+                                                    <img src="<?= htmlspecialchars($display_url) ?>" alt="Preview" style="width: 80px; height: 40px; object-fit: cover; border-radius: 4px; margin-bottom: 6px;" onerror="this.onerror=null;this.src='<?= $fallback_url ?>';">
+                                                    <button class="btn btn-sm btn-outline-secondary" onclick="openImageEditModal(<?= $slide['id'] ?>, '/<?= ltrim($slide['image_url'], '/') ?>')">Edit Image</button>
                                                 </div>
                                             </td>
                                             <td>
