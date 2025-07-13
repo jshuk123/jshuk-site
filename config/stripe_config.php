@@ -2,6 +2,13 @@
 // Stripe API configuration - Keys are defined in config.php
 // Initialize Stripe
 require_once __DIR__ . '/../vendor/autoload.php';
+
+// Set Stripe API key from environment variable
+if (!defined('STRIPE_SECRET_KEY') || empty(STRIPE_SECRET_KEY)) {
+    error_log('Stripe secret key not configured. Please set STRIPE_SECRET_KEY in your .env file.');
+    throw new Exception('Stripe configuration error: Secret key not found');
+}
+
 \Stripe\Stripe::setApiKey(STRIPE_SECRET_KEY);
 
 // Subscription plan IDs
