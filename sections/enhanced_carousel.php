@@ -213,15 +213,58 @@ if ($numSlides === 0) {
     $numSlides = 1;
 }
 
+// Set loop mode based on slide count
+$loop = count($slides) >= 3 ? 'true' : 'false';
+
 // Generate carousel HTML with enhanced features
-echo generateCarouselHTML($valid_slides, 'enhanced-homepage-carousel', [
-    'autoplay' => true,
-    'autoplayDelay' => 6000,
-    'showNavigation' => true,
-    'showPagination' => true,
-    'effect' => 'fade',
-    'height' => '600px'
-]);
+echo '<section class="carousel-section" data-scroll>';
+echo '<div class="carousel-wrapper">';
+echo '<div class="swiper enhanced-homepage-carousel">';
+echo '<div class="swiper-wrapper">';
+
+// 💡 DYNAMIC SWIPER-COMPATIBLE HTML RENDERING
+foreach ($slides as $index => $slide) {
+    $image = '/' . ltrim($slide['image_url'], '/');
+    $title = htmlspecialchars($slide['title']);
+    $subtitle = htmlspecialchars($slide['subtitle'] ?? '');
+    $cta = trim($slide['cta_text'] ?? '');
+    $link = trim($slide['cta_link'] ?? '');
+    $sponsored = $slide['sponsored'] == 1;
+    
+    echo '<div class="swiper-slide carousel-slide" style="background-image: url(\'' . $image . '\')" data-slide-id="' . $slide['id'] . '">';
+    echo '<div class="carousel-overlay">';
+    echo '<div class="carousel-content">';
+    echo '<h2 class="carousel-title">' . $title . '</h2>';
+    
+    if (!empty($subtitle)) {
+        echo '<p class="carousel-subtitle">' . $subtitle . '</p>';
+    }
+    
+    if (!empty($cta) && !empty($link)) {
+        echo '<a href="' . htmlspecialchars($link) . '" class="carousel-cta" data-slide-id="' . $slide['id'] . '">';
+        echo htmlspecialchars($cta);
+        echo '</a>';
+    }
+    
+    if ($sponsored) {
+        echo '<span class="sponsored-badge">Sponsored</span>';
+    }
+    
+    echo '</div>'; // carousel-content
+    echo '</div>'; // carousel-overlay
+    echo '</div>'; // swiper-slide
+}
+
+echo '</div>'; // swiper-wrapper
+
+// Add navigation and pagination
+echo '<div class="swiper-button-prev carousel-nav-prev"></div>';
+echo '<div class="swiper-button-next carousel-nav-next"></div>';
+echo '<div class="swiper-pagination carousel-pagination"></div>';
+
+echo '</div>'; // swiper
+echo '</div>'; // carousel-wrapper
+echo '</section>';
 ?>
 
 <style>
@@ -598,7 +641,7 @@ function initEnhancedCarousel() {
     
     try {
         const swiper = new Swiper('.enhanced-homepage-carousel', {
-            loop: true,
+            loop: <?= $loop ?>,
             autoplay: {
                 delay: 6000,
                 disableOnInteraction: false,
