@@ -4,7 +4,6 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 require_once __DIR__ . '/../config/config.php';
 require_once __DIR__ . '/../config/constants.php';
-require_once __DIR__ . '/../config/db_connect.php';
 
 // Include helper functions
 if (file_exists(__DIR__ . '/helpers.php')) {

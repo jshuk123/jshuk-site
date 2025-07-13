@@ -1,6 +1,5 @@
 <?php
 require_once '../config/config.php';
-require_once '../config/db_connect.php';
 
 // Check admin access (reuse logic from businesses.php)
 function checkAdminAccess() {

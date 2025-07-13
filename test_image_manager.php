@@ -1,6 +1,5 @@
 <?php
 require_once 'config/config.php';
-require_once 'config/db_connect.php';
 require_once 'includes/ImageManager.php';
 
 // Check if user is logged in

@@ -9,16 +9,6 @@ if (!defined('APP_DEBUG')) {
     require_once __DIR__ . '/../config/config.php';
 }
 
-// Ensure $pdo is available
-if (!isset($pdo)) {
-    error_log("Ad Renderer: PDO not available, attempting to connect");
-    try {
-        require_once __DIR__ . '/../config/db_connect.php';
-    } catch (Exception $e) {
-        error_log("Ad Renderer: Failed to load database connection: " . $e->getMessage());
-    }
-}
-
 /**
  * Render an ad for a specific zone with optional targeting
  * 

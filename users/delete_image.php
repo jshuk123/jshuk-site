@@ -14,7 +14,7 @@ header('Content-Type: application/json');
 define('APP_DEBUG', true);
 
 // Include database connection
-require_once(__DIR__ . '/../config/db_connect.php');
+require_once(__DIR__ . '/../config/config.php');
 
 // Check if user is logged in
 if (!isset($_SESSION['user_id'])) {
@@ -24,14 +24,7 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 // Initialize database connection
-try {
-    $db = Database::getInstance();
-    $pdo = $db->getConnection();
-} catch (Exception $e) {
-    http_response_code(500);
-    echo json_encode(['success' => false, 'message' => 'Database connection failed']);
-    exit;
-}
+// (No need to instantiate Database class, $pdo is already available)
 
 $image_id = $_POST['id'] ?? 0;
 $user_id = $_SESSION['user_id'];

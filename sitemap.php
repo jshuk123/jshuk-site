@@ -2,7 +2,6 @@
 header('Content-Type: application/xml; charset=utf-8');
 require_once 'config/config.php';
 require_once 'config/constants.php';
-require_once 'config/db_connect.php';
 
 echo '<?xml version="1.0" encoding="UTF-8"?>';
 ?>

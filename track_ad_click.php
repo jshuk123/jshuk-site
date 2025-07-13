@@ -5,7 +5,7 @@
  */
 
 session_start();
-require_once 'config/db_connect.php';
+require_once 'config/config.php';
 
 // Get parameters
 $adId = (int)($_GET['id'] ?? 0);
@@ -18,8 +18,7 @@ if (!$adId || !$targetUrl) {
 }
 
 try {
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    // $pdo is already available from config.php
     
     // Verify the ad exists and is active
     $stmt = $pdo->prepare("

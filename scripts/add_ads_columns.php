@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once '../config/db_connect.php';
+require_once '../config/config.php';
 
 // Check if user is logged in as admin
 if (!isset($_SESSION['admin_id']) || empty($_SESSION['admin_id'])) {
@@ -77,8 +77,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !isset($_POST['confirm_migration'])
 
 // Proceed with migration
 try {
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    // $pdo is already available from config.php
     
     $results = [];
     

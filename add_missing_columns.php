@@ -1,9 +1,8 @@
 <?php
-require_once 'config/db_connect.php';
+require_once 'config/config.php';
 
 try {
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    // $pdo is already available from config.php
     
     echo "Adding missing columns to ads table...\n\n";
     

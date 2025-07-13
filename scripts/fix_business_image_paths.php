@@ -1,8 +1,8 @@
 <?php
 // Script to fix legacy/incorrect business image paths in the database and filesystem
-require_once __DIR__ . '/../config/db_connect.php';
+require_once __DIR__ . '/../config/config.php';
 
-$pdo = Database::getInstance()->getConnection();
+// $pdo is already available from config.php
 
 function is_numeric_folder($path_part) {
     return preg_match('/^\d+$/', $path_part);

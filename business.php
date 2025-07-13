@@ -11,7 +11,6 @@ require_once 'config/security.php';
 
 // Include configuration
 require_once 'config/config.php';
-require_once 'config/db_connect.php';
 require_once 'includes/ad_renderer.php';
 require_once 'includes/subscription_functions.php';
 

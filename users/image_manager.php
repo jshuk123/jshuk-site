@@ -12,7 +12,6 @@ ini_set('log_errors', 1);
 ini_set('error_log', dirname(__DIR__) . '/logs/php_errors.log');
 
 require_once '../config/config.php';
-require_once '../config/db_connect.php';
 require_once '../includes/ImageManager.php';
 
 // Function to send JSON response and exit

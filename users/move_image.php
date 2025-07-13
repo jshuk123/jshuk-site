@@ -18,14 +18,7 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 // Initialize database connection
-try {
-    $db = Database::getInstance();
-    $pdo = $db->getConnection();
-} catch (Exception $e) {
-    http_response_code(500);
-    echo json_encode(['success' => false, 'message' => 'Database connection failed']);
-    exit;
-}
+// (No need to instantiate Database class, $pdo is already available)
 
 // Get JSON data
 $json = file_get_contents('php://input');

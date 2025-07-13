@@ -7,7 +7,6 @@
 // Start session and include necessary files
 session_start();
 require_once '../config/config.php';
-require_once '../config/db_connect.php';
 require_once '../includes/mail_functions.php';
 
 // Set content type to JSON

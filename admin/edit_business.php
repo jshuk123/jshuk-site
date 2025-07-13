@@ -1,6 +1,5 @@
 <?php
 require_once '../config/config.php';
-require_once '../config/db_connect.php';
 require_once '../includes/subscription_functions.php';
 
 // Check admin access (reuse logic from businesses.php)
