@@ -242,8 +242,8 @@ $categories = $pdo->query("SELECT c.*, cm.short_description, cm.seo_title, cm.se
                     <?php endif; ?>
                   </td>
                   <td>
-                    <span class="iconify icon-preview" data-icon="<?php echo htmlspecialchars($cat['icon'] ?? 'mdi:folder'); ?>"></span>
-                    <div class="text-muted small"><?php echo htmlspecialchars($cat['icon'] ?? 'mdi:folder'); ?></div>
+                    <span class="iconify icon-preview" data-icon="<?php echo htmlspecialchars($cat['icon'] ?? 'fa-folder'); ?>"></span>
+                    <div class="text-muted small"><?php echo htmlspecialchars($cat['icon'] ?? 'fa-folder'); ?></div>
                   </td>
                   <td><span class="badge bg-info"> <?php echo $cat['business_count']; ?> </span></td>
                   <td class="action-btns">

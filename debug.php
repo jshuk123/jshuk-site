@@ -18,7 +18,6 @@ echo "<h2>Test 2: File Existence</h2>";
 $files_to_check = [
     'config/config.php',
     'config/constants.php', 
-    'config/db_connect.php',
     'includes/helpers.php',
     'includes/cache.php',
     'includes/subscription_functions.php',
