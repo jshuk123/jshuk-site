@@ -23,6 +23,49 @@ $zone = $zone ?? 'homepage';
 $location = 'all'; // Force location to all for debug
 $limit = $limit ?? 10;
 
+// --- DIAGNOSTIC: Test simple query first ---
+echo '<div style="background:red;color:white;z-index:9999;position:relative;padding:10px;">';
+echo '<strong>🔍 DIAGNOSTIC TEST:</strong><br>';
+echo 'Zone: [' . $zone . ']<br>';
+echo 'Location: [' . $location . ']<br>';
+echo 'Today: [' . date('Y-m-d') . ']<br>';
+
+// Test 1: Simple query without filters
+try {
+    $test_stmt = $pdo->query("SELECT COUNT(*) as total FROM carousel_slides");
+    $total_count = $test_stmt->fetchColumn();
+    echo 'Total slides in DB: ' . $total_count . '<br>';
+    
+    // Test 2: Show all slides
+    $test_stmt2 = $pdo->query("SELECT id, title, zone, active, location, start_date, end_date FROM carousel_slides ORDER BY id DESC");
+    $all_slides = $test_stmt2->fetchAll(PDO::FETCH_ASSOC);
+    echo 'All slides: <pre>' . print_r($all_slides, true) . '</pre>';
+    
+    // Test 3: Test the exact query that should work
+    $test_query = $pdo->prepare("
+        SELECT * FROM carousel_slides
+        WHERE active = 1
+          AND (location = :loc OR location = 'all')
+          AND TRIM(zone) = :zone
+          AND (start_date IS NULL OR start_date <= :today)
+          AND (end_date IS NULL OR end_date >= :today)
+        ORDER BY priority DESC, sponsored DESC, created_at DESC
+        LIMIT :limit
+    ");
+    $test_query->bindParam(':loc', $location, PDO::PARAM_STR);
+    $test_query->bindParam(':zone', $zone, PDO::PARAM_STR);
+    $test_query->bindParam(':today', date('Y-m-d'), PDO::PARAM_STR);
+    $test_query->bindParam(':limit', $limit, PDO::PARAM_INT);
+    $test_query->execute();
+    $test_slides = $test_query->fetchAll(PDO::FETCH_ASSOC);
+    echo 'Test query result: <pre>' . print_r($test_slides, true) . '</pre>';
+    
+} catch (Exception $e) {
+    echo 'ERROR: ' . htmlspecialchars($e->getMessage()) . '<br>';
+}
+echo '</div>';
+// --- END DIAGNOSTIC ---
+
 $slides = getCarouselSlides($pdo, $zone, $limit, $location);
 
 // Debug info: collect skipped slides and reasons
