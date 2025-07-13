@@ -133,7 +133,7 @@ function calculateSubscriptionStatus($subscription) {
 /**
  * Get all available subscription plans
  */
-function getSubscriptionPlans($pdo) {
+function getActiveSubscriptionPlans($pdo) {
     $stmt = $pdo->prepare("
         SELECT * FROM subscription_plans 
         WHERE status = 'active' 
@@ -188,7 +188,7 @@ if ($subscription_status['is_expired'] && $current_subscription) {
 }
 
 // Get available plans and advertising slots
-$plans = getSubscriptionPlans($pdo);
+$plans = getActiveSubscriptionPlans($pdo);
 $ad_slots = getAdvertisingSlots($pdo);
 
 // Get user's subscription limits and features
