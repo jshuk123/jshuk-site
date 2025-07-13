@@ -46,19 +46,55 @@ $numSlides = count($valid_slides);
 if ($debug) {
     echo '<div style="background:#fffbe6;border:2px solid #ffe58f;padding:16px;margin-bottom:16px;font-size:15px;">';
     echo '<strong>🛠️ Carousel Debug Info</strong><br>';
-    echo 'Zone: <b>' . htmlspecialchars($zone) . '</b> | Location: <b>' . htmlspecialchars($location) . '</b> | Today: <b>' . $today . '</b><br>';
+    echo 'Zone: <b>' . htmlspecialchars((string)$zone) . '</b> | Location: <b>' . htmlspecialchars((string)$location) . '</b> | Today: <b>' . $today . '</b><br>';
+    echo '<b>All slides returned from DB (' . count($slides) . '):</b><br>';
+    if (!empty($slides)) {
+        echo '<ul>';
+        foreach ($slides as $slide) {
+            echo '<li><b>' . htmlspecialchars((string)$slide['title']) . '</b> (ID: ' . htmlspecialchars((string)$slide['id']) . ')';
+            echo '<ul>';
+            foreach ($slide as $k => $v) {
+                echo '<li>' . htmlspecialchars((string)$k) . ': <code>' . htmlspecialchars((string)$v) . '</code></li>';
+            }
+            // Show which filters would skip this slide
+            $reasons = [];
+            if (empty($slide['image_url']) || strpos($slide['image_url'], 'data:') !== false) {
+                $reasons[] = 'Missing or invalid image_url';
+            } else if (!file_exists(__DIR__ . '/../' . $slide['image_url'])) {
+                $reasons[] = 'Image file does not exist: ' . $slide['image_url'];
+            }
+            if (!$slide['active']) {
+                $reasons[] = 'Inactive';
+            }
+            if (!empty($slide['start_date']) && $slide['start_date'] > $today) {
+                $reasons[] = 'Start date in future';
+            }
+            if (!empty($slide['end_date']) && $slide['end_date'] < $today) {
+                $reasons[] = 'End date in past';
+            }
+            if (!empty($reasons)) {
+                echo '<li style="color:#d48806">Skipped: ' . implode('; ', $reasons) . '</li>';
+            } else {
+                echo '<li style="color:green">This slide is valid and will be shown.</li>';
+            }
+            echo '</ul></li>';
+        }
+        echo '</ul>';
+    } else {
+        echo '<i>No slides returned from DB.</i>';
+    }
     echo 'Valid slides found: <b>' . $numSlides . '</b><br>';
     if ($numSlides > 0) {
         echo '<ul>';
         foreach ($valid_slides as $slide) {
-            echo '<li><b>' . htmlspecialchars($slide['title']) . '</b> (' . htmlspecialchars($slide['image_url']) . ')</li>';
+            echo '<li><b>' . htmlspecialchars((string)$slide['title']) . '</b> (' . htmlspecialchars((string)$slide['image_url']) . ')</li>';
         }
         echo '</ul>';
     }
     if (!empty($skipped_slides)) {
         echo '<span style="color:#d48806">Skipped slides:</span><ul>';
         foreach ($skipped_slides as $skipped) {
-            echo '<li><b>' . htmlspecialchars($skipped['slide']['title']) . '</b>: ' . implode('; ', $skipped['reasons']) . '</li>';
+            echo '<li><b>' . htmlspecialchars((string)$skipped['slide']['title']) . '</b>: ' . implode('; ', $skipped['reasons']) . '</li>';
         }
         echo '</ul>';
     }
