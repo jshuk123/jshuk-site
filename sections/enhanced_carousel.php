@@ -111,7 +111,7 @@ echo '</div>'; // carousel-wrapper
 echo '</section>';
 ?>
 
-<div id="carousel-loader" class="loader">Loading carousel...</div>
+<div id="carousel-loader" class="spinner">Loading slides...</div>
 
 <style>
 /* Enhanced Carousel Styles */
@@ -144,6 +144,9 @@ echo '</section>';
     background-color: #111;
     opacity: 0;
     transition: opacity 0.5s ease-in-out;
+}
+.carousel-ready .swiper-slide {
+  opacity: 1;
 }
 
 .carousel-overlay {
@@ -449,16 +452,16 @@ echo '</section>';
   height: auto;
   display: block;
 }
-#carousel-loader.loader {
+#carousel-loader {
   position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0,0,0,0.7);
-  color: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-  font-size: 2rem;
+  top: 200px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  color: white;
+}
+.carousel-ready #carousel-loader {
+  display: none;
 }
 </style>
 
@@ -489,11 +492,8 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function showSlidesAndInit() {
-        // Fade in all slides
-        slides.forEach(slide => { slide.style.opacity = '1'; });
-        // Hide loader
-        var loader = document.getElementById('carousel-loader');
-        if (loader) loader.style.display = 'none';
+        // Add .carousel-ready to <body>
+        document.body.classList.add('carousel-ready');
         // Now initialize Swiper
         initEnhancedCarousel();
     }
