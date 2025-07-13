@@ -99,6 +99,57 @@ $loop = count($valid_slides) >= 3 ? 'true' : 'false';
 <div id="carousel-loader" class="spinner">Loading slides...</div>
 
 <style>
+.swiper-container {
+  width: 100%;
+  height: 600px;
+  position: relative;
+  overflow: hidden;
+}
+
+.swiper-wrapper {
+  display: flex;
+  transition-property: transform;
+  box-sizing: content-box;
+}
+
+.swiper-slide {
+  flex-shrink: 0;
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.carousel-section {
+  position: relative;
+  z-index: 1;
+}
+
+.carousel-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.carousel-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 2;
+}
+
+.carousel-content {
+  color: white;
+  text-align: center;
+  padding: 20px;
+}
+
 /* Enhanced Carousel Styles */
 .carousel-section {
     margin: 0;
