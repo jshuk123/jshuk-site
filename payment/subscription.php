@@ -54,26 +54,46 @@ if (!$user) {
  * Get current subscription with enhanced error handling
  */
 function getCurrentSubscription($pdo, $user_id) {
-    $stmt = $pdo->prepare("
-        SELECT 
-            s.*,
-            p.name as plan_name, 
-            p.price, 
-            p.annual_price,
-            p.description, 
-            p.features, 
-            p.whatsapp_features,
-            p.newsletter_features,
-            p.trial_period_days
-        FROM user_subscriptions s
-        JOIN subscription_plans p ON s.plan_id = p.id
-        WHERE s.user_id = ? 
-        AND s.status IN ('active', 'trialing', 'past_due')
-        ORDER BY s.created_at DESC 
-        LIMIT 1
-    ");
-    $stmt->execute([$user_id]);
-    return $stmt->fetch();
+    try {
+        // Check if required tables exist
+        $stmt = $pdo->prepare("SHOW TABLES LIKE 'user_subscriptions'");
+        $stmt->execute();
+        if (!$stmt->fetch()) {
+            // Table doesn't exist, return null
+            return null;
+        }
+        
+        $stmt = $pdo->prepare("SHOW TABLES LIKE 'subscription_plans'");
+        $stmt->execute();
+        if (!$stmt->fetch()) {
+            // Table doesn't exist, return null
+            return null;
+        }
+        
+        $stmt = $pdo->prepare("
+            SELECT 
+                s.*,
+                p.name as plan_name, 
+                p.price, 
+                p.annual_price,
+                p.description, 
+                p.features, 
+                p.whatsapp_features,
+                p.newsletter_features,
+                p.trial_period_days
+            FROM user_subscriptions s
+            JOIN subscription_plans p ON s.plan_id = p.id
+            WHERE s.user_id = ? 
+            AND s.status IN ('active', 'trialing', 'past_due')
+            ORDER BY s.created_at DESC 
+            LIMIT 1
+        ");
+        $stmt->execute([$user_id]);
+        return $stmt->fetch();
+    } catch (PDOException $e) {
+        // If there's any error, return null
+        return null;
+    }
 }
 
 /**
@@ -134,25 +154,51 @@ function calculateSubscriptionStatus($subscription) {
  * Get all available subscription plans
  */
 function getActiveSubscriptionPlans($pdo) {
-    $stmt = $pdo->prepare("
-        SELECT * FROM subscription_plans 
-        ORDER BY price ASC
-    ");
-    $stmt->execute();
-    return $stmt->fetchAll();
+    try {
+        // Check if subscription_plans table exists
+        $stmt = $pdo->prepare("SHOW TABLES LIKE 'subscription_plans'");
+        $stmt->execute();
+        if (!$stmt->fetch()) {
+            // Table doesn't exist, return empty array
+            return [];
+        }
+        
+        $stmt = $pdo->prepare("
+            SELECT * FROM subscription_plans 
+            ORDER BY price ASC
+        ");
+        $stmt->execute();
+        return $stmt->fetchAll();
+    } catch (PDOException $e) {
+        // If there's any error, return empty array
+        return [];
+    }
 }
 
 /**
  * Get available advertising slots
  */
 function getAdvertisingSlots($pdo) {
-    $stmt = $pdo->prepare("
-        SELECT * FROM advertising_slots 
-        WHERE current_slots < max_slots 
-        ORDER BY monthly_price ASC
-    ");
-    $stmt->execute();
-    return $stmt->fetchAll();
+    try {
+        // Check if advertising_slots table exists
+        $stmt = $pdo->prepare("SHOW TABLES LIKE 'advertising_slots'");
+        $stmt->execute();
+        if (!$stmt->fetch()) {
+            // Table doesn't exist, return empty array
+            return [];
+        }
+        
+        $stmt = $pdo->prepare("
+            SELECT * FROM advertising_slots 
+            WHERE current_slots < max_slots 
+            ORDER BY monthly_price ASC
+        ");
+        $stmt->execute();
+        return $stmt->fetchAll();
+    } catch (PDOException $e) {
+        // If there's any error, return empty array
+        return [];
+    }
 }
 
 /**
