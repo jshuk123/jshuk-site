@@ -119,11 +119,10 @@ $migration_steps = [
             ('Elite', 19.99, 199.99, 'Maximum exposure and premium features', '[\"Top search placement\", \"Featured in newsletter\", \"Premium WhatsApp status\", \"Priority support\", \"Analytics dashboard\"]', NULL, NULL)
             ON DUPLICATE KEY UPDATE updated_at = CURRENT_TIMESTAMP",
             
-            "INSERT INTO advertising_slots (name, description, monthly_price, annual_price, max_slots, position, status) VALUES
+            "INSERT IGNORE INTO advertising_slots (name, description, monthly_price, annual_price, max_slots, position, status) VALUES
             ('Top Homepage Banner', 'Premium banner at the top of the homepage for maximum visibility', 29.99, 299.99, 1, 'header', 'active'),
             ('Sidebar Featured', 'Featured listing in the sidebar on all pages', 19.99, 199.99, 3, 'sidebar', 'active'),
-            ('Footer Banner', 'Banner advertisement in the footer area', 14.99, 149.99, 2, 'footer', 'active')
-            ON DUPLICATE KEY UPDATE updated_at = CURRENT_TIMESTAMP"
+            ('Footer Banner', 'Banner advertisement in the footer area', 14.99, 149.99, 2, 'footer', 'active')"
         ]
     ],
     'indexes' => [
