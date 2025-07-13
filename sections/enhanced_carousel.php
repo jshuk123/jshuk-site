@@ -65,35 +65,27 @@ echo '<div class="swiper enhanced-homepage-carousel">';
 echo '<div class="swiper-wrapper">';
 
 // 💡 DYNAMIC SWIPER-COMPATIBLE HTML RENDERING
-foreach ($valid_slides as $index => $slide) {
-    $image = '/' . ltrim($slide['image_url'], '/');
+foreach ($valid_slides as $slide) {
+    $imgSrc = '/' . ltrim($slide['image_url'], '/');
     $title = htmlspecialchars($slide['title']);
     $subtitle = htmlspecialchars($slide['subtitle'] ?? '');
     $cta = trim($slide['cta_text'] ?? '');
     $link = trim($slide['cta_link'] ?? '');
     $sponsored = $slide['sponsored'] == 1;
-    
-    echo '<div class="swiper-slide carousel-slide" style="background-image: url(\'' . $image . '\')" data-slide-id="' . $slide['id'] . '">';
-    // Preload background image
-    echo '<img src="' . htmlspecialchars($image) . '" alt="" style="display:none;" loading="eager" />';
+    echo '<div class="swiper-slide">';
+    echo '<img src="' . htmlspecialchars($imgSrc) . '" alt="' . $title . '" class="carousel-img" loading="eager" />';
     echo '<div class="carousel-overlay">';
     echo '<div class="carousel-content">';
     echo '<h2 class="carousel-title">' . $title . '</h2>';
-    
     if (!empty($subtitle)) {
         echo '<p class="carousel-subtitle">' . $subtitle . '</p>';
     }
-    
     if (!empty($cta) && !empty($link)) {
-        echo '<a href="' . htmlspecialchars($link) . '" class="carousel-cta" data-slide-id="' . $slide['id'] . '">';
-        echo htmlspecialchars($cta);
-        echo '</a>';
+        echo '<a href="' . htmlspecialchars($link) . '" class="carousel-cta">' . htmlspecialchars($cta) . '</a>';
     }
-    
     if ($sponsored) {
         echo '<span class="sponsored-badge">Sponsored</span>';
     }
-    
     echo '</div>'; // carousel-content
     echo '</div>'; // carousel-overlay
     echo '</div>'; // swiper-slide
@@ -136,34 +128,23 @@ echo '</section>';
     border-radius: 0;
 }
 
-.carousel-slide {
-    height: 600px;
-    background-size: cover !important;
-    background-repeat: no-repeat !important;
-    background-position: center !important;
-    background-color: #111;
-    opacity: 0;
-    transition: opacity 0.5s ease-in-out;
+.swiper-slide {
+  position: relative;
+  height: 600px;
+  overflow: hidden;
 }
-.carousel-ready .swiper-slide {
-  opacity: 1;
+.carousel-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
-
 .carousel-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(
-        135deg,
-        rgba(0, 0, 0, 0.4) 0%,
-        rgba(0, 0, 0, 0.2) 50%,
-        rgba(0, 0, 0, 0.6) 100%
-    );
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.3);
+  color: white;
+  z-index: 2;
 }
 
 .carousel-content {
