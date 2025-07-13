@@ -111,6 +111,8 @@ echo '</div>'; // carousel-wrapper
 echo '</section>';
 ?>
 
+<div id="carousel-loader" class="loader">Loading carousel...</div>
+
 <style>
 /* Enhanced Carousel Styles */
 .carousel-section {
@@ -447,238 +449,261 @@ echo '</section>';
   height: auto;
   display: block;
 }
+#carousel-loader.loader {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.7);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  font-size: 2rem;
+}
 </style>
 
 <script>
 // Enhanced carousel initialization
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('🎠 Enhanced carousel initialization started...');
-    
-    // Check if Swiper is available
-    if (typeof Swiper !== 'undefined') {
-        console.log('✅ Swiper available, initializing enhanced carousel...');
-        initEnhancedCarousel();
-    } else {
-        console.log('❌ Swiper not available, waiting...');
-        setTimeout(function() {
-            if (typeof Swiper !== 'undefined') {
-                console.log('✅ Swiper found after delay, initializing...');
-                initEnhancedCarousel();
-            } else {
-                console.error('❌ Swiper still not available');
-            }
-        }, 1000);
-    }
-});
+    // Gather all background URLs
+    const slides = Array.from(document.querySelectorAll('.swiper-slide'));
+    const backgroundUrls = slides.map(slide => {
+        const match = slide.style.backgroundImage.match(/url\(["']?(.*?)["']?\)/);
+        return match ? match[1] : null;
+    }).filter(Boolean);
 
-function initEnhancedCarousel() {
-    console.log('🔍 Initializing enhanced carousel...');
-    const carousel = document.querySelector('.enhanced-homepage-carousel');
-    if (!carousel) {
-        console.error('❌ Enhanced carousel element not found');
-        return;
+    let loaded = 0;
+    if (backgroundUrls.length === 0) {
+        showSlidesAndInit();
+    } else {
+        backgroundUrls.forEach(url => {
+            const img = new Image();
+            img.src = url;
+            img.onload = img.onerror = () => {
+                loaded++;
+                if (loaded === backgroundUrls.length) {
+                    showSlidesAndInit();
+                }
+            };
+        });
     }
-    
-    console.log('✅ Enhanced carousel element found, creating Swiper instance...');
-    
-    try {
-        const swiper = new Swiper('.enhanced-homepage-carousel', {
-            loop: <?= $loop ?>,
-            autoplay: {
-                delay: 6000,
-                disableOnInteraction: false,
-                pauseOnMouseEnter: true,
-            },
-            effect: 'fade',
-            fadeEffect: {
-                crossFade: true
-            },
-            speed: 1000,
-            pagination: {
-                el: '.carousel-pagination',
-                clickable: true,
-                dynamicBullets: true,
-            },
-            navigation: {
-                nextEl: '.carousel-nav-next',
-                prevEl: '.carousel-nav-prev',
-            },
-            on: {
-                init: function() {
-                    console.log('✅ Enhanced Swiper initialized successfully');
-                    // Remove loading state
-                    const carouselSection = document.querySelector('.carousel-section');
-                    if (carouselSection) {
-                        carouselSection.classList.remove('loading');
-                    }
-                    
-                    // Add progress bar
-                    addProgressBar();
-                },
-                slideChange: function() {
-                    console.log('🔄 Enhanced slide changed to: ' + this.activeIndex);
-                    updateProgressBar();
-                },
-                slideChangeTransitionStart: function() {
-                    // Add slide transition effects
-                    const activeSlide = this.slides[this.activeIndex];
-                    if (activeSlide) {
-                        activeSlide.style.transform = 'scale(1.02)';
-                    }
-                },
-                slideChangeTransitionEnd: function() {
-                    // Reset slide scale
-                    this.slides.forEach(slide => {
-                        slide.style.transform = 'scale(1)';
-                    });
-                }
-            }
-        });
-        
-        console.log('🎉 Enhanced carousel setup complete');
-        
-        // Add keyboard navigation
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'ArrowLeft') {
-                swiper.slidePrev();
-            } else if (e.key === 'ArrowRight') {
-                swiper.slideNext();
-            }
-        });
-        
-        // Pause autoplay on hover
-        carousel.addEventListener('mouseenter', function() {
-            swiper.autoplay.stop();
-        });
-        
-        carousel.addEventListener('mouseleave', function() {
-            swiper.autoplay.start();
-        });
-        
-        // Add touch gestures for mobile
-        let touchStartX = 0;
-        let touchEndX = 0;
-        
-        carousel.addEventListener('touchstart', function(e) {
-            touchStartX = e.changedTouches[0].screenX;
-        });
-        
-        carousel.addEventListener('touchend', function(e) {
-            touchEndX = e.changedTouches[0].screenX;
-            handleSwipe();
-        });
-        
-        function handleSwipe() {
-            const swipeThreshold = 50;
-            const diff = touchStartX - touchEndX;
-            
-            if (Math.abs(diff) > swipeThreshold) {
-                if (diff > 0) {
-                    swiper.slideNext();
-                } else {
-                    swiper.slidePrev();
-                }
-            }
+
+    function showSlidesAndInit() {
+        // Fade in all slides
+        slides.forEach(slide => { slide.style.opacity = '1'; });
+        // Hide loader
+        var loader = document.getElementById('carousel-loader');
+        if (loader) loader.style.display = 'none';
+        // Now initialize Swiper
+        initEnhancedCarousel();
+    }
+
+    // Move Swiper initialization into a function
+    window.initEnhancedCarousel = function() {
+        console.log('🔍 Initializing enhanced carousel...');
+        const carousel = document.querySelector('.enhanced-homepage-carousel');
+        if (!carousel) {
+            console.error('❌ Enhanced carousel element not found');
+            return;
         }
         
-    } catch (error) {
-        console.error('❌ Error initializing enhanced Swiper:', error);
-    }
-}
-
-function addProgressBar() {
-    const carousel = document.querySelector('.carousel-section');
-    if (carousel) {
-        const progressBar = document.createElement('div');
-        progressBar.className = 'carousel-progress';
-        progressBar.innerHTML = '<div class="carousel-progress-bar"></div>';
-        carousel.appendChild(progressBar);
-    }
-}
-
-function updateProgressBar() {
-    const progressBar = document.querySelector('.carousel-progress-bar');
-    if (progressBar) {
-        progressBar.style.width = '0%';
-        progressBar.style.transition = 'none';
+        console.log('✅ Enhanced carousel element found, creating Swiper instance...');
         
-        setTimeout(() => {
-            progressBar.style.transition = 'width 6s linear';
-            progressBar.style.width = '100%';
-        }, 100);
-    }
-}
-
-// Analytics tracking
-document.addEventListener('DOMContentLoaded', function() {
-    // Track CTA clicks
-    document.querySelectorAll('.carousel-cta').forEach(function(cta) {
-        cta.addEventListener('click', function(e) {
-            const slideId = this.getAttribute('data-slide-id');
-            if (slideId) {
-                // Log click event
-                fetch('/api/carousel-analytics.php', {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({
-                        slide_id: slideId,
-                        event_type: 'click'
-                    })
-                }).catch(error => {
-                    console.log('Analytics tracking failed:', error);
-                });
+        try {
+            const swiper = new Swiper('.enhanced-homepage-carousel', {
+                loop: <?= $loop ?>,
+                autoplay: {
+                    delay: 6000,
+                    disableOnInteraction: false,
+                    pauseOnMouseEnter: true,
+                },
+                effect: 'fade',
+                fadeEffect: {
+                    crossFade: true
+                },
+                speed: 1000,
+                pagination: {
+                    el: '.carousel-pagination',
+                    clickable: true,
+                    dynamicBullets: true,
+                },
+                navigation: {
+                    nextEl: '.carousel-nav-next',
+                    prevEl: '.carousel-nav-prev',
+                },
+                on: {
+                    init: function() {
+                        console.log('✅ Enhanced Swiper initialized successfully');
+                        // Remove loading state
+                        const carouselSection = document.querySelector('.carousel-section');
+                        if (carouselSection) {
+                            carouselSection.classList.remove('loading');
+                        }
+                        addProgressBar();
+                    },
+                    slideChange: function() {
+                        console.log('🔄 Enhanced slide changed to: ' + this.activeIndex);
+                        updateProgressBar();
+                    },
+                    slideChangeTransitionStart: function() {
+                        // Add slide transition effects
+                        const activeSlide = this.slides[this.activeIndex];
+                        if (activeSlide) {
+                            activeSlide.style.transform = 'scale(1.02)';
+                        }
+                    },
+                    slideChangeTransitionEnd: function() {
+                        // Reset slide scale
+                        this.slides.forEach(slide => {
+                            slide.style.transform = 'scale(1)';
+                        });
+                    }
+                }
+            });
+            
+            console.log('🎉 Enhanced carousel setup complete');
+            
+            // Add keyboard navigation
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'ArrowLeft') {
+                    swiper.slidePrev();
+                } else if (e.key === 'ArrowRight') {
+                    swiper.slideNext();
+                }
+            });
+            
+            // Pause autoplay on hover
+            carousel.addEventListener('mouseenter', function() {
+                swiper.autoplay.stop();
+            });
+            
+            carousel.addEventListener('mouseleave', function() {
+                swiper.autoplay.start();
+            });
+            
+            // Add touch gestures for mobile
+            let touchStartX = 0;
+            let touchEndX = 0;
+            
+            carousel.addEventListener('touchstart', function(e) {
+                touchStartX = e.changedTouches[0].screenX;
+            });
+            
+            carousel.addEventListener('touchend', function(e) {
+                touchEndX = e.changedTouches[0].screenX;
+                handleSwipe();
+            });
+            
+            function handleSwipe() {
+                const swipeThreshold = 50;
+                const diff = touchStartX - touchEndX;
                 
-                // Google Analytics tracking (if available)
-                if (typeof gtag !== 'undefined') {
-                    gtag('event', 'carousel_click', {
-                        'slide_id': slideId,
-                        'slide_title': this.closest('.carousel-content').querySelector('.carousel-title')?.textContent || 'Unknown'
-                    });
+                if (Math.abs(diff) > swipeThreshold) {
+                    if (diff > 0) {
+                        swiper.slideNext();
+                    } else {
+                        swiper.slidePrev();
+                    }
                 }
             }
-        });
-    });
-    
-    // Track slide impressions
-    const observer = new IntersectionObserver(function(entries) {
-        entries.forEach(function(entry) {
-            if (entry.isIntersecting) {
-                const slideId = entry.target.getAttribute('data-slide-id');
+            
+        } catch (error) {
+            console.error('❌ Error initializing enhanced Swiper:', error);
+        }
+    }
+
+    function addProgressBar() {
+        const carousel = document.querySelector('.carousel-section');
+        if (carousel) {
+            const progressBar = document.createElement('div');
+            progressBar.className = 'carousel-progress';
+            progressBar.innerHTML = '<div class="carousel-progress-bar"></div>';
+            carousel.appendChild(progressBar);
+        }
+    }
+    function updateProgressBar() {
+        const progressBar = document.querySelector('.carousel-progress-bar');
+        if (progressBar) {
+            progressBar.style.width = '0%';
+            progressBar.style.transition = 'none';
+            setTimeout(() => {
+                progressBar.style.transition = 'width 6s linear';
+                progressBar.style.width = '100%';
+            }, 100);
+        }
+    }
+
+    // Analytics tracking
+    document.addEventListener('DOMContentLoaded', function() {
+        // Track CTA clicks
+        document.querySelectorAll('.carousel-cta').forEach(function(cta) {
+            cta.addEventListener('click', function(e) {
+                const slideId = this.getAttribute('data-slide-id');
                 if (slideId) {
+                    // Log click event
                     fetch('/api/carousel-analytics.php', {
                         method: 'POST',
                         headers: {'Content-Type': 'application/json'},
                         body: JSON.stringify({
                             slide_id: slideId,
-                            event_type: 'impression'
+                            event_type: 'click'
                         })
                     }).catch(error => {
                         console.log('Analytics tracking failed:', error);
                     });
+                    
+                    // Google Analytics tracking (if available)
+                    if (typeof gtag !== 'undefined') {
+                        gtag('event', 'carousel_click', {
+                            'slide_id': slideId,
+                            'slide_title': this.closest('.carousel-content').querySelector('.carousel-title')?.textContent || 'Unknown'
+                        });
+                    }
                 }
-            }
+            });
+        });
+        
+        // Track slide impressions
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+                if (entry.isIntersecting) {
+                    const slideId = entry.target.getAttribute('data-slide-id');
+                    if (slideId) {
+                        fetch('/api/carousel-analytics.php', {
+                            method: 'POST',
+                            headers: {'Content-Type': 'application/json'},
+                            body: JSON.stringify({
+                                slide_id: slideId,
+                                event_type: 'impression'
+                            })
+                        }).catch(error => {
+                            console.log('Analytics tracking failed:', error);
+                        });
+                    }
+                }
+            });
+        });
+        
+        document.querySelectorAll('.carousel-slide').forEach(function(slide) {
+            observer.observe(slide);
         });
     });
-    
-    document.querySelectorAll('.carousel-slide').forEach(function(slide) {
-        observer.observe(slide);
-    });
-});
 
-// Fade in slides only after background image is loaded
-document.addEventListener('DOMContentLoaded', function() {
-    document.querySelectorAll('.swiper-slide').forEach(slide => {
-        const bgUrlMatch = slide.style.backgroundImage.match(/url\(["']?(.*?)["']?\)/);
-        if (bgUrlMatch && bgUrlMatch[1]) {
-            const img = new Image();
-            img.src = bgUrlMatch[1];
-            img.onload = () => {
+    // Fade in slides only after background image is loaded
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.swiper-slide').forEach(slide => {
+            const bgUrlMatch = slide.style.backgroundImage.match(/url\(["']?(.*?)["']?\)/);
+            if (bgUrlMatch && bgUrlMatch[1]) {
+                const img = new Image();
+                img.src = bgUrlMatch[1];
+                img.onload = () => {
+                    slide.style.opacity = '1';
+                };
+            } else {
+                // If no background image, show the slide anyway
                 slide.style.opacity = '1';
-            };
-        } else {
-            // If no background image, show the slide anyway
-            slide.style.opacity = '1';
-        }
+            }
+        });
     });
 });
 </script> 
