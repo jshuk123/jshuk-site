@@ -1,20 +1,20 @@
 <?php
 /**
- * Test Carousel Functionality
- * This page tests the carousel system to identify any issues
+ * Test Homepage Carousel
+ * This page tests the carousel functionality on the homepage
  */
 
 require_once 'config/config.php';
 
-echo "<h1>🎠 Carousel Test Page</h1>";
-echo "<p>Testing carousel functionality...</p>";
+echo "<h1>🏠 Homepage Carousel Test</h1>";
+echo "<p>Testing the carousel functionality on the homepage...</p>";
 
 // Test database connection
-echo "<h2>Database Connection Test</h2>";
+echo "<h2>Database Test</h2>";
 if (isset($pdo) && $pdo) {
     echo "✅ Database connection successful<br>";
     
-    // Test carousel_ads table
+    // Check carousel_ads table
     try {
         $stmt = $pdo->query("SHOW TABLES LIKE 'carousel_ads'");
         if ($stmt->rowCount() > 0) {
@@ -30,17 +30,8 @@ if (isset($pdo) && $pdo) {
             $active_ads = $stmt->fetchColumn();
             echo "✅ Active carousel ads: $active_ads<br>";
             
-            // Show sample ads
-            $stmt = $pdo->query("SELECT * FROM carousel_ads ORDER BY position ASC LIMIT 5");
-            $ads = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            
-            if (!empty($ads)) {
-                echo "<h3>Sample Ads:</h3>";
-                foreach ($ads as $ad) {
-                    echo "- {$ad['title']} (Position: {$ad['position']}, Active: " . ($ad['active'] ? 'Yes' : 'No') . ")<br>";
-                }
-            } else {
-                echo "⚠️ No carousel ads found in database<br>";
+            if ($active_ads == 0) {
+                echo "<p style='color: orange;'>⚠️ No active carousel ads found. The carousel will show a placeholder.</p>";
             }
         } else {
             echo "❌ carousel_ads table does not exist<br>";
@@ -52,28 +43,6 @@ if (isset($pdo) && $pdo) {
     echo "❌ Database connection failed<br>";
 }
 
-// Test file system
-echo "<h2>File System Test</h2>";
-$upload_dir = 'uploads/carousel/';
-if (is_dir($upload_dir)) {
-    echo "✅ Carousel upload directory exists<br>";
-    
-    $files = scandir($upload_dir);
-    $image_files = array_filter($files, function($file) {
-        return in_array(strtolower(pathinfo($file, PATHINFO_EXTENSION)), ['jpg', 'jpeg', 'png', 'gif', 'webp']);
-    });
-    
-    echo "📁 Image files in carousel directory: " . count($image_files) . "<br>";
-    if (!empty($image_files)) {
-        foreach ($image_files as $file) {
-            echo "- $file<br>";
-        }
-    }
-} else {
-    echo "❌ Carousel upload directory does not exist<br>";
-}
-
-// Test carousel section
 echo "<h2>Carousel Section Test</h2>";
 if (file_exists('sections/carousel.php')) {
     echo "✅ carousel.php section exists<br>";
@@ -87,12 +56,20 @@ if (file_exists('sections/carousel.php')) {
     echo "❌ carousel.php section not found<br>";
 }
 
+echo "<h2>Next Steps</h2>";
+echo "<p>If the carousel is working above, you can:</p>";
+echo "<ul>";
+echo "<li><a href='admin/carousel_manager.php'>Manage Carousel Ads</a> - Add real carousel content</li>";
+echo "<li><a href='index.php'>View Homepage</a> - See the carousel in action</li>";
+echo "<li><a href='carousel_test.html'>Test Page</a> - Standalone carousel test</li>";
+echo "</ul>";
+
 echo "<h2>JavaScript Test</h2>";
 echo "<p>Check browser console for JavaScript logs...</p>";
 ?>
 
 <script>
-console.log('🔍 Carousel test page loaded');
+console.log('🔍 Homepage carousel test loaded');
 console.log('Swiper available:', typeof Swiper !== 'undefined');
 
 if (typeof Swiper !== 'undefined') {
@@ -107,6 +84,16 @@ document.addEventListener('DOMContentLoaded', function() {
     if (carousel) {
         console.log('✅ Carousel element found');
         console.log('Carousel slides:', carousel.querySelectorAll('.swiper-slide').length);
+        
+        // Check if Swiper is initialized
+        setTimeout(() => {
+            if (carousel.swiper) {
+                console.log('✅ Swiper instance found on carousel');
+                console.log('Active slide:', carousel.swiper.activeIndex);
+            } else {
+                console.log('⚠️ Swiper instance not found on carousel');
+            }
+        }, 1000);
     } else {
         console.log('❌ Carousel element not found');
     }
@@ -116,4 +103,8 @@ document.addEventListener('DOMContentLoaded', function() {
 <style>
 body { font-family: Arial, sans-serif; margin: 20px; }
 h1, h2, h3 { color: #333; }
+a { color: #007bff; text-decoration: none; }
+a:hover { text-decoration: underline; }
+ul { margin: 10px 0; }
+li { margin: 5px 0; }
 </style> 

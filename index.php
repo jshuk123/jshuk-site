@@ -152,11 +152,14 @@ include 'includes/header_main.php';
 require_once 'includes/ad_renderer.php';
 ?>
 
-<!-- HERO SECTION -->
-<?php include 'sections/hero.php'; ?>
+<!-- CAROUSEL SECTION (Main Hero) -->
+<?php include 'sections/carousel.php'; ?>
 
 <!-- SEARCH BAR -->
 <?php include 'sections/search_bar.php'; ?>
+
+<!-- HERO SECTION (Secondary) -->
+<?php include 'sections/hero.php'; ?>
 
 <!-- CATEGORY SHOWCASE -->
 <?php include 'sections/categories.php'; ?>

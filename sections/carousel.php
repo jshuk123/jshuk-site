@@ -56,38 +56,36 @@ if (empty($carousel_ads)) {
 
 <!-- HOMEPAGE CAROUSEL SECTION -->
 <section class="carousel-section" data-scroll>
-    <div class="container">
-        <div class="carousel-wrapper">
-            <div class="swiper homepage-carousel">
-                <div class="swiper-wrapper">
-                    <?php foreach ($carousel_ads as $ad): ?>
-                        <div class="swiper-slide carousel-slide" style="background-image: url('<?= htmlspecialchars($ad['image_path']) ?>')">
-                            <div class="carousel-overlay">
-                                <div class="carousel-content">
-                                    <h2 class="carousel-title"><?= htmlspecialchars($ad['title']) ?></h2>
-                                    <?php if (!empty($ad['subtitle'])): ?>
-                                        <p class="carousel-subtitle"><?= htmlspecialchars($ad['subtitle']) ?></p>
-                                    <?php endif; ?>
-                                    <?php if (!empty($ad['cta_url'])): ?>
-                                        <a href="<?= htmlspecialchars($ad['cta_url']) ?>" 
-                                           class="carousel-cta" 
-                                           <?= strpos($ad['cta_url'], 'admin/') === 0 ? '' : 'target="_blank" rel="noopener noreferrer"' ?>>
-                                            <?= htmlspecialchars($ad['cta_text'] ?: 'Learn More') ?>
-                                        </a>
-                                    <?php endif; ?>
-                                </div>
+    <div class="carousel-wrapper">
+        <div class="swiper homepage-carousel">
+            <div class="swiper-wrapper">
+                <?php foreach ($carousel_ads as $ad): ?>
+                    <div class="swiper-slide carousel-slide" style="background-image: url('<?= htmlspecialchars($ad['image_path']) ?>')">
+                        <div class="carousel-overlay">
+                            <div class="carousel-content">
+                                <h2 class="carousel-title"><?= htmlspecialchars($ad['title']) ?></h2>
+                                <?php if (!empty($ad['subtitle'])): ?>
+                                    <p class="carousel-subtitle"><?= htmlspecialchars($ad['subtitle']) ?></p>
+                                <?php endif; ?>
+                                <?php if (!empty($ad['cta_url'])): ?>
+                                    <a href="<?= htmlspecialchars($ad['cta_url']) ?>" 
+                                       class="carousel-cta" 
+                                       <?= strpos($ad['cta_url'], 'admin/') === 0 ? '' : 'target="_blank" rel="noopener noreferrer"' ?>>
+                                        <?= htmlspecialchars($ad['cta_text'] ?: 'Learn More') ?>
+                                    </a>
+                                <?php endif; ?>
                             </div>
                         </div>
-                    <?php endforeach; ?>
-                </div>
-                
-                <!-- Navigation -->
-                <div class="swiper-button-prev carousel-nav-prev"></div>
-                <div class="swiper-button-next carousel-nav-next"></div>
-                
-                <!-- Pagination -->
-                <div class="swiper-pagination carousel-pagination"></div>
+                    </div>
+                <?php endforeach; ?>
             </div>
+            
+            <!-- Navigation -->
+            <div class="swiper-button-prev carousel-nav-prev"></div>
+            <div class="swiper-button-next carousel-nav-next"></div>
+            
+            <!-- Pagination -->
+            <div class="swiper-pagination carousel-pagination"></div>
         </div>
     </div>
 </section>
@@ -100,16 +98,18 @@ if (empty($carousel_ads)) {
     background: #000;
     position: relative;
     overflow: hidden;
+    min-height: 600px;
 }
 
 .carousel-wrapper {
     position: relative;
     width: 100%;
+    height: 100%;
 }
 
 .homepage-carousel {
     width: 100%;
-    height: 500px;
+    height: 600px;
     border-radius: 0;
 }
 
@@ -122,6 +122,7 @@ if (empty($carousel_ads)) {
     align-items: center;
     justify-content: center;
     text-align: center;
+    min-height: 600px;
 }
 
 .carousel-overlay {
@@ -150,7 +151,7 @@ if (empty($carousel_ads)) {
 }
 
 .carousel-title {
-    font-size: 3rem;
+    font-size: 3.5rem;
     font-weight: 700;
     margin-bottom: 20px;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
@@ -158,7 +159,7 @@ if (empty($carousel_ads)) {
 }
 
 .carousel-subtitle {
-    font-size: 1.3rem;
+    font-size: 1.4rem;
     margin-bottom: 30px;
     opacity: 0.95;
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
@@ -169,11 +170,11 @@ if (empty($carousel_ads)) {
     display: inline-block;
     background: linear-gradient(45deg, #ff6b6b, #ff8e53);
     color: white;
-    padding: 15px 30px;
+    padding: 18px 35px;
     border-radius: 50px;
     text-decoration: none;
     font-weight: 600;
-    font-size: 1.1rem;
+    font-size: 1.2rem;
     transition: all 0.3s ease;
     box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
     text-transform: uppercase;
@@ -192,8 +193,8 @@ if (empty($carousel_ads)) {
 .carousel-nav-next {
     color: white;
     background: rgba(255, 255, 255, 0.2);
-    width: 50px;
-    height: 50px;
+    width: 60px;
+    height: 60px;
     border-radius: 50%;
     backdrop-filter: blur(10px);
     transition: all 0.3s ease;
@@ -207,18 +208,18 @@ if (empty($carousel_ads)) {
 
 .carousel-nav-prev::after,
 .carousel-nav-next::after {
-    font-size: 20px;
+    font-size: 24px;
     font-weight: bold;
 }
 
 /* Pagination */
 .carousel-pagination {
-    bottom: 20px;
+    bottom: 30px;
 }
 
 .carousel-pagination .swiper-pagination-bullet {
-    width: 12px;
-    height: 12px;
+    width: 14px;
+    height: 14px;
     background: rgba(255, 255, 255, 0.5);
     opacity: 1;
     transition: all 0.3s ease;
@@ -232,7 +233,11 @@ if (empty($carousel_ads)) {
 /* Responsive Design */
 @media (max-width: 768px) {
     .homepage-carousel {
-        height: 400px;
+        height: 450px;
+    }
+    
+    .carousel-slide {
+        min-height: 450px;
     }
     
     .carousel-content {
@@ -240,43 +245,47 @@ if (empty($carousel_ads)) {
     }
     
     .carousel-title {
-        font-size: 2rem;
+        font-size: 2.5rem;
         margin-bottom: 15px;
     }
     
     .carousel-subtitle {
-        font-size: 1.1rem;
+        font-size: 1.2rem;
         margin-bottom: 20px;
     }
     
     .carousel-cta {
-        padding: 12px 24px;
-        font-size: 1rem;
+        padding: 15px 25px;
+        font-size: 1.1rem;
     }
     
     .carousel-nav-prev,
     .carousel-nav-next {
-        width: 40px;
-        height: 40px;
+        width: 50px;
+        height: 50px;
     }
     
     .carousel-nav-prev::after,
     .carousel-nav-next::after {
-        font-size: 16px;
+        font-size: 20px;
     }
 }
 
 @media (max-width: 480px) {
     .homepage-carousel {
-        height: 350px;
+        height: 400px;
+    }
+    
+    .carousel-slide {
+        min-height: 400px;
     }
     
     .carousel-title {
-        font-size: 1.8rem;
+        font-size: 2rem;
     }
     
     .carousel-subtitle {
-        font-size: 1rem;
+        font-size: 1.1rem;
     }
 }
 
@@ -318,53 +327,23 @@ if (empty($carousel_ads)) {
 document.addEventListener('DOMContentLoaded', function() {
     console.log('🔍 Carousel initialization started...');
     
-    // Check if Swiper is already loaded
+    // Check if Swiper is available
     if (typeof Swiper !== 'undefined') {
-        console.log('✅ Swiper already loaded, initializing carousel...');
+        console.log('✅ Swiper available, initializing carousel...');
         initCarousel();
     } else {
-        console.log('📦 Swiper not loaded, loading now...');
-        // Load Swiper if not already loaded
-        loadSwiper();
-    }
-});
-
-function loadSwiper() {
-    console.log('📥 Loading Swiper library...');
-    
-    // Load Swiper CSS
-    if (!document.querySelector('link[href*="swiper"]')) {
-        const link = document.createElement('link');
-        link.rel = 'stylesheet';
-        link.href = 'https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.css';
-        link.onload = () => console.log('✅ Swiper CSS loaded');
-        link.onerror = () => console.error('❌ Failed to load Swiper CSS');
-        document.head.appendChild(link);
-    } else {
-        console.log('✅ Swiper CSS already loaded');
-    }
-    
-    // Load Swiper JS
-    const script = document.createElement('script');
-    script.src = 'https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js';
-    script.onload = () => {
-        console.log('✅ Swiper JS loaded, initializing carousel...');
-        initCarousel();
-    };
-    script.onerror = () => {
-        console.error('❌ Failed to load Swiper JS');
-        // Fallback: try to initialize anyway in case Swiper is loaded elsewhere
-        setTimeout(() => {
+        console.log('❌ Swiper not available, waiting...');
+        // Wait a bit and try again
+        setTimeout(function() {
             if (typeof Swiper !== 'undefined') {
-                console.log('✅ Swiper found after timeout, initializing...');
+                console.log('✅ Swiper found after delay, initializing...');
                 initCarousel();
             } else {
-                console.error('❌ Swiper not available after timeout');
+                console.error('❌ Swiper still not available');
             }
         }, 1000);
-    };
-    document.head.appendChild(script);
-}
+    }
+});
 
 function initCarousel() {
     console.log('🔍 Initializing carousel...');
@@ -409,36 +388,28 @@ function initCarousel() {
                 },
                 slideChange: function() {
                     console.log('🔄 Slide changed to: ' + this.activeIndex);
-                },
-                beforeInit: function() {
-                    console.log('🔄 Swiper beforeInit event fired');
-                },
-                afterInit: function() {
-                    console.log('🔄 Swiper afterInit event fired');
                 }
             }
         });
         
         console.log('🎉 Carousel setup complete');
         
-        // Pause autoplay on hover for better UX
-        carousel.addEventListener('mouseenter', () => {
-            console.log('🖱️ Mouse entered carousel, pausing autoplay');
-            swiper.autoplay.stop();
-        });
-        
-        carousel.addEventListener('mouseleave', () => {
-            console.log('🖱️ Mouse left carousel, resuming autoplay');
-            swiper.autoplay.start();
-        });
-        
         // Add keyboard navigation
-        document.addEventListener('keydown', (e) => {
+        document.addEventListener('keydown', function(e) {
             if (e.key === 'ArrowLeft') {
                 swiper.slidePrev();
             } else if (e.key === 'ArrowRight') {
                 swiper.slideNext();
             }
+        });
+        
+        // Pause autoplay on hover
+        carousel.addEventListener('mouseenter', function() {
+            swiper.autoplay.stop();
+        });
+        
+        carousel.addEventListener('mouseleave', function() {
+            swiper.autoplay.start();
         });
         
     } catch (error) {

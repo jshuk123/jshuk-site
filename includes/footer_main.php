@@ -7,6 +7,9 @@
   <?php include $_SERVER['DOCUMENT_ROOT'].'/partials/ads/footer_ad.php'; ?>
 </footer>
 
+<!-- Swiper JS for carousel functionality -->
+<script src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"></script>
+
 <!-- Custom JavaScript -->
 <script src="/assets/js/app.js" defer></script>
 <script src="/assets/js/main.js" defer></script>
