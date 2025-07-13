@@ -181,7 +181,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         $location = trim($_POST['location'] ?? 'all');
         $sponsored = isset($_POST['sponsored']) ? 1 : 0;
         $active = isset($_POST['active']) ? 1 : 0;
-        $zone = trim($_POST['zone'] ?? 'homepage');
+        $zone = trim($_POST['zone'] ?? 'all');
         $start_date = !empty($_POST['start_date']) ? $_POST['start_date'] : null;
         $end_date = !empty($_POST['end_date']) ? $_POST['end_date'] : null;
         
@@ -285,6 +285,59 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                 } catch (PDOException $e) {
                     $error = "Database error: " . $e->getMessage();
                 }
+            }
+        }
+    } elseif ($action === 'edit_image' && isset($_POST['slide_id'])) {
+        $slide_id = (int) $_POST['slide_id'];
+        $image_url = '';
+        if (!empty($_FILES['image']['tmp_name'])) {
+            $upload_dir = '../uploads/carousel/';
+            if (!is_dir($upload_dir)) {
+                mkdir($upload_dir, 0755, true);
+            }
+            $file_extension = strtolower(pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION));
+            $allowed_extensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+            if (!in_array($file_extension, $allowed_extensions)) {
+                $error = "Invalid file type. Allowed: " . implode(', ', $allowed_extensions);
+            } else {
+                $filename = 'carousel_' . time() . '_' . uniqid() . '.' . $file_extension;
+                $temp_path = $upload_dir . 'temp_' . $filename;
+                $target_path = $upload_dir . $filename;
+                if (move_uploaded_file($_FILES['image']['tmp_name'], $temp_path)) {
+                    if (processCarouselImage($temp_path, $target_path, [
+                        'width' => 1920,
+                        'height' => 600,
+                        'quality' => (int)($_POST['image_quality'] ?? 85),
+                        'crop' => true // Could add crop mode support here
+                    ])) {
+                        $image_url = 'uploads/carousel/' . $filename;
+                        unlink($temp_path);
+                    } else {
+                        $error = "Failed to process image. Please try a different image.";
+                        unlink($temp_path);
+                    }
+                } else {
+                    $error = "Failed to upload image.";
+                }
+            }
+        } else {
+            $error = "No image uploaded.";
+        }
+        if (empty($error) && !empty($image_url)) {
+            try {
+                // Delete old image file
+                $stmt = $pdo->prepare("SELECT image_url FROM carousel_slides WHERE id = ?");
+                $stmt->execute([$slide_id]);
+                $slide = $stmt->fetch();
+                if ($slide && file_exists('../' . $slide['image_url'])) {
+                    unlink('../' . $slide['image_url']);
+                }
+                // Update DB
+                $stmt = $pdo->prepare("UPDATE carousel_slides SET image_url = ? WHERE id = ?");
+                $stmt->execute([$image_url, $slide_id]);
+                $success = "Image updated successfully!";
+            } catch (PDOException $e) {
+                $error = "Database error: " . $e->getMessage();
             }
         }
     } elseif ($action === 'delete' && isset($_POST['slide_id'])) {
@@ -593,6 +646,7 @@ $adminName = $_SESSION['user_name'] ?? 'Admin';
                                 <thead>
                                     <tr>
                                         <th>Image</th>
+                                        <th>Image Preview & Edit</th>
                                         <th>Title</th>
                                         <th>Location</th>
                                         <th>Zone</th>
@@ -614,6 +668,12 @@ $adminName = $_SESSION['user_name'] ?? 'Admin';
                                                      alt="<?= htmlspecialchars($slide['title']) ?>" 
                                                      style="width: 60px; height: 40px; object-fit: cover; border-radius: 4px;"
                                                      title="Original: <?= htmlspecialchars($slide['image_url']) ?>">
+                                            </td>
+                                            <td>
+                                                <div style="display: flex; flex-direction: column; align-items: center;">
+                                                    <img src="<?= htmlspecialchars($display_url) ?>" alt="Preview" style="width: 80px; height: 40px; object-fit: cover; border-radius: 4px; margin-bottom: 6px;">
+                                                    <button class="btn btn-sm btn-outline-secondary" onclick="openImageEditModal(<?= $slide['id'] ?>, '<?= htmlspecialchars($slide['image_url'], ENT_QUOTES) ?>')">Edit Image</button>
+                                                </div>
                                             </td>
                                             <td>
                                                 <strong><?= htmlspecialchars($slide['title']) ?></strong>
@@ -1044,6 +1104,73 @@ $adminName = $_SESSION['user_name'] ?? 'Admin';
     </div>
 </div>
 
+<!-- Image Edit Modal -->
+<div class="modal fade" id="editImageModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Slide Image</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="post" enctype="multipart/form-data" id="editImageForm">
+                <input type="hidden" name="action" value="edit_image">
+                <input type="hidden" name="slide_id" id="editImageSlideId">
+                <div class="modal-body">
+                    <div class="mb-3 text-center">
+                        <img id="editImageCurrent" src="" alt="Current Image" style="max-width: 100%; max-height: 180px; border-radius: 4px; margin-bottom: 10px;">
+                    </div>
+                    <div class="mb-3">
+                        <label for="editImageFile" class="form-label">Replace Image</label>
+                        <input type="file" class="form-control" id="editImageFile" name="image" accept="image/*" onchange="previewEditImageModal(this)">
+                        <div class="form-text">Any size will be cropped to 1920x600px</div>
+                    </div>
+                    <div id="editImageModalPreviewContainer" style="display:none; margin-top: 15px;">
+                        <div class="card">
+                            <div class="card-header">
+                                <h6 class="mb-0">New Image Preview & Cropping</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <div id="editImageModalPreview" style="position: relative; border: 2px dashed #ccc; background: #f8f9fa; min-height: 200px; display: flex; align-items: center; justify-content: center;">
+                                            <img id="editImageModalPreviewImg" src="" alt="Preview" style="max-width: 100%; max-height: 200px; display: none;">
+                                            <div id="editImageModalPreviewPlaceholder">Select an image to preview</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="mb-3">
+                                            <label class="form-label">Cropping Mode</label>
+                                            <select class="form-select" id="editImageModalCropMode" name="crop_mode">
+                                                <option value="center">Center Crop</option>
+                                                <option value="top">Top Crop</option>
+                                                <option value="bottom">Bottom Crop</option>
+                                                <option value="left">Left Crop</option>
+                                                <option value="right">Right Crop</option>
+                                            </select>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Image Quality</label>
+                                            <select class="form-select" id="editImageModalQuality" name="image_quality">
+                                                <option value="95">High (95%)</option>
+                                                <option value="85" selected>Medium (85%)</option>
+                                                <option value="75">Low (75%)</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Image</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"></script>
 <script>
@@ -1219,6 +1346,36 @@ document.getElementById('addSlideModal').addEventListener('hidden.bs.modal', fun
 document.getElementById('editSlideModal').addEventListener('hidden.bs.modal', function() {
     hideEditImagePreview();
 });
+
+function openImageEditModal(slideId, imageUrl) {
+    document.getElementById('editImageSlideId').value = slideId;
+    document.getElementById('editImageCurrent').src = imageUrl;
+    document.getElementById('editImageFile').value = '';
+    document.getElementById('editImageModalPreviewImg').style.display = 'none';
+    document.getElementById('editImageModalPreviewPlaceholder').style.display = 'block';
+    document.getElementById('editImageModalPreviewContainer').style.display = 'none';
+    new bootstrap.Modal(document.getElementById('editImageModal')).show();
+}
+function previewEditImageModal(input) {
+    const file = input.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const previewImg = document.getElementById('editImageModalPreviewImg');
+            const previewPlaceholder = document.getElementById('editImageModalPreviewPlaceholder');
+            const previewContainer = document.getElementById('editImageModalPreviewContainer');
+            previewImg.src = e.target.result;
+            previewImg.style.display = 'block';
+            previewPlaceholder.style.display = 'none';
+            previewContainer.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+    } else {
+        document.getElementById('editImageModalPreviewImg').style.display = 'none';
+        document.getElementById('editImageModalPreviewPlaceholder').style.display = 'block';
+        document.getElementById('editImageModalPreviewContainer').style.display = 'none';
+    }
+}
 </script>
 
 </body>
