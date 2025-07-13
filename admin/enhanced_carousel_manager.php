@@ -17,12 +17,16 @@ function processCarouselImage($source_path, $target_path, $options = []) {
     ];
     $options = array_merge($defaults, $options);
     
-    // Get image info
-    $image_info = getimagesize($source_path);
-    if (!$image_info) {
+    // Validate file exists and is not empty
+    if (!file_exists($source_path) || filesize($source_path) < 1024) {
         return false;
     }
-    
+    $image_info = getimagesize($source_path);
+    if (!$image_info) {
+        // Not a valid image
+        unlink($source_path); // Clean up
+        return false;
+    }
     $source_width = $image_info[0];
     $source_height = $image_info[1];
     $source_type = $image_info[2];
@@ -30,22 +34,26 @@ function processCarouselImage($source_path, $target_path, $options = []) {
     // Create source image resource
     switch ($source_type) {
         case IMAGETYPE_JPEG:
-            $source_image = imagecreatefromjpeg($source_path);
+            $source_image = @imagecreatefromjpeg($source_path);
             break;
         case IMAGETYPE_PNG:
-            $source_image = imagecreatefrompng($source_path);
+            $source_image = @imagecreatefrompng($source_path);
             break;
         case IMAGETYPE_GIF:
-            $source_image = imagecreatefromgif($source_path);
+            $source_image = @imagecreatefromgif($source_path);
             break;
         case IMAGETYPE_WEBP:
-            $source_image = imagecreatefromwebp($source_path);
+            $source_image = @imagecreatefromwebp($source_path);
+            break;
+        case IMAGETYPE_BMP:
+            $source_image = @imagecreatefrombmp($source_path);
             break;
         default:
+            unlink($source_path);
             return false;
     }
-    
     if (!$source_image) {
+        unlink($source_path);
         return false;
     }
     
@@ -122,6 +130,9 @@ function processCarouselImage($source_path, $target_path, $options = []) {
             break;
         case IMAGETYPE_WEBP:
             $success = imagewebp($target_image, $target_path, $options['quality']);
+            break;
+        case IMAGETYPE_BMP:
+            $success = imagebmp($target_image, $target_path);
             break;
     }
     
@@ -203,7 +214,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                 }
                 
                 $file_extension = strtolower(pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION));
-                $allowed_extensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+                $allowed_extensions = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp'];
                 
                 if (!in_array($file_extension, $allowed_extensions)) {
                     $error = "Invalid file type. Allowed: " . implode(', ', $allowed_extensions);
@@ -296,7 +307,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                 mkdir($upload_dir, 0755, true);
             }
             $file_extension = strtolower(pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION));
-            $allowed_extensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+            $allowed_extensions = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp'];
             if (!in_array($file_extension, $allowed_extensions)) {
                 $error = "Invalid file type. Allowed: " . implode(', ', $allowed_extensions);
             } else {
