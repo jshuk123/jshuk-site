@@ -14,9 +14,15 @@ $limit = $limit ?? 10;
 
 $slides = getCarouselSlides($pdo, $zone, $limit, $location);
 
-// If no slides found, create a placeholder
-if (empty($slides)) {
-    $slides = [
+// Filter slides to only those with a valid image file
+$valid_slides = array_filter($slides, function($slide) {
+    return !empty($slide['image_url']) && strpos($slide['image_url'], 'data:') === false && file_exists(__DIR__ . '/../' . $slide['image_url']);
+});
+$numSlides = count($valid_slides);
+
+// If no valid slides, show placeholder
+if ($numSlides === 0) {
+    $valid_slides = [
         [
             'id' => 0,
             'title' => 'Welcome to JShuk',
@@ -27,10 +33,11 @@ if (empty($slides)) {
             'sponsored' => 0
         ]
     ];
+    $numSlides = 1;
 }
 
 // Generate carousel HTML with enhanced features
-echo generateCarouselHTML($slides, 'enhanced-homepage-carousel', [
+echo generateCarouselHTML($valid_slides, 'enhanced-homepage-carousel', [
     'autoplay' => true,
     'autoplayDelay' => 6000,
     'showNavigation' => true,
@@ -371,6 +378,12 @@ echo generateCarouselHTML($slides, 'enhanced-homepage-carousel', [
     .carousel-nav-next:hover {
         transform: none;
     }
+}
+
+.carousel-item img, .swiper-slide img {
+  width: 100%;
+  height: auto;
+  display: block;
 }
 </style>
 
