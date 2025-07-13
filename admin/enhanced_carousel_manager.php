@@ -231,6 +231,15 @@ try {
     $analytics = [];
 }
 
+// Fetch all slides for JS (for editing)
+$allSlides = [];
+try {
+    $stmt = $pdo->query("SELECT * FROM carousel_slides");
+    $allSlides = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    $allSlides = [];
+}
+
 $adminName = $_SESSION['user_name'] ?? 'Admin';
 ?>
 
@@ -798,8 +807,8 @@ document.getElementById('addSlideBtn').addEventListener('click', function() {
 // Edit slide function
 function editSlide(slideId) {
     try {
-        // Find the slide data from the PHP-rendered JS object
-        const slides = <?php echo json_encode($slides); ?>;
+        // Use all slides for editing
+        const slides = <?php echo json_encode($allSlides); ?>;
         const slide = slides.find(s => s.id == slideId);
         if (!slide) {
             console.error('Slide not found:', slideId);
