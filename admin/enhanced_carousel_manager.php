@@ -413,6 +413,8 @@ try {
     $hasSortOrder = $colStmt->rowCount() > 0;
     $colStmt = $pdo->query("SHOW COLUMNS FROM carousel_slides LIKE 'priority'");
     $hasPriority = $colStmt->rowCount() > 0;
+    $colStmt = $pdo->query("SHOW COLUMNS FROM carousel_slides LIKE 'sponsored'");
+    $hasSponsored = $colStmt->rowCount() > 0;
     if ($hasSortOrder) {
         $orderBy = 'sort_order DESC';
     } elseif ($hasPriority) {
@@ -420,8 +422,12 @@ try {
     } else {
         $orderBy = 'id DESC';
     }
+    if ($hasSponsored) {
+        $orderBy .= ', sponsored DESC';
+    }
+    $orderBy .= ', created_at DESC';
 } catch (PDOException $e) {
-    $orderBy = 'id DESC';
+    $orderBy = 'id DESC, created_at DESC';
 }
 if ($hasSortOrder && !$hasPriority) {
     $mainOrderCol = 'sort_order';
@@ -433,7 +439,7 @@ try {
     $stmt = $pdo->prepare("
         SELECT * FROM carousel_slides 
         $where_clause
-        ORDER BY $orderBy, sponsored DESC, created_at DESC
+        ORDER BY $orderBy
     ");
     $stmt->execute($params);
     $slides = $stmt->fetchAll(PDO::FETCH_ASSOC);
