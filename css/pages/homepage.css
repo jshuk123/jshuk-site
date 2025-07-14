@@ -2551,59 +2551,111 @@ button, .btn, input, select, textarea {
 
 /* Community Corner Section */
 .community-section {
-  background: #f9f9f9;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
   padding: 4rem 0;
   margin: 2rem 0;
+  position: relative;
+}
+
+.community-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="hearts" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse"><text x="10" y="15" font-size="12" text-anchor="middle" fill="%23f0f0f0">❤️</text></pattern></defs><rect width="100" height="100" fill="url(%23hearts)"/></svg>');
+  opacity: 0.3;
+  pointer-events: none;
 }
 
 .community-cards {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 2rem;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
   margin-top: 2rem;
+  position: relative;
+  z-index: 1;
 }
 
 .community-card {
   background: #fff;
   padding: 1.5rem;
-  border-radius: 12px;
+  border-radius: 16px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
   text-align: center;
   transition: all 0.3s ease;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  position: relative;
+  overflow: hidden;
+}
+
+.community-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #ffd700, #ffed4e);
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
+}
+
+.community-card:hover::before {
+  transform: scaleX(1);
 }
 
 .community-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
 }
 
 .community-emoji {
   font-size: 2.5rem;
   display: block;
   margin-bottom: 1rem;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
 }
 
 .community-card p {
   margin-bottom: 1rem;
   color: var(--text-dark);
   line-height: 1.6;
+  font-size: 1rem;
+}
+
+.community-card .attribution {
+  font-size: 0.9rem;
+  color: #666;
+  font-style: italic;
+  margin-top: 0.5rem;
 }
 
 .community-cta-link {
-  color: var(--secondary-color);
+  color: #1a3353;
   text-decoration: none;
   font-weight: 600;
-  transition: color 0.3s ease;
+  font-size: 0.9rem;
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  border: 2px solid #1a3353;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  margin-top: 0.5rem;
 }
 
 .community-cta-link:hover {
-  color: var(--primary-color);
+  background: #1a3353;
+  color: #fff;
+  text-decoration: none;
+  transform: translateY(-1px);
 }
 
 @media (max-width: 768px) {
   .community-cards {
     grid-template-columns: 1fr;
-    gap: 1.5rem;
+    gap: 1rem;
   }
   
   .community-card {
@@ -2612,5 +2664,14 @@ button, .btn, input, select, textarea {
   
   .community-emoji {
     font-size: 2rem;
+  }
+  
+  .community-card p {
+    font-size: 0.95rem;
+  }
+  
+  .community-cta-link {
+    font-size: 0.85rem;
+    padding: 0.4rem 0.8rem;
   }
 }

@@ -1,6 +1,7 @@
 <?php
 require_once 'config/config.php';
 require_once 'includes/subscription_functions.php';
+require_once 'includes/community_corner_functions.php';
 if (file_exists('includes/cache.php')) {
     require_once 'includes/cache.php';
 }
@@ -126,6 +127,10 @@ try {
                 ];
             }
         }
+        
+        // Load community corner items
+        $communityCornerItems = getFeaturedCommunityCornerItems(4);
+        
     }
 } catch (PDOException $e) {
     // Set fallback data
@@ -142,6 +147,7 @@ try {
             'created_at' => date('Y-m-d H:i:s')
         ]
     ];
+    $communityCornerItems = [];
 }
 
 $pageTitle = "JShuk | Jewish Business Directory London & UK - Find Trusted Jewish Businesses";
@@ -294,25 +300,47 @@ include 'sections/enhanced_carousel.php';
 <section id="community-corner" class="community-section" data-scroll>
   <div class="container">
     <h2 class="section-title">Community Corner</h2>
-    <p class="section-subtitle">See how your community is giving, sharing, and celebrating.</p>
+    <p class="section-subtitle">The heart of your neighborhood — shared, celebrated, supported.</p>
     
-    <div class="community-cards">
-      <div class="community-card">
-        <span class="community-emoji">🍼</span>
-        <p><strong>Esther in Golders Green</strong> borrowed a double buggy from the Gemach.</p>
-        <a href="/gemachim.php" class="community-cta-link">View all Gemachim →</a>
+    <?php if (!empty($communityCornerItems)): ?>
+      <div class="community-cards">
+        <?php foreach ($communityCornerItems as $item): ?>
+          <div class="community-card" data-item-id="<?= $item['id'] ?>">
+            <span class="community-emoji"><?= htmlspecialchars($item['emoji']) ?></span>
+            <p><?= htmlspecialchars($item['body_text']) ?></p>
+            <?php if ($item['link_url']): ?>
+              <a href="<?= htmlspecialchars($item['link_url']) ?>" class="community-cta-link" onclick="trackCommunityCornerClick(<?= $item['id'] ?>)">
+                <?= htmlspecialchars($item['link_text']) ?>
+              </a>
+            <?php endif; ?>
+          </div>
+        <?php endforeach; ?>
       </div>
-      <div class="community-card">
-        <span class="community-emoji">🎉</span>
-        <p><strong>The Greenberg Family</strong> listed their Bar Mitzvah on our Simcha board.</p>
-        <a href="/simchas.php" class="community-cta-link">Celebrate with them →</a>
+    <?php else: ?>
+      <div class="community-cards">
+        <div class="community-card">
+          <span class="community-emoji">🍼</span>
+          <p><strong>Shared:</strong> 3 baby items borrowed via local Gemachs this week.</p>
+          <a href="/gemachim.php" class="community-cta-link">Explore Gemachim →</a>
+        </div>
+        <div class="community-card">
+          <span class="community-emoji">🎒</span>
+          <p><strong>Lost:</strong> Blue school bag in Hendon — please contact if found.</p>
+          <a href="/lost_and_found.php" class="community-cta-link">View Lost & Found →</a>
+        </div>
+        <div class="community-card">
+          <span class="community-emoji">📜</span>
+          <p><strong>Ask the Rabbi:</strong> Can I pay my cleaner during the 9 Days?</p>
+          <a href="/ask-the-rabbi.php" class="community-cta-link">See the answer →</a>
+        </div>
+        <div class="community-card">
+          <span class="community-emoji">🕯️</span>
+          <p>"Words matter. Like the shevuah of Bnei Gad, promises are sacred."</p>
+          <p class="attribution">— Rabbi Cohen, Parshas Mattos</p>
+          <a href="/divrei-torah.php" class="community-cta-link">More Torah Thoughts →</a>
+        </div>
       </div>
-      <div class="community-card">
-        <span class="community-emoji">❤️</span>
-        <p><strong>Charity Alert:</strong> Local family needs a stairlift urgently.</p>
-        <a href="/charity_alerts.php" class="community-cta-link">See how to help →</a>
-      </div>
-    </div>
+    <?php endif; ?>
   </div>
 </section>
 
@@ -326,6 +354,38 @@ include 'sections/enhanced_carousel.php';
   include 'includes/footer_main.php'; 
 ?>
 
+
+<!-- Community Corner Tracking Script -->
+<script>
+function trackCommunityCornerClick(itemId) {
+    // Track click via AJAX
+    fetch('/api/track_community_corner_click.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ item_id: itemId })
+    }).catch(error => console.log('Click tracking failed:', error));
+}
+
+// Track views when community corner is visible
+document.addEventListener('DOMContentLoaded', function() {
+    const communityCards = document.querySelectorAll('.community-card[data-item-id]');
+    communityCards.forEach(card => {
+        const itemId = card.dataset.itemId;
+        if (itemId) {
+            // Track view via AJAX
+            fetch('/api/track_community_corner_view.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ item_id: itemId })
+            }).catch(error => console.log('View tracking failed:', error));
+        }
+    });
+});
+</script>
 
 <!-- Structured Data for SEO -->
 <script type="application/ld+json">

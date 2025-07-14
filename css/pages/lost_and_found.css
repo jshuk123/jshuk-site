@@ -1,0 +1,271 @@
+/* Lost & Found Page Styles */
+
+.page-header {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    padding: 3rem 0;
+    border-radius: 16px;
+    margin-bottom: 2rem;
+}
+
+.header-emoji {
+    font-size: 4rem;
+    margin-top: 1rem;
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
+}
+
+.action-card {
+    border: none;
+    border-radius: 16px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+    transition: all 0.3s ease;
+    height: 100%;
+}
+
+.action-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+}
+
+.action-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+.section-title {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.section-title h2 {
+    color: #1a3353;
+    margin-bottom: 0.5rem;
+}
+
+.section-title p {
+    color: #666;
+    font-size: 1.1rem;
+}
+
+.item-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+    transition: all 0.3s ease;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+}
+
+.item-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #ffd700, #ffed4e);
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+}
+
+.item-card:hover::before {
+    transform: scaleX(1);
+}
+
+.item-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+}
+
+.item-emoji {
+    font-size: 2.5rem;
+    text-align: center;
+    margin-bottom: 1rem;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+.item-content h5 {
+    color: #1a3353;
+    margin-bottom: 0.75rem;
+    font-weight: 600;
+}
+
+.item-content p {
+    color: #666;
+    line-height: 1.6;
+    margin-bottom: 1rem;
+}
+
+.item-meta {
+    border-top: 1px solid #eee;
+    padding-top: 0.75rem;
+    margin-top: 0.75rem;
+}
+
+.empty-state {
+    padding: 3rem 0;
+}
+
+.empty-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+}
+
+.empty-state h3 {
+    color: #1a3353;
+    margin-bottom: 0.5rem;
+}
+
+.empty-state p {
+    color: #666;
+    margin-bottom: 1.5rem;
+}
+
+.guidelines-section .card {
+    border: none;
+    border-radius: 16px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+}
+
+.guidelines-section .card-header {
+    background: linear-gradient(135deg, #1a3353 0%, #2a4365 100%);
+    color: white;
+    border-radius: 16px 16px 0 0 !important;
+    border: none;
+}
+
+.guidelines-section .card-header h4 {
+    margin: 0;
+    font-weight: 600;
+}
+
+.guidelines-section .card-body {
+    padding: 2rem;
+}
+
+.guidelines-section h5 {
+    color: #1a3353;
+    margin-bottom: 1rem;
+    font-weight: 600;
+}
+
+.guidelines-section ul {
+    color: #666;
+    line-height: 1.8;
+}
+
+.guidelines-section li {
+    margin-bottom: 0.5rem;
+}
+
+/* Modal Styles */
+.modal-content {
+    border-radius: 16px;
+    border: none;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+}
+
+.modal-header {
+    background: linear-gradient(135deg, #1a3353 0%, #2a4365 100%);
+    color: white;
+    border-radius: 16px 16px 0 0;
+    border: none;
+}
+
+.modal-header .btn-close {
+    filter: invert(1);
+}
+
+.modal-body {
+    padding: 2rem;
+}
+
+.modal-footer {
+    border-top: 1px solid #eee;
+    padding: 1rem 2rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .page-header {
+        padding: 2rem 0;
+    }
+    
+    .header-emoji {
+        font-size: 3rem;
+    }
+    
+    .action-card {
+        margin-bottom: 1rem;
+    }
+    
+    .action-icon {
+        font-size: 2.5rem;
+    }
+    
+    .item-card {
+        padding: 1.25rem;
+    }
+    
+    .item-emoji {
+        font-size: 2rem;
+    }
+    
+    .empty-icon {
+        font-size: 3rem;
+    }
+    
+    .guidelines-section .card-body {
+        padding: 1.5rem;
+    }
+    
+    .modal-body {
+        padding: 1.5rem;
+    }
+    
+    .modal-footer {
+        padding: 1rem 1.5rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .page-header {
+        padding: 1.5rem 0;
+    }
+    
+    .header-emoji {
+        font-size: 2.5rem;
+    }
+    
+    .action-icon {
+        font-size: 2rem;
+    }
+    
+    .item-card {
+        padding: 1rem;
+    }
+    
+    .item-emoji {
+        font-size: 1.75rem;
+    }
+    
+    .empty-icon {
+        font-size: 2.5rem;
+    }
+    
+    .guidelines-section .card-body {
+        padding: 1rem;
+    }
+    
+    .modal-body {
+        padding: 1rem;
+    }
+    
+    .modal-footer {
+        padding: 0.75rem 1rem;
+    }
+} 
