@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Initialize all components
     initializeMobileMenu();
+    initializeMobileSubmenus();
     initializeFeaturedSlider();
     initializeSearchBar();
     initializeTooltips();
@@ -126,6 +127,50 @@ function closeMobileMenu() {
     
     // Return focus to menu toggle
     menuToggle.focus();
+}
+
+/**
+ * Mobile Submenu Functionality
+ */
+function initializeMobileSubmenus() {
+    const submenuToggles = document.querySelectorAll('.submenu-toggle');
+    
+    submenuToggles.forEach(toggle => {
+        toggle.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            const submenuId = this.getAttribute('data-submenu');
+            const submenu = document.getElementById(submenuId + '-submenu');
+            const parentItem = this.closest('.mobile-nav-item');
+            
+            if (!submenu || !parentItem) return;
+            
+            // Close other open submenus
+            const otherSubmenus = document.querySelectorAll('.mobile-submenu.active');
+            const otherItems = document.querySelectorAll('.mobile-nav-item.has-submenu.active');
+            
+            otherSubmenus.forEach(menu => {
+                if (menu !== submenu) {
+                    menu.classList.remove('active');
+                }
+            });
+            
+            otherItems.forEach(item => {
+                if (item !== parentItem) {
+                    item.classList.remove('active');
+                }
+            });
+            
+            // Toggle current submenu
+            submenu.classList.toggle('active');
+            parentItem.classList.toggle('active');
+            
+            // Update aria attributes
+            const isExpanded = submenu.classList.contains('active');
+            this.setAttribute('aria-expanded', isExpanded);
+        });
+    });
 }
 
 /**

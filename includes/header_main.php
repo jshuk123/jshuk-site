@@ -181,20 +181,37 @@ try {
                     <li class="nav-item">
                         <a class="nav-link <?= ($current_page == 'classifieds') ? 'active' : '' ?>" href="/classifieds.php" aria-current="<?= ($current_page == 'classifieds') ? 'page' : 'false' ?>">Classifieds</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link <?= ($current_page == 'lostfound') ? 'active' : '' ?>" href="/lostfound.php" aria-current="<?= ($current_page == 'lostfound') ? 'page' : 'false' ?>">
-                            <i class="fas fa-search me-1"></i>Lost & Found
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle <?= (in_array($current_page, ['community', 'gemachim', 'lostfound', 'ask-rabbi', 'divrei-torah', 'simchas', 'charity-alerts', 'volunteer'])) ? 'active' : '' ?>" href="/community.php" role="button" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">
+                            <i class="fas fa-users me-1"></i>Community
                         </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link <?= ($current_page == 'retreats') ? 'active' : '' ?>" href="/retreats.php" aria-current="<?= ($current_page == 'retreats') ? 'page' : 'false' ?>">
-                            <i class="fas fa-home me-1"></i>Retreats
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link <?= ($current_page == 'gemachim') ? 'active' : '' ?>" href="/gemachim.php" aria-current="<?= ($current_page == 'gemachim') ? 'page' : 'false' ?>">
-                            <i class="fas fa-hands-helping me-1"></i>Gemachim
-                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="/community.php">
+                                <span class="dropdown-emoji">🫶</span>Community Corner
+                            </a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="/gemachim.php">
+                                <span class="dropdown-emoji">🍼</span>Gemachim
+                            </a></li>
+                            <li><a class="dropdown-item" href="/lost_and_found.php">
+                                <span class="dropdown-emoji">🎒</span>Lost & Found
+                            </a></li>
+                            <li><a class="dropdown-item" href="/ask-the-rabbi.php">
+                                <span class="dropdown-emoji">📜</span>Ask the Rabbi
+                            </a></li>
+                            <li><a class="dropdown-item" href="/divrei-torah.php">
+                                <span class="dropdown-emoji">🕯️</span>Divrei Torah
+                            </a></li>
+                            <li><a class="dropdown-item" href="/simchas.php">
+                                <span class="dropdown-emoji">🎉</span>Simchas
+                            </a></li>
+                            <li><a class="dropdown-item" href="/charity_alerts.php">
+                                <span class="dropdown-emoji">❤️</span>Charity Alerts
+                            </a></li>
+                            <li><a class="dropdown-item" href="/volunteer.php">
+                                <span class="dropdown-emoji">🤝</span>Volunteer
+                            </a></li>
+                        </ul>
                     </li>
                     
                     <!-- User Authentication Section -->
@@ -307,23 +324,62 @@ try {
                         <span>Classifieds</span>
                     </a>
                 </li>
-                <li class="mobile-nav-item">
-                    <a href="/lostfound.php" class="mobile-nav-link <?= ($current_page == 'lostfound') ? 'active' : '' ?>" aria-current="<?= ($current_page == 'lostfound') ? 'page' : 'false' ?>">
-                        <i class="fas fa-search"></i>
-                        <span>Lost & Found</span>
+                <li class="mobile-nav-item has-submenu">
+                    <a href="#" class="mobile-nav-link submenu-toggle" data-submenu="community">
+                        <i class="fas fa-users"></i>
+                        <span>📣 Community</span>
+                        <span class="submenu-arrow">▾</span>
                     </a>
-                </li>
-                <li class="mobile-nav-item">
-                    <a href="/retreats.php" class="mobile-nav-link <?= ($current_page == 'retreats') ? 'active' : '' ?>" aria-current="<?= ($current_page == 'retreats') ? 'page' : 'false' ?>">
-                        <i class="fas fa-home"></i>
-                        <span>Retreats</span>
-                    </a>
-                </li>
-                <li class="mobile-nav-item">
-                    <a href="/gemachim.php" class="mobile-nav-link <?= ($current_page == 'gemachim') ? 'active' : '' ?>" aria-current="<?= ($current_page == 'gemachim') ? 'page' : 'false' ?>">
-                        <i class="fas fa-hands-helping"></i>
-                        <span>Gemachim</span>
-                    </a>
+                    <ul class="mobile-submenu" id="community-submenu">
+                        <li class="mobile-nav-item">
+                            <a href="/community.php" class="mobile-nav-link <?= ($current_page == 'community') ? 'active' : '' ?>">
+                                <span class="submenu-emoji">🫶</span>
+                                <span>Community Corner</span>
+                            </a>
+                        </li>
+                        <li class="mobile-nav-item">
+                            <a href="/gemachim.php" class="mobile-nav-link <?= ($current_page == 'gemachim') ? 'active' : '' ?>">
+                                <span class="submenu-emoji">🍼</span>
+                                <span>Gemachim</span>
+                            </a>
+                        </li>
+                        <li class="mobile-nav-item">
+                            <a href="/lost_and_found.php" class="mobile-nav-link <?= ($current_page == 'lostfound') ? 'active' : '' ?>">
+                                <span class="submenu-emoji">🎒</span>
+                                <span>Lost & Found</span>
+                            </a>
+                        </li>
+                        <li class="mobile-nav-item">
+                            <a href="/ask-the-rabbi.php" class="mobile-nav-link <?= ($current_page == 'ask-rabbi') ? 'active' : '' ?>">
+                                <span class="submenu-emoji">📜</span>
+                                <span>Ask the Rabbi</span>
+                            </a>
+                        </li>
+                        <li class="mobile-nav-item">
+                            <a href="/divrei-torah.php" class="mobile-nav-link <?= ($current_page == 'divrei-torah') ? 'active' : '' ?>">
+                                <span class="submenu-emoji">🕯️</span>
+                                <span>Divrei Torah</span>
+                            </a>
+                        </li>
+                        <li class="mobile-nav-item">
+                            <a href="/simchas.php" class="mobile-nav-link <?= ($current_page == 'simchas') ? 'active' : '' ?>">
+                                <span class="submenu-emoji">🎉</span>
+                                <span>Simchas</span>
+                            </a>
+                        </li>
+                        <li class="mobile-nav-item">
+                            <a href="/charity_alerts.php" class="mobile-nav-link <?= ($current_page == 'charity-alerts') ? 'active' : '' ?>">
+                                <span class="submenu-emoji">❤️</span>
+                                <span>Charity Alerts</span>
+                            </a>
+                        </li>
+                        <li class="mobile-nav-item">
+                            <a href="/volunteer.php" class="mobile-nav-link <?= ($current_page == 'volunteer') ? 'active' : '' ?>">
+                                <span class="submenu-emoji">🤝</span>
+                                <span>Volunteer</span>
+                            </a>
+                        </li>
+                    </ul>
                 </li>
                 
                 <?php if ($is_logged_in): ?>
