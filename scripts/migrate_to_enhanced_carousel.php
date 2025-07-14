@@ -192,7 +192,7 @@ try {
                     $oldSlide['position'] ?? 0,
                     'all', // Default to all locations
                     $oldSlide['is_auto_generated'] ?? 0,
-                    $oldSlide['active'] ?? 1,
+                    $oldSlide['is_active'] ?? 1,
                     'homepage', // Default to homepage zone
                     $oldSlide['created_at'] ?? date('Y-m-d H:i:s')
                 ]);
@@ -236,7 +236,7 @@ try {
                 'image_url' => 'uploads/carousel/sample_ad1.jpg',
                 'cta_text' => 'Explore Now',
                 'cta_link' => 'businesses.php',
-                'priority' => 10,
+                'sort_order' => 10,
                 'location' => 'all',
                 'sponsored' => 0
             ],
@@ -246,7 +246,7 @@ try {
                 'image_url' => 'uploads/carousel/sample_ad2.jpg',
                 'cta_text' => 'Find Restaurants',
                 'cta_link' => 'businesses.php?category=restaurants&location=london',
-                'priority' => 8,
+                'sort_order' => 8,
                 'location' => 'london',
                 'sponsored' => 0
             ],
@@ -256,7 +256,7 @@ try {
                 'image_url' => 'uploads/carousel/sample_ad3.jpg',
                 'cta_text' => 'View Events',
                 'cta_link' => 'events.php',
-                'priority' => 5,
+                'sort_order' => 5,
                 'location' => 'all',
                 'sponsored' => 0
             ],
@@ -266,7 +266,7 @@ try {
                 'image_url' => 'uploads/carousel/sponsored_ad.jpg',
                 'cta_text' => 'Learn More',
                 'cta_link' => 'businesses.php?id=123',
-                'priority' => 15,
+                'sort_order' => 15,
                 'location' => 'all',
                 'sponsored' => 1,
                 'start_date' => date('Y-m-d'),
@@ -278,7 +278,7 @@ try {
             $stmt = $pdo->prepare("
                 INSERT INTO carousel_slides (
                     title, subtitle, image_url, cta_text, cta_link, 
-                    priority, location, sponsored, start_date, end_date, active, zone
+                    sort_order, location, sponsored, start_date, end_date, is_active, zone
                 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, 'homepage')
             ");
             
@@ -305,10 +305,10 @@ try {
     $pdo->exec("
         CREATE OR REPLACE VIEW active_carousel_slides AS
         SELECT * FROM carousel_slides 
-        WHERE active = 1 
+        WHERE is_active = 1 
           AND (start_date IS NULL OR start_date <= CURDATE())
           AND (end_date IS NULL OR end_date >= CURDATE())
-        ORDER BY priority DESC, sponsored DESC, created_at DESC
+        ORDER BY sort_order DESC, sponsored DESC, created_at DESC
     ");
     echo "✅ Created active_carousel_slides view\n";
     
@@ -346,12 +346,12 @@ try {
         )
         BEGIN
             SELECT * FROM carousel_slides 
-            WHERE active = 1 
+            WHERE is_active = 1 
               AND (location = p_location OR location = 'all')
               AND zone = p_zone
               AND (start_date IS NULL OR start_date <= CURDATE())
               AND (end_date IS NULL OR end_date >= CURDATE())
-            ORDER BY priority DESC, sponsored DESC, created_at DESC
+            ORDER BY sort_order DESC, sponsored DESC, created_at DESC
             LIMIT p_limit;
         END
     ");
@@ -364,7 +364,7 @@ try {
     $slideCount = $stmt->fetchColumn();
     echo "✅ Total slides: {$slideCount}\n";
     
-    $stmt = $pdo->query("SELECT COUNT(*) FROM carousel_slides WHERE active = 1");
+    $stmt = $pdo->query("SELECT COUNT(*) FROM carousel_slides WHERE is_active = 1");
     $activeCount = $stmt->fetchColumn();
     echo "✅ Active slides: {$activeCount}\n";
     
