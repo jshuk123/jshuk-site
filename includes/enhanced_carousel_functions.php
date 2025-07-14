@@ -57,12 +57,12 @@ function getCarouselSlides($pdo, $zone = 'homepage', $limit = 10, $location = nu
         
         $query = $pdo->prepare("
             SELECT * FROM carousel_slides
-            WHERE active = 1
+            WHERE is_active = 1
               AND (location = :loc OR location = 'all')
               AND TRIM(zone) = :zone
               AND (start_date IS NULL OR start_date <= :today)
               AND (end_date IS NULL OR end_date >= :today)
-            ORDER BY priority DESC, sponsored DESC, created_at DESC
+            ORDER BY sort_order DESC, sponsored DESC, created_at DESC
             LIMIT :limit
         ");
         
@@ -79,7 +79,7 @@ function getCarouselSlides($pdo, $zone = 'homepage', $limit = 10, $location = nu
         if (empty($slides)) {
             error_log("🔍 getCarouselSlides - No slides found, checking raw data...");
             // Let's see what's actually in the database
-            $debug_stmt = $pdo->query("SELECT id, title, zone, active, location FROM carousel_slides ORDER BY id DESC LIMIT 5");
+            $debug_stmt = $pdo->query("SELECT id, title, zone, is_active, location FROM carousel_slides ORDER BY id DESC LIMIT 5");
             $debug_slides = $debug_stmt->fetchAll(PDO::FETCH_ASSOC);
             error_log("🔍 Raw DB data: " . json_encode($debug_slides));
         }
@@ -167,14 +167,14 @@ function getLocationBasedSlides($pdo, $location, $zone = 'homepage', $limit = 5)
     try {
         $stmt = $pdo->prepare("
             SELECT * FROM carousel_slides
-            WHERE active = 1
+            WHERE is_active = 1
               AND (location = :loc OR location = 'all')
               AND TRIM(zone) = :zone
               AND (start_date IS NULL OR start_date <= CURDATE())
               AND (end_date IS NULL OR end_date >= CURDATE())
             ORDER BY 
                 CASE WHEN location = :loc THEN 1 ELSE 2 END,
-                priority DESC, 
+                sort_order DESC, 
                 sponsored DESC, 
                 created_at DESC
             LIMIT :limit
@@ -206,7 +206,7 @@ function hasActiveSlides($pdo, $zone = 'homepage', $location = null) {
         
         $stmt = $pdo->prepare("
             SELECT COUNT(*) FROM carousel_slides
-            WHERE active = 1
+            WHERE is_active = 1
               AND (location = :loc OR location = 'all')
               AND TRIM(zone) = :zone
               AND (start_date IS NULL OR start_date <= :today)
@@ -234,12 +234,12 @@ function getSponsoredSlides($pdo, $zone = 'homepage', $limit = 3) {
     try {
         $stmt = $pdo->prepare("
             SELECT * FROM carousel_slides
-            WHERE active = 1
+            WHERE is_active = 1
               AND sponsored = 1
               AND TRIM(zone) = :zone
               AND (start_date IS NULL OR start_date <= CURDATE())
               AND (end_date IS NULL OR end_date >= CURDATE())
-            ORDER BY priority DESC, created_at DESC
+            ORDER BY sort_order DESC, created_at DESC
             LIMIT :limit
         ");
         
@@ -405,11 +405,11 @@ function getCarouselStats($pdo) {
         $stats['total_slides'] = $stmt->fetchColumn();
         
         // Active slides
-        $stmt = $pdo->query("SELECT COUNT(*) FROM carousel_slides WHERE active = 1");
+        $stmt = $pdo->query("SELECT COUNT(*) FROM carousel_slides WHERE is_active = 1");
         $stats['active_slides'] = $stmt->fetchColumn();
         
         // Sponsored slides
-        $stmt = $pdo->query("SELECT COUNT(*) FROM carousel_slides WHERE sponsored = 1 AND active = 1");
+        $stmt = $pdo->query("SELECT COUNT(*) FROM carousel_slides WHERE sponsored = 1 AND is_active = 1");
         $stats['sponsored_slides'] = $stmt->fetchColumn();
         
         // Total impressions (last 30 days)

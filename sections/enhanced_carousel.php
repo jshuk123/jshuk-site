@@ -16,9 +16,9 @@ try {
     // Start with the simplest possible query to eliminate parameter binding issues
     $query = $pdo->prepare("
         SELECT * FROM carousel_slides
-        WHERE active = 1
+        WHERE is_active = 1
           AND zone = :zone
-        ORDER BY priority DESC, sponsored DESC, id DESC
+        ORDER BY sort_order DESC, sponsored DESC, id DESC
     ");
 
     $query->execute([

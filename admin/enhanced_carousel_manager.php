@@ -398,9 +398,9 @@ if ($zone_filter) {
 }
 
 if ($status_filter === 'active') {
-    $where_conditions[] = "active = 1";
-} elseif ($status_filter === 'inactive') {
-    $where_conditions[] = "active = 0";
+            $where_conditions[] = "is_active = 1";
+  } elseif ($status_filter === 'inactive') {
+      $where_conditions[] = "is_active = 0";
 }
 
 $where_clause = !empty($where_conditions) ? "WHERE " . implode(" AND ", $where_conditions) : "";
