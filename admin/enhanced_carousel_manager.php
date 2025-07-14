@@ -369,7 +369,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     } elseif ($action === 'toggle' && isset($_POST['slide_id'])) {
         $slide_id = (int) $_POST['slide_id'];
         try {
-            $stmt = $pdo->prepare("UPDATE carousel_slides SET active = NOT active WHERE id = ?");
+            $stmt = $pdo->prepare("UPDATE carousel_slides SET is_active = NOT is_active WHERE id = ?");
             $stmt->execute([$slide_id]);
             $success = "Slide status updated!";
         } catch (PDOException $e) {

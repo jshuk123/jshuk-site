@@ -262,7 +262,7 @@ function getExpiringSlides($pdo, $days = 7) {
     try {
         $stmt = $pdo->prepare("
             SELECT * FROM carousel_slides
-            WHERE active = 1
+            WHERE is_active = 1
               AND end_date IS NOT NULL
               AND end_date BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL :days DAY)
             ORDER BY end_date ASC
@@ -286,10 +286,10 @@ function autoExpireSlides($pdo) {
     try {
         $stmt = $pdo->prepare("
             UPDATE carousel_slides 
-            SET active = 0 
+            SET is_active = 0 
             WHERE end_date IS NOT NULL 
               AND end_date < CURDATE() 
-              AND active = 1
+              AND is_active = 1
         ");
         
         $stmt->execute();
