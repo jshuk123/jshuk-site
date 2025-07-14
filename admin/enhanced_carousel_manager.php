@@ -188,7 +188,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         $subtitle = trim($_POST['subtitle'] ?? '');
         $cta_text = trim($_POST['cta_text'] ?? '');
         $cta_link = trim($_POST['cta_link'] ?? '');
-        $priority = (int) ($_POST['priority'] ?? 0);
+        // Use sort_order instead of priority
+        $sort_order = (int) ($_POST['priority'] ?? 0); // fallback to priority field from form for now
         $location = trim($_POST['location'] ?? 'all');
         $sponsored = isset($_POST['sponsored']) ? 1 : 0;
         $active = isset($_POST['active']) ? 1 : 0;
@@ -253,13 +254,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                         $stmt = $pdo->prepare("
                             INSERT INTO carousel_slides (
                                 title, subtitle, image_url, cta_text, cta_link, 
-                                priority, location, sponsored, start_date, end_date, 
+                                sort_order, location, sponsored, start_date, end_date, 
                                 active, zone
                             ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                         ");
                         $stmt->execute([
                             $title, $subtitle, $image_url, $cta_text, $cta_link,
-                            $priority, $location, $sponsored, $start_date, $end_date,
+                            $sort_order, $location, $sponsored, $start_date, $end_date,
                             $active, $zone
                         ]);
                         $success = "Carousel slide added successfully!";
@@ -270,7 +271,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                             'subtitle' => $subtitle,
                             'cta_text' => $cta_text,
                             'cta_link' => $cta_link,
-                            'priority' => $priority,
+                            'sort_order' => $sort_order,
                             'location' => $location,
                             'sponsored' => $sponsored,
                             'start_date' => $start_date,
@@ -405,12 +406,34 @@ if ($status_filter === 'active') {
 
 $where_clause = !empty($where_conditions) ? "WHERE " . implode(" AND ", $where_conditions) : "";
 
+// Detect which column to use for ordering
+$orderBy = '';
+try {
+    $colStmt = $pdo->query("SHOW COLUMNS FROM carousel_slides LIKE 'sort_order'");
+    $hasSortOrder = $colStmt->rowCount() > 0;
+    $colStmt = $pdo->query("SHOW COLUMNS FROM carousel_slides LIKE 'priority'");
+    $hasPriority = $colStmt->rowCount() > 0;
+    if ($hasSortOrder) {
+        $orderBy = 'sort_order DESC';
+    } elseif ($hasPriority) {
+        $orderBy = 'priority DESC';
+    } else {
+        $orderBy = 'id DESC';
+    }
+} catch (PDOException $e) {
+    $orderBy = 'id DESC';
+}
+if ($hasSortOrder && !$hasPriority) {
+    $mainOrderCol = 'sort_order';
+} else {
+    $mainOrderCol = 'priority';
+}
 // Fetch slides with filters
 try {
     $stmt = $pdo->prepare("
         SELECT * FROM carousel_slides 
         $where_clause
-        ORDER BY priority DESC, sponsored DESC, created_at DESC
+        ORDER BY $orderBy, sponsored DESC, created_at DESC
     ");
     $stmt->execute($params);
     $slides = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -700,7 +723,7 @@ $adminName = $_SESSION['user_name'] ?? 'Admin';
                                             <td>
                                                 <span class="badge bg-info"><?= htmlspecialchars(ucfirst($slide['zone'])) ?></span>
                                             </td>
-                                            <td><?= $slide['priority'] ?></td>
+                                            <td><?= $slide['sort_order'] ?></td>
                                             <td>
                                                 <span class="badge <?= $slide['active'] ? 'bg-success' : 'bg-danger' ?>">
                                                     <?= $slide['active'] ? 'Active' : 'Inactive' ?>
@@ -1211,7 +1234,7 @@ function editSlide(slideId) {
         // Populate the edit form
         document.getElementById('edit_slide_id').value = slide.id;
         document.getElementById('edit_title').value = slide.title || '';
-        document.getElementById('edit_priority').value = slide.priority || 0;
+        document.getElementById('edit_priority').value = slide.sort_order || 0; // Use sort_order
         document.getElementById('edit_subtitle').value = slide.subtitle || '';
         document.getElementById('edit_cta_text').value = slide.cta_text || '';
         document.getElementById('edit_cta_link').value = slide.cta_link || '';
