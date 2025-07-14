@@ -33,27 +33,27 @@ if (isset($pdo) && $pdo) {
         echo "❌ Database connection failed: " . $e->getMessage() . "<br>";
     }
     
-    // Check if carousel_ads table exists
+    // Check if carousel_slides table exists
     try {
-        $stmt = $pdo->query("SHOW TABLES LIKE 'carousel_ads'");
+        $stmt = $pdo->query("SHOW TABLES LIKE 'carousel_slides'");
         if ($stmt->rowCount() > 0) {
-            echo "✅ carousel_ads table exists<br>";
+            echo "✅ carousel_slides table exists<br>";
             
-            // Count ads
-            $stmt = $pdo->query("SELECT COUNT(*) FROM carousel_ads");
+            // Count slides
+            $stmt = $pdo->query("SELECT COUNT(*) FROM carousel_slides");
             $count = $stmt->fetchColumn();
-            echo "📊 Found {$count} carousel ads<br>";
+            echo "📊 Found {$count} carousel slides<br>";
             
-            // Show active ads
-            $stmt = $pdo->query("SELECT COUNT(*) FROM carousel_ads WHERE active = 1");
+            // Show active slides
+            $stmt = $pdo->query("SELECT COUNT(*) FROM carousel_slides WHERE active = 1");
             $active = $stmt->fetchColumn();
-            echo "🟢 Active ads: {$active}<br>";
+            echo "🟢 Active slides: {$active}<br>";
             
         } else {
-            echo "⚠️ carousel_ads table does not exist<br>";
+            echo "⚠️ carousel_slides table does not exist<br>";
         }
     } catch (PDOException $e) {
-        echo "❌ Error checking carousel_ads table: " . $e->getMessage() . "<br>";
+        echo "❌ Error checking carousel_slides table: " . $e->getMessage() . "<br>";
     }
     
 } else {
@@ -61,10 +61,10 @@ if (isset($pdo) && $pdo) {
 }
 
 // Check if carousel component file exists
-if (file_exists('sections/carousel.php')) {
-    echo "✅ sections/carousel.php exists<br>";
+if (file_exists('sections/enhanced_carousel.php')) {
+    echo "✅ sections/enhanced_carousel.php exists<br>";
 } else {
-    echo "❌ sections/carousel.php not found<br>";
+    echo "❌ sections/enhanced_carousel.php not found<br>";
 }
 
 // Check if uploads directory exists
@@ -100,15 +100,17 @@ if (file_exists($error_log_path)) {
 }
 
 // Test carousel component inclusion
-echo "<h3>Testing carousel component:</h3>";
+echo "<h3>Testing enhanced carousel component:</h3>";
 try {
     ob_start();
-    include 'sections/carousel.php';
+    $zone = 'homepage';
+    $location = null;
+    include 'sections/enhanced_carousel.php';
     $carousel_output = ob_get_clean();
-    echo "✅ Carousel component loaded successfully<br>";
+    echo "✅ Enhanced carousel component loaded successfully<br>";
     echo "<details><summary>Carousel HTML (first 500 chars)</summary><pre>" . htmlspecialchars(substr($carousel_output, 0, 500)) . "...</pre></details>";
 } catch (Exception $e) {
-    echo "❌ Error loading carousel component: " . $e->getMessage() . "<br>";
+    echo "❌ Error loading enhanced carousel component: " . $e->getMessage() . "<br>";
 }
 
 echo "<br><hr><br>";

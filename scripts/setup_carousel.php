@@ -181,89 +181,89 @@ if (extension_loaded('gd')) {
 }
 echo "</div>";
 
-// Step 5: Add sample carousel ads
-echo "<div class='step'><h3>Step 5: Adding Sample Carousel Ads</h3>";
+// Step 5: Add sample carousel slides
+echo "<div class='step'><h3>Step 5: Adding Sample Carousel Slides</h3>";
 try {
-    // Check if ads already exist
-    $stmt = $pdo->query("SELECT COUNT(*) FROM carousel_ads");
+    // Check if slides already exist
+    $stmt = $pdo->query("SELECT COUNT(*) FROM carousel_slides");
     $existing_count = $stmt->fetchColumn();
     
     if ($existing_count == 0) {
-        // Insert sample ads
-        $sample_ads = [
+        // Insert sample slides
+        $sample_slides = [
             [
                 'title' => 'Welcome to JShuk',
                 'subtitle' => 'Your Jewish Community Hub - Discover Local Businesses',
-                'image_path' => 'uploads/carousel/sample_ad1.jpg',
+                'image_url' => 'uploads/carousel/sample_ad1.jpg',
                 'cta_text' => 'Explore Now',
-                'cta_url' => 'businesses.php',
-                'position' => 1
+                'cta_link' => 'businesses.php',
+                'priority' => 10
             ],
             [
                 'title' => 'Kosher Restaurants',
                 'subtitle' => 'Find the best kosher dining in your area',
-                'image_path' => 'uploads/carousel/sample_ad2.jpg',
+                'image_url' => 'uploads/carousel/sample_ad2.jpg',
                 'cta_text' => 'Find Restaurants',
-                'cta_url' => 'businesses.php?category=restaurants',
-                'position' => 2
+                'cta_link' => 'businesses.php?category=restaurants',
+                'priority' => 8
             ],
             [
                 'title' => 'Community Events',
                 'subtitle' => 'Stay connected with your local Jewish community',
-                'image_path' => 'uploads/carousel/sample_ad3.jpg',
+                'image_url' => 'uploads/carousel/sample_ad3.jpg',
                 'cta_text' => 'View Events',
-                'cta_url' => 'events.php',
-                'position' => 3
+                'cta_link' => 'events.php',
+                'priority' => 5
             ]
         ];
         
         $stmt = $pdo->prepare("
-            INSERT INTO carousel_ads (title, subtitle, image_path, cta_text, cta_url, active, position, created_at)
-            VALUES (?, ?, ?, ?, ?, 1, ?, NOW())
+            INSERT INTO carousel_slides (title, subtitle, image_url, cta_text, cta_link, active, priority, zone, created_at)
+            VALUES (?, ?, ?, ?, ?, 1, ?, 'homepage', NOW())
         ");
         
-        foreach ($sample_ads as $ad) {
+        foreach ($sample_slides as $slide) {
             $stmt->execute([
-                $ad['title'],
-                $ad['subtitle'],
-                $ad['image_path'],
-                $ad['cta_text'],
-                $ad['cta_url'],
-                $ad['position']
+                $slide['title'],
+                $slide['subtitle'],
+                $slide['image_url'],
+                $slide['cta_text'],
+                $slide['cta_link'],
+                $slide['priority']
             ]);
         }
         
-        echo "<p class='success'>✅ Added " . count($sample_ads) . " sample carousel ads</p>";
+        echo "<p class='success'>✅ Added " . count($sample_slides) . " sample carousel slides</p>";
     } else {
-        echo "<p class='info'>ℹ️ {$existing_count} carousel ads already exist</p>";
+        echo "<p class='info'>ℹ️ {$existing_count} carousel slides already exist</p>";
     }
 } catch (PDOException $e) {
-    echo "<p class='error'>❌ Error adding sample ads: " . $e->getMessage() . "</p>";
+    echo "<p class='error'>❌ Error adding sample slides: " . $e->getMessage() . "</p>";
 }
 echo "</div>";
 
 // Step 6: Test carousel functionality
 echo "<div class='step'><h3>Step 6: Testing Carousel Functionality</h3>";
 try {
-    // Count active ads
-    $stmt = $pdo->query("SELECT COUNT(*) FROM carousel_ads WHERE active = 1");
+    // Count active slides
+    $stmt = $pdo->query("SELECT COUNT(*) FROM carousel_slides WHERE active = 1");
     $active_count = $stmt->fetchColumn();
     
     if ($active_count > 0) {
-        echo "<p class='success'>✅ Found {$active_count} active carousel ads</p>";
+        echo "<p class='success'>✅ Found {$active_count} active carousel slides</p>";
         
-        // Show sample ad data
-        $stmt = $pdo->query("SELECT title, image_path FROM carousel_ads WHERE active = 1 ORDER BY position LIMIT 3");
-        $ads = $stmt->fetchAll();
+        // Show sample slide data
+        $stmt = $pdo->query("SELECT title, image_url FROM carousel_slides WHERE active = 1 ORDER BY priority DESC LIMIT 3");
+        $slides = $stmt->fetchAll();
         
-        echo "<p class='info'>📋 Sample ads:</p><ul>";
-        foreach ($ads as $ad) {
-            echo "<li>{$ad['title']} - {$ad['image_path']}</li>";
+        echo "<p class='info'>📋 Sample slides:</p><ul>";
+        foreach ($slides as $slide) {
+            echo "<li>{$slide['title']} - {$slide['image_url']}</li>";
         }
         echo "</ul>";
         
     } else {
-        echo "<p class='warning'>⚠️ No active carousel ads found</p>";
+        echo "<p class='warning'>⚠️ No active carousel slides found</p>";
     }
 } catch (PDOException $e) {
     echo "<p class='error'>❌ Error testing carousel: " . $e->getMessage() . "</p>";
@@ -277,10 +277,10 @@ echo "<p class='info'>📝 Next steps:</p>";
 echo "<ul>";
 echo "<li>Visit your homepage to see the carousel in action</li>";
 echo "<li>Open browser console to see carousel debugging information</li>";
-echo "<li>Use the admin panel to manage carousel ads</li>";
+echo "<li>Use the admin panel to manage carousel slides</li>";
 echo "</ul>";
 echo "<p><a href='../index.php' style='background: #007bff; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;'>🏠 Go to Homepage</a></p>";
-echo "<p><a href='../admin/carousel_manager.php' style='background: #28a745; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;'>⚙️ Manage Carousel</a></p>";
+echo "<p><a href='../admin/enhanced_carousel_manager.php' style='background: #28a745; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;'>⚙️ Manage Carousel</a></p>";
 echo "</div>";
 
 // Helper function to convert hex to RGB

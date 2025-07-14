@@ -1,58 +1,58 @@
 <?php
 /**
- * Add Sample Carousel Ads
- * This script adds sample carousel ads to the database for testing
+ * Add Sample Carousel Slides
+ * This script adds sample carousel slides to the database for testing
  */
 
 require_once '../config/config.php';
 
-echo "<h1>🎠 Adding Sample Carousel Ads</h1>";
+echo "<h1>🎠 Adding Sample Carousel Slides</h1>";
 
 try {
     // Check if table exists
-    $stmt = $pdo->query("SHOW TABLES LIKE 'carousel_ads'");
+    $stmt = $pdo->query("SHOW TABLES LIKE 'carousel_slides'");
     if ($stmt->rowCount() == 0) {
-        echo "❌ carousel_ads table does not exist. Please run the carousel manager first.<br>";
+        echo "❌ carousel_slides table does not exist. Please run the enhanced carousel setup first.<br>";
         exit;
     }
     
-    echo "✅ carousel_ads table exists<br>";
+    echo "✅ carousel_slides table exists<br>";
     
-    // Check if we already have ads
-    $stmt = $pdo->query("SELECT COUNT(*) FROM carousel_ads");
+    // Check if we already have slides
+    $stmt = $pdo->query("SELECT COUNT(*) FROM carousel_slides");
     $existing_count = $stmt->fetchColumn();
     
     if ($existing_count > 0) {
-        echo "📊 Found {$existing_count} existing carousel ads<br>";
-        echo "Skipping sample ads to avoid duplicates.<br>";
+        echo "📊 Found {$existing_count} existing carousel slides<br>";
+        echo "Skipping sample slides to avoid duplicates.<br>";
         echo "<a href='../index.php'>← Go to Homepage</a><br>";
         exit;
     }
     
-    // Create sample ads
-    $sample_ads = [
+    // Create sample slides
+    $sample_slides = [
         [
             'title' => 'Welcome to JShuk',
             'subtitle' => 'Your Jewish Community Hub - Discover Local Businesses',
             'cta_text' => 'Explore Now',
-            'cta_url' => 'businesses.php',
-            'position' => 1,
+            'cta_link' => 'businesses.php',
+            'priority' => 10,
             'active' => 1
         ],
         [
             'title' => 'Kosher Restaurants',
             'subtitle' => 'Find the best kosher dining in your area',
             'cta_text' => 'Find Restaurants',
-            'cta_url' => 'businesses.php?category=restaurants',
-            'position' => 2,
+            'cta_link' => 'businesses.php?category=restaurants',
+            'priority' => 8,
             'active' => 1
         ],
         [
             'title' => 'Community Events',
             'subtitle' => 'Stay connected with your local Jewish community',
             'cta_text' => 'View Events',
-            'cta_url' => 'events.php',
-            'position' => 3,
+            'cta_link' => 'events.php',
+            'priority' => 5,
             'active' => 1
         ]
     ];
@@ -65,10 +65,10 @@ try {
     }
     
     // Create sample images using GD or SVG placeholders
-    foreach ($sample_ads as $index => $ad) {
+    foreach ($sample_slides as $index => $slide) {
         $image_filename = 'sample_ad_' . ($index + 1) . '.jpg';
-        $image_path = 'uploads/carousel/' . $image_filename;
-        $full_path = '../' . $image_path;
+        $image_url = 'uploads/carousel/' . $image_filename;
+        $full_path = '../' . $image_url;
         
         // Create a simple gradient image
         if (extension_loaded('gd')) {
@@ -98,8 +98,8 @@ try {
             
             // Add text
             $text_color = imagecolorallocate($image, 255, 255, 255);
-            $title = $ad['title'];
-            $subtitle = $ad['subtitle'];
+            $title = $slide['title'];
+            $subtitle = $slide['subtitle'];
             
             // Add title
             $font_size = 48;
@@ -127,38 +127,38 @@ try {
                     </linearGradient>
                 </defs>
                 <rect width="100%" height="100%" fill="url(#grad' . $index . ')"/>
-                <text x="50%" y="45%" font-family="Arial, sans-serif" font-size="48" fill="white" text-anchor="middle">' . htmlspecialchars($ad['title']) . '</text>
-                <text x="50%" y="55%" font-family="Arial, sans-serif" font-size="24" fill="white" text-anchor="middle">' . htmlspecialchars($ad['subtitle']) . '</text>
+                <text x="50%" y="45%" font-family="Arial, sans-serif" font-size="48" fill="white" text-anchor="middle">' . htmlspecialchars($slide['title']) . '</text>
+                <text x="50%" y="55%" font-family="Arial, sans-serif" font-size="24" fill="white" text-anchor="middle">' . htmlspecialchars($slide['subtitle']) . '</text>
             </svg>';
             
             file_put_contents($full_path . '.svg', $svg_content);
-            $image_path = 'uploads/carousel/' . $image_filename . '.svg';
+            $image_url = 'uploads/carousel/' . $image_filename . '.svg';
             
             echo "🖼️ Created SVG placeholder: {$image_filename}.svg<br>";
         }
         
         // Insert into database
         $stmt = $pdo->prepare("
-            INSERT INTO carousel_ads (title, subtitle, image_path, cta_text, cta_url, position, active, created_at) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, NOW())
+            INSERT INTO carousel_slides (title, subtitle, image_url, cta_text, cta_link, priority, active, zone, created_at) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, 'homepage', NOW())
         ");
         
         $stmt->execute([
-            $ad['title'],
-            $ad['subtitle'],
-            $image_path,
-            $ad['cta_text'],
-            $ad['cta_url'],
-            $ad['position'],
-            $ad['active']
+            $slide['title'],
+            $slide['subtitle'],
+            $image_url,
+            $slide['cta_text'],
+            $slide['cta_link'],
+            $slide['priority'],
+            $slide['active']
         ]);
         
-        echo "✅ Added carousel ad: {$ad['title']}<br>";
+        echo "✅ Added carousel slide: {$slide['title']}<br>";
     }
     
-    echo "<br>🎉 Successfully added " . count($sample_ads) . " sample carousel ads!<br>";
+    echo "<br>🎉 Successfully added " . count($sample_slides) . " sample carousel slides!<br>";
     echo "<a href='../index.php'>← Go to Homepage to see the carousel</a><br>";
-    echo "<a href='../admin/carousel_manager.php'>→ Manage Carousel Ads</a><br>";
+    echo "<a href='../admin/enhanced_carousel_manager.php'>→ Manage Carousel Slides</a><br>";
     
 } catch (PDOException $e) {
     echo "❌ Database error: " . $e->getMessage() . "<br>";

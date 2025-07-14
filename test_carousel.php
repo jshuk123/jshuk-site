@@ -14,36 +14,36 @@ echo "<h2>Database Connection Test</h2>";
 if (isset($pdo) && $pdo) {
     echo "✅ Database connection successful<br>";
     
-    // Test carousel_ads table
+    // Test carousel_slides table
     try {
-        $stmt = $pdo->query("SHOW TABLES LIKE 'carousel_ads'");
+        $stmt = $pdo->query("SHOW TABLES LIKE 'carousel_slides'");
         if ($stmt->rowCount() > 0) {
-            echo "✅ carousel_ads table exists<br>";
+            echo "✅ carousel_slides table exists<br>";
             
-            // Count ads
-            $stmt = $pdo->query("SELECT COUNT(*) FROM carousel_ads");
-            $total_ads = $stmt->fetchColumn();
-            echo "📊 Total carousel ads: $total_ads<br>";
+            // Count slides
+            $stmt = $pdo->query("SELECT COUNT(*) FROM carousel_slides");
+            $total_slides = $stmt->fetchColumn();
+            echo "📊 Total carousel slides: $total_slides<br>";
             
-            // Get active ads
-            $stmt = $pdo->query("SELECT COUNT(*) FROM carousel_ads WHERE active = 1");
-            $active_ads = $stmt->fetchColumn();
-            echo "✅ Active carousel ads: $active_ads<br>";
+            // Get active slides
+            $stmt = $pdo->query("SELECT COUNT(*) FROM carousel_slides WHERE active = 1");
+            $active_slides = $stmt->fetchColumn();
+            echo "✅ Active carousel slides: $active_slides<br>";
             
-            // Show sample ads
-            $stmt = $pdo->query("SELECT * FROM carousel_ads ORDER BY position ASC LIMIT 5");
-            $ads = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            // Show sample slides
+            $stmt = $pdo->query("SELECT * FROM carousel_slides ORDER BY priority DESC, created_at DESC LIMIT 5");
+            $slides = $stmt->fetchAll(PDO::FETCH_ASSOC);
             
-            if (!empty($ads)) {
-                echo "<h3>Sample Ads:</h3>";
-                foreach ($ads as $ad) {
-                    echo "- {$ad['title']} (Position: {$ad['position']}, Active: " . ($ad['active'] ? 'Yes' : 'No') . ")<br>";
+            if (!empty($slides)) {
+                echo "<h3>Sample Slides:</h3>";
+                foreach ($slides as $slide) {
+                    echo "- {$slide['title']} (Priority: {$slide['priority']}, Active: " . ($slide['active'] ? 'Yes' : 'No') . ")<br>";
                 }
             } else {
-                echo "⚠️ No carousel ads found in database<br>";
+                echo "⚠️ No carousel slides found in database<br>";
             }
         } else {
-            echo "❌ carousel_ads table does not exist<br>";
+            echo "❌ carousel_slides table does not exist<br>";
         }
     } catch (PDOException $e) {
         echo "❌ Database error: " . $e->getMessage() . "<br>";
@@ -75,16 +75,16 @@ if (is_dir($upload_dir)) {
 
 // Test carousel section
 echo "<h2>Carousel Section Test</h2>";
-if (file_exists('sections/carousel.php')) {
-    echo "✅ carousel.php section exists<br>";
+if (file_exists('sections/enhanced_carousel.php')) {
+    echo "✅ enhanced_carousel.php section exists<br>";
     
     // Include the carousel section
-    echo "<h3>Rendering Carousel:</h3>";
+    echo "<h3>Rendering Enhanced Carousel:</h3>";
     echo "<div style='border: 2px solid #ccc; padding: 20px; margin: 20px 0;'>";
-    include 'sections/carousel.php';
+    include 'sections/enhanced_carousel.php';
     echo "</div>";
 } else {
-    echo "❌ carousel.php section not found<br>";
+    echo "❌ enhanced_carousel.php section not found<br>";
 }
 
 echo "<h2>JavaScript Test</h2>";
@@ -103,12 +103,12 @@ if (typeof Swiper !== 'undefined') {
 
 // Test carousel element
 document.addEventListener('DOMContentLoaded', function() {
-    const carousel = document.querySelector('.homepage-carousel');
+    const carousel = document.querySelector('.enhanced-carousel');
     if (carousel) {
-        console.log('✅ Carousel element found');
+        console.log('✅ Enhanced carousel element found');
         console.log('Carousel slides:', carousel.querySelectorAll('.swiper-slide').length);
     } else {
-        console.log('❌ Carousel element not found');
+        console.log('❌ Enhanced carousel element not found');
     }
 });
 </script>

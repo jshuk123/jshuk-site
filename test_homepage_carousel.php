@@ -14,27 +14,27 @@ echo "<h2>Database Test</h2>";
 if (isset($pdo) && $pdo) {
     echo "✅ Database connection successful<br>";
     
-    // Check carousel_ads table
+    // Check carousel_slides table
     try {
-        $stmt = $pdo->query("SHOW TABLES LIKE 'carousel_ads'");
+        $stmt = $pdo->query("SHOW TABLES LIKE 'carousel_slides'");
         if ($stmt->rowCount() > 0) {
-            echo "✅ carousel_ads table exists<br>";
+            echo "✅ carousel_slides table exists<br>";
             
-            // Count ads
-            $stmt = $pdo->query("SELECT COUNT(*) FROM carousel_ads");
-            $total_ads = $stmt->fetchColumn();
-            echo "📊 Total carousel ads: $total_ads<br>";
+            // Count slides
+            $stmt = $pdo->query("SELECT COUNT(*) FROM carousel_slides");
+            $total_slides = $stmt->fetchColumn();
+            echo "📊 Total carousel slides: $total_slides<br>";
             
-            // Get active ads
-            $stmt = $pdo->query("SELECT COUNT(*) FROM carousel_ads WHERE active = 1");
-            $active_ads = $stmt->fetchColumn();
-            echo "✅ Active carousel ads: $active_ads<br>";
+            // Get active slides
+            $stmt = $pdo->query("SELECT COUNT(*) FROM carousel_slides WHERE active = 1");
+            $active_slides = $stmt->fetchColumn();
+            echo "✅ Active carousel slides: $active_slides<br>";
             
-            if ($active_ads == 0) {
-                echo "<p style='color: orange;'>⚠️ No active carousel ads found. The carousel will show a placeholder.</p>";
+            if ($active_slides == 0) {
+                echo "<p style='color: orange;'>⚠️ No active carousel slides found. The carousel will show a placeholder.</p>";
             }
         } else {
-            echo "❌ carousel_ads table does not exist<br>";
+            echo "❌ carousel_slides table does not exist<br>";
         }
     } catch (PDOException $e) {
         echo "❌ Database error: " . $e->getMessage() . "<br>";
@@ -53,7 +53,7 @@ include 'sections/enhanced_carousel.php';
 echo "<h2>Next Steps</h2>";
 echo "<p>If the carousel is working above, you can:</p>";
 echo "<ul>";
-echo "<li><a href='admin/carousel_manager.php'>Manage Carousel Ads</a> - Add real carousel content</li>";
+echo "<li><a href='admin/enhanced_carousel_manager.php'>Manage Carousel Slides</a> - Add real carousel content</li>";
 echo "<li><a href='index.php'>View Homepage</a> - See the carousel in action</li>";
 echo "<li><a href='carousel_test.html'>Test Page</a> - Standalone carousel test</li>";
 echo "</ul>";
@@ -74,9 +74,9 @@ if (typeof Swiper !== 'undefined') {
 
 // Test carousel element
 document.addEventListener('DOMContentLoaded', function() {
-    const carousel = document.querySelector('.homepage-carousel');
+    const carousel = document.querySelector('.enhanced-carousel');
     if (carousel) {
-        console.log('✅ Carousel element found');
+        console.log('✅ Enhanced carousel element found');
         console.log('Carousel slides:', carousel.querySelectorAll('.swiper-slide').length);
         
         // Check if Swiper is initialized
@@ -89,7 +89,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }, 1000);
     } else {
-        console.log('❌ Carousel element not found');
+        console.log('❌ Enhanced carousel element not found');
     }
 });
 </script>

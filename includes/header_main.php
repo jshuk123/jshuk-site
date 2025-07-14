@@ -191,6 +191,11 @@ try {
                             <i class="fas fa-home me-1"></i>Retreats
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link <?= ($current_page == 'gemachim') ? 'active' : '' ?>" href="/gemachim.php" aria-current="<?= ($current_page == 'gemachim') ? 'page' : 'false' ?>">
+                            <i class="fas fa-hands-helping me-1"></i>Gemachim
+                        </a>
+                    </li>
                     
                     <!-- User Authentication Section -->
                     <?php if ($is_logged_in): ?>
@@ -314,6 +319,12 @@ try {
                         <span>Retreats</span>
                     </a>
                 </li>
+                <li class="mobile-nav-item">
+                    <a href="/gemachim.php" class="mobile-nav-link <?= ($current_page == 'gemachim') ? 'active' : '' ?>" aria-current="<?= ($current_page == 'gemachim') ? 'page' : 'false' ?>">
+                        <i class="fas fa-hands-helping"></i>
+                        <span>Gemachim</span>
+                    </a>
+                </li>
                 
                 <?php if ($is_logged_in): ?>
                     <li class="mobile-nav-divider"></li>
@@ -385,6 +396,10 @@ try {
     <a href="/retreats.php" class="mobile-bottom-nav-item <?= ($current_page == 'retreats') ? 'active' : '' ?>" aria-current="<?= ($current_page == 'retreats') ? 'page' : 'false' ?>">
         <i class="fas fa-home"></i>
         <span>Retreats</span>
+    </a>
+    <a href="/gemachim.php" class="mobile-bottom-nav-item <?= ($current_page == 'gemachim') ? 'active' : '' ?>" aria-current="<?= ($current_page == 'gemachim') ? 'page' : 'false' ?>">
+        <i class="fas fa-hands-helping"></i>
+        <span>Gemachim</span>
     </a>
 </nav>
 

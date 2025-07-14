@@ -2548,3 +2548,69 @@ button, .btn, input, select, textarea {
   background: initial !important;
   background-color: initial !important;
 }
+
+/* Community Corner Section */
+.community-section {
+  background: #f9f9f9;
+  padding: 4rem 0;
+  margin: 2rem 0;
+}
+
+.community-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.community-card {
+  background: #fff;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.community-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.community-emoji {
+  font-size: 2.5rem;
+  display: block;
+  margin-bottom: 1rem;
+}
+
+.community-card p {
+  margin-bottom: 1rem;
+  color: var(--text-dark);
+  line-height: 1.6;
+}
+
+.community-cta-link {
+  color: var(--secondary-color);
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.3s ease;
+}
+
+.community-cta-link:hover {
+  color: var(--primary-color);
+}
+
+@media (max-width: 768px) {
+  .community-cards {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  
+  .community-card {
+    padding: 1.25rem;
+  }
+  
+  .community-emoji {
+    font-size: 2rem;
+  }
+}

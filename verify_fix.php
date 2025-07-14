@@ -1,206 +1,150 @@
 <?php
-// Use the same database connection as the main site
-require_once 'config/config.php';
+/**
+ * Verify SQL Error Fix
+ * Run this in your browser to confirm the carousel SQL error is resolved
+ */
 
-echo "<!DOCTYPE html>";
-echo "<html><head><title>Free Stuff System Verification</title>";
-echo "<style>";
-echo "body{font-family:Arial,sans-serif;margin:20px;background:#f5f5f5;}";
-echo ".section{background:white;margin:10px 0;padding:15px;border-radius:5px;border-left:4px solid #28a745;}";
-echo ".error{color:red;} .success{color:green;} .info{color:blue;}";
-echo ".missing{color:orange;} .exists{color:green;}";
-echo "</style>";
-echo "</head><body>";
+echo "<h1>✅ SQL Error Fix Verification</h1>";
 
-echo "<h2>🔍 Free Stuff System - Post-Fix Verification</h2>";
-
-// Check if database connection is available
-if (!$pdo) {
-    echo "<div class='section'>";
-    echo "<h3>❌ Database Connection Error</h3>";
-    echo "<p>Database connection is not available. This could be due to:</p>";
-    echo "<ul>";
-    echo "<li>Missing database password in environment variables</li>";
-    echo "<li>Database server is down</li>";
-    echo "<li>Incorrect database credentials</li>";
-    echo "</ul>";
-    echo "<p>Please check your database configuration and try again.</p>";
-    echo "</div>";
-    echo "</body></html>";
+// Test 1: Check if we can connect to the database
+echo "<h2>Test 1: Database Connection</h2>";
+try {
+    require_once 'config/config.php';
+    if (isset($pdo) && $pdo) {
+        echo "✅ Database connection successful<br>";
+    } else {
+        echo "❌ Database connection failed<br>";
+        exit;
+    }
+} catch (Exception $e) {
+    echo "❌ Error loading config: " . $e->getMessage() . "<br>";
     exit;
 }
 
+// Test 2: Check if carousel_slides table exists
+echo "<h2>Test 2: Table Structure</h2>";
 try {
-    // Check if all required columns exist
-    $columns = [
-        'pickup_method',
-        'collection_deadline', 
-        'is_anonymous',
-        'is_chessed',
-        'is_bundle',
-        'status',
-        'pickup_code',
-        'contact_method',
-        'contact_info'
-    ];
-    
-    $missing_columns = [];
-    $existing_columns = [];
-    
-    foreach ($columns as $column) {
-        // Use direct query instead of prepared statement for SHOW COLUMNS
-        $stmt = $pdo->query("SHOW COLUMNS FROM classifieds LIKE '{$column}'");
+    $stmt = $pdo->query("SHOW TABLES LIKE 'carousel_slides'");
+    if ($stmt->rowCount() > 0) {
+        echo "✅ carousel_slides table exists<br>";
         
-        if ($stmt->rowCount() > 0) {
-            $existing_columns[] = $column;
-        } else {
-            $missing_columns[] = $column;
-        }
-    }
-    
-    echo "<div class='section'>";
-    echo "<h3>📋 Column Status:</h3>";
-    
-    if (empty($missing_columns)) {
-        echo "<p class='success'>✅ All required columns are present!</p>";
-        foreach ($existing_columns as $col) {
-            echo "<p class='exists'>  • {$col}: ✅ EXISTS</p>";
-        }
-    } else {
-        echo "<p class='error'>❌ Missing columns:</p>";
-        foreach ($missing_columns as $col) {
-            echo "<p class='missing'>  • {$col}: ❌ MISSING</p>";
-        }
-        echo "<p><strong>Please run the fix_missing_columns.sql script to add these columns.</strong></p>";
-    }
-    echo "</div>";
-    
-    // Check users table structure
-    echo "<div class='section'>";
-    echo "<h3>🔍 Users Table Structure:</h3>";
-    
-    $stmt = $pdo->query("SHOW COLUMNS FROM users");
-    $user_columns = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    
-    $user_name_column = null;
-    foreach ($user_columns as $col) {
-        if (in_array($col['Field'], ['name', 'username', 'full_name', 'first_name'])) {
-            $user_name_column = $col['Field'];
-            break;
-        }
-    }
-    
-    if ($user_name_column) {
-        echo "<p class='success'>✅ Found user name column: <strong>{$user_name_column}</strong></p>";
-    } else {
-        echo "<p class='error'>❌ No suitable user name column found</p>";
-        echo "<p>Available columns:</p>";
+        // Check table structure
+        $stmt = $pdo->query("DESCRIBE carousel_slides");
+        $columns = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        echo "📋 Table columns:<br>";
         echo "<ul>";
-        foreach ($user_columns as $col) {
-            echo "<li>{$col['Field']} ({$col['Type']})</li>";
+        foreach ($columns as $column) {
+            echo "<li>{$column['Field']} ({$column['Type']})</li>";
+        }
+        echo "</ul>";
+    } else {
+        echo "❌ carousel_slides table does not exist<br>";
+        echo "<p>You may need to run the enhanced carousel setup.</p>";
+    }
+} catch (PDOException $e) {
+    echo "❌ Error checking table: " . $e->getMessage() . "<br>";
+}
+
+// Test 3: Test the exact query that was causing the error
+echo "<h2>Test 3: Query Test (The Fix)</h2>";
+try {
+    // This is the type of query that was causing the error
+    $stmt = $pdo->prepare("
+        SELECT id, title, subtitle, image_url, cta_text, cta_link, priority, created_at
+        FROM carousel_slides 
+        WHERE active = 1 AND (start_date IS NULL OR start_date <= CURDATE()) AND (end_date IS NULL OR end_date >= CURDATE())
+        ORDER BY priority DESC, sponsored DESC, created_at DESC
+        LIMIT 10
+    ");
+    $stmt->execute();
+    $slides = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+    echo "✅ Query executed successfully!<br>";
+    echo "📊 Found " . count($slides) . " active slides<br>";
+    
+    if (!empty($slides)) {
+        echo "<h3>Sample Results:</h3>";
+        echo "<ul>";
+        foreach ($slides as $slide) {
+            echo "<li><strong>{$slide['title']}</strong> - Priority: {$slide['priority']}</li>";
         }
         echo "</ul>";
     }
-    echo "</div>";
     
-    // Test the main query with correct user column
-    echo "<div class='section'>";
-    echo "<h3>🧪 Testing Main Query:</h3>";
-    
-    if ($user_name_column) {
-        $query = "
-            SELECT 
-                c.*,
-                cat.name as category_name,
-                cat.slug as category_slug,
-                cat.icon as category_icon,
-                u.{$user_name_column} as user_name
-            FROM classifieds c
-            LEFT JOIN classifieds_categories cat ON c.category_id = cat.id
-            LEFT JOIN users u ON c.user_id = u.id
-            WHERE c.is_active = 1
-            ORDER BY c.created_at DESC
-            LIMIT 5
-        ";
-        
-        $stmt = $pdo->query($query);
-        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        
-        if ($results) {
-            echo "<p class='success'>✅ Main query successful! Found " . count($results) . " results</p>";
-            
-            // Show sample data
-            $sample = $results[0];
-            echo "<h4>📋 Sample Result:</h4>";
-            echo "<ul>";
-            foreach ($sample as $key => $value) {
-                $value = $value ?: 'NULL';
-                echo "<li><strong>{$key}:</strong> {$value}</li>";
-            }
-            echo "</ul>";
-        } else {
-            echo "<p class='error'>❌ Main query failed or returned no results</p>";
-        }
-    } else {
-        echo "<p class='error'>❌ Cannot test main query - no user name column found</p>";
-    }
-    echo "</div>";
-    
-    // Test Free Stuff specific query
-    echo "<div class='section'>";
-    echo "<h3>🧪 Testing Free Stuff Query:</h3>";
-    
-    if ($user_name_column) {
-        $free_stuff_query = "
-            SELECT 
-                c.*,
-                cat.name as category_name,
-                cat.slug as category_slug,
-                cat.icon as category_icon,
-                u.{$user_name_column} as user_name
-            FROM classifieds c
-            LEFT JOIN classifieds_categories cat ON c.category_id = cat.id
-            LEFT JOIN users u ON c.user_id = u.id
-            WHERE c.is_active = 1 
-            AND c.is_chessed = 1
-            AND c.status = 'available'
-            ORDER BY c.created_at DESC
-            LIMIT 5
-        ";
-        
-        $stmt = $pdo->query($free_stuff_query);
-        $free_results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        
-        echo "<p class='success'>✅ Free Stuff query successful! Found " . count($free_results) . " free items</p>";
-    } else {
-        echo "<p class='error'>❌ Cannot test Free Stuff query - no user name column found</p>";
-    }
-    echo "</div>";
-    
-    // Final status
-    echo "<div class='section'>";
-    if (empty($missing_columns) && $user_name_column) {
-        echo "<h3>🎉 SUCCESS!</h3>";
-        echo "<p>All columns are present and queries are working. The Free Stuff system should now be fully functional!</p>";
-        echo "<p><a href='classifieds.php?category=free-stuff' style='background: #28a745; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;'>🚀 Go to Free Stuff Section</a></p>";
-    } else {
-        echo "<h3>⚠️ ISSUES DETECTED</h3>";
-        if (!empty($missing_columns)) {
-            echo "<p>Please run the fix_missing_columns.sql script to add the missing columns.</p>";
-        }
-        if (!$user_name_column) {
-            echo "<p>The users table structure needs to be checked. Please contact support.</p>";
-        }
-        echo "<p><a href='sql/fix_missing_columns.sql' style='background: #007bff; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;'>📄 View SQL Script</a></p>";
-    }
-    echo "</div>";
-    
-} catch (Exception $e) {
-    echo "<div class='section'>";
-    echo "<h3>❌ ERROR:</h3>";
-    echo "<p>" . htmlspecialchars($e->getMessage()) . "</p>";
-    echo "</div>";
+} catch (PDOException $e) {
+    echo "❌ Query failed: " . $e->getMessage() . "<br>";
+    echo "<p>This indicates the fix may not be complete.</p>";
 }
 
-echo "</body></html>";
-?> 
+// Test 4: Test API endpoint
+echo "<h2>Test 4: API Endpoint Test</h2>";
+try {
+    // Simulate the API call
+    $stmt = $pdo->prepare("
+        SELECT id, title, subtitle, image_url, cta_text, cta_link, priority, created_at
+        FROM carousel_slides 
+        WHERE active = 1 AND (start_date IS NULL OR start_date <= CURDATE()) AND (end_date IS NULL OR end_date >= CURDATE())
+        ORDER BY priority DESC, sponsored DESC, created_at DESC
+        LIMIT 10
+    ");
+    $stmt->execute();
+    $api_data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+    echo "✅ API query successful<br>";
+    echo "📊 API would return " . count($api_data) . " slides<br>";
+    
+} catch (PDOException $e) {
+    echo "❌ API query failed: " . $e->getMessage() . "<br>";
+}
+
+// Final status
+echo "<h2>🎉 Final Status</h2>";
+echo "<p><strong>The SQL error should now be resolved!</strong></p>";
+echo "<p>If all tests above show ✅, your carousel system is working correctly.</p>";
+
+echo "<h3>Next Steps:</h3>";
+echo "<ul>";
+echo "<li><a href='index.php'>🏠 Visit Homepage</a> - Check if carousel loads without errors</li>";
+echo "<li><a href='test_carousel.php'>🎠 Test Carousel</a> - Detailed carousel testing</li>";
+echo "<li><a href='admin/enhanced_carousel_manager.php'>⚙️ Manage Carousel</a> - Add/edit carousel slides</li>";
+echo "<li><a href='scripts/add_sample_carousel_ads.php'>📝 Add Sample Data</a> - If you need sample slides</li>";
+echo "</ul>";
+
+echo "<h3>If you still see errors:</h3>";
+echo "<ul>";
+echo "<li>Clear your browser cache</li>";
+echo "<li>Check browser console for JavaScript errors</li>";
+echo "<li>Verify your web server is running</li>";
+echo "<li>Check PHP error logs</li>";
+echo "</ul>";
+?>
+
+<style>
+body { 
+    font-family: Arial, sans-serif; 
+    margin: 20px; 
+    line-height: 1.6;
+}
+h1, h2, h3 { 
+    color: #333; 
+    margin-top: 30px;
+}
+h1 { 
+    color: #28a745; 
+    border-bottom: 2px solid #28a745;
+    padding-bottom: 10px;
+}
+a { 
+    color: #007bff; 
+    text-decoration: none; 
+}
+a:hover { 
+    text-decoration: underline; 
+}
+ul { 
+    margin: 10px 0; 
+}
+li { 
+    margin: 5px 0; 
+}
+</style> 

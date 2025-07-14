@@ -169,47 +169,7 @@ include 'sections/enhanced_carousel.php';
 <!-- CATEGORY SHOWCASE -->
 <?php include 'sections/categories.php'; ?>
 
-<!-- GEMACHIM SECTION: Community Lending Made Easy -->
-<section id="gemachim-section" class="py-5 bg-light">
-  <div class="container">
-    <h2 class="text-center mb-4">🤲 Gemachim: Community Lending Made Easy</h2>
-    <p class="text-center text-muted mb-5">Explore free-loan resources in your area – from baby gear to simcha décor, it's all shared with love.</p>
-    <div class="row">
-      <!-- Example cards -->
-      <div class="col-md-4">
-        <div class="card h-100 shadow-sm">
-          <div class="card-body">
-            <h5 class="card-title">👶 Baby Items</h5>
-            <p class="card-text">Pushchairs, cots, and car seats – all available through your local gemachim.</p>
-            <a href="/gemachim.php?category=baby-maternity" class="btn btn-primary btn-sm mt-3">Browse Baby Gemachs</a>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="card h-100 shadow-sm">
-          <div class="card-body">
-            <h5 class="card-title">🍽 Kitchen & Simcha</h5>
-            <p class="card-text">Kitchenware, simcha décor, and more – borrow for your next event or family need.</p>
-            <a href="/gemachim.php?category=kitchen-items" class="btn btn-primary btn-sm mt-3">Browse Kitchen Gemachs</a>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="card h-100 shadow-sm">
-          <div class="card-body">
-            <h5 class="card-title">💊 Medical & More</h5>
-            <p class="card-text">Wheelchairs, crutches, and health supplies – supporting community wellness.</p>
-            <a href="/gemachim.php?category=medical-supplies" class="btn btn-primary btn-sm mt-3">Browse Medical Gemachs</a>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="text-center mt-4">
-      <a href="/gemachim.php" class="btn btn-outline-primary">View All Gemachim</a>
-      <span class="badge bg-warning text-dark ms-3" style="font-size:1rem;vertical-align:middle;">📦 482 Items Borrowed This Month!</span>
-    </div>
-  </div>
-</section>
+
 
 <!-- FEATURED BUSINESSES SECTION -->
 <?php include 'sections/featured_businesses.php'; ?>
@@ -329,6 +289,32 @@ include 'sections/enhanced_carousel.php';
 </section>
 
 
+
+<!-- COMMUNITY CORNER SECTION -->
+<section id="community-corner" class="community-section" data-scroll>
+  <div class="container">
+    <h2 class="section-title">Community Corner</h2>
+    <p class="section-subtitle">See how your community is giving, sharing, and celebrating.</p>
+    
+    <div class="community-cards">
+      <div class="community-card">
+        <span class="community-emoji">🍼</span>
+        <p><strong>Esther in Golders Green</strong> borrowed a double buggy from the Gemach.</p>
+        <a href="/gemachim.php" class="community-cta-link">View all Gemachim →</a>
+      </div>
+      <div class="community-card">
+        <span class="community-emoji">🎉</span>
+        <p><strong>The Greenberg Family</strong> listed their Bar Mitzvah on our Simcha board.</p>
+        <a href="/simchas.php" class="community-cta-link">Celebrate with them →</a>
+      </div>
+      <div class="community-card">
+        <span class="community-emoji">❤️</span>
+        <p><strong>Charity Alert:</strong> Local family needs a stairlift urgently.</p>
+        <a href="/charity_alerts.php" class="community-cta-link">See how to help →</a>
+      </div>
+    </div>
+  </div>
+</section>
 
 <!-- FOOTER CTA -->
 <?php include 'sections/footer_cta.php'; ?>
