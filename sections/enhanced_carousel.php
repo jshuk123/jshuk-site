@@ -13,12 +13,23 @@ $today = date('Y-m-d');
 $zone = 'homepage';
 
 try {
+    // Check if sponsored column exists
+    $stmt = $pdo->query("SHOW COLUMNS FROM carousel_slides LIKE 'sponsored'");
+    $hasSponsoredColumn = $stmt->rowCount() > 0;
+    
+    // Build ORDER BY clause based on available columns
+    $orderBy = "sort_order DESC";
+    if ($hasSponsoredColumn) {
+        $orderBy .= ", sponsored DESC";
+    }
+    $orderBy .= ", id DESC";
+    
     // Start with the simplest possible query to eliminate parameter binding issues
     $query = $pdo->prepare("
         SELECT * FROM carousel_slides
         WHERE is_active = 1
           AND zone = :zone
-        ORDER BY sort_order DESC, sponsored DESC, id DESC
+        ORDER BY {$orderBy}
     ");
 
     $query->execute([

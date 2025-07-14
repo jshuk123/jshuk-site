@@ -55,6 +55,17 @@ function getCarouselSlides($pdo, $zone = 'homepage', $limit = 10, $location = nu
         // Debug logging to identify the exact issue
         error_log("🔍 getCarouselSlides - Zone: [{$zone}], Location: [{$location}], Today: [{$today}]");
         
+        // Check if sponsored column exists
+        $stmt = $pdo->query("SHOW COLUMNS FROM carousel_slides LIKE 'sponsored'");
+        $hasSponsoredColumn = $stmt->rowCount() > 0;
+        
+        // Build ORDER BY clause based on available columns
+        $orderBy = "sort_order DESC";
+        if ($hasSponsoredColumn) {
+            $orderBy .= ", sponsored DESC";
+        }
+        $orderBy .= ", created_at DESC";
+        
         $query = $pdo->prepare("
             SELECT * FROM carousel_slides
             WHERE is_active = 1
@@ -62,7 +73,7 @@ function getCarouselSlides($pdo, $zone = 'homepage', $limit = 10, $location = nu
               AND TRIM(zone) = :zone
               AND (start_date IS NULL OR start_date <= :today)
               AND (end_date IS NULL OR end_date >= :today)
-            ORDER BY sort_order DESC, sponsored DESC, created_at DESC
+            ORDER BY {$orderBy}
             LIMIT :limit
         ");
         
@@ -130,12 +141,22 @@ function logCarouselEvent($pdo, $slideId, $eventType) {
  */
 function getCarouselPerformance($pdo, $days = 30) {
     try {
+        // Check if sponsored column exists
+        $stmt = $pdo->query("SHOW COLUMNS FROM carousel_slides LIKE 'sponsored'");
+        $hasSponsoredColumn = $stmt->rowCount() > 0;
+        
+        // Build SELECT and GROUP BY clauses based on available columns
+        $selectFields = "cs.id, cs.title, cs.location";
+        $groupByFields = "cs.id, cs.title, cs.location";
+        
+        if ($hasSponsoredColumn) {
+            $selectFields .= ", cs.sponsored";
+            $groupByFields .= ", cs.sponsored";
+        }
+        
         $stmt = $pdo->prepare("
             SELECT 
-                cs.id,
-                cs.title,
-                cs.location,
-                cs.sponsored,
+                {$selectFields},
                 COUNT(CASE WHEN ca.event_type = 'impression' THEN 1 END) as impressions,
                 COUNT(CASE WHEN ca.event_type = 'click' THEN 1 END) as clicks,
                 ROUND(
@@ -145,7 +166,7 @@ function getCarouselPerformance($pdo, $days = 30) {
             FROM carousel_slides cs
             LEFT JOIN carousel_analytics ca ON cs.id = ca.slide_id
             WHERE ca.created_at >= DATE_SUB(NOW(), INTERVAL :days DAY)
-            GROUP BY cs.id, cs.title, cs.location, cs.sponsored
+            GROUP BY {$groupByFields}
             ORDER BY impressions DESC
         ");
         
@@ -165,6 +186,17 @@ function getCarouselPerformance($pdo, $days = 30) {
  */
 function getLocationBasedSlides($pdo, $location, $zone = 'homepage', $limit = 5) {
     try {
+        // Check if sponsored column exists
+        $stmt = $pdo->query("SHOW COLUMNS FROM carousel_slides LIKE 'sponsored'");
+        $hasSponsoredColumn = $stmt->rowCount() > 0;
+        
+        // Build ORDER BY clause based on available columns
+        $orderBy = "CASE WHEN location = :loc THEN 1 ELSE 2 END, sort_order DESC";
+        if ($hasSponsoredColumn) {
+            $orderBy .= ", sponsored DESC";
+        }
+        $orderBy .= ", created_at DESC";
+        
         $stmt = $pdo->prepare("
             SELECT * FROM carousel_slides
             WHERE is_active = 1
@@ -172,11 +204,7 @@ function getLocationBasedSlides($pdo, $location, $zone = 'homepage', $limit = 5)
               AND TRIM(zone) = :zone
               AND (start_date IS NULL OR start_date <= CURDATE())
               AND (end_date IS NULL OR end_date >= CURDATE())
-            ORDER BY 
-                CASE WHEN location = :loc THEN 1 ELSE 2 END,
-                sort_order DESC, 
-                sponsored DESC, 
-                created_at DESC
+            ORDER BY {$orderBy}
             LIMIT :limit
         ");
         
@@ -232,6 +260,15 @@ function hasActiveSlides($pdo, $zone = 'homepage', $location = null) {
  */
 function getSponsoredSlides($pdo, $zone = 'homepage', $limit = 3) {
     try {
+        // Check if sponsored column exists
+        $stmt = $pdo->query("SHOW COLUMNS FROM carousel_slides LIKE 'sponsored'");
+        $hasSponsoredColumn = $stmt->rowCount() > 0;
+        
+        if (!$hasSponsoredColumn) {
+            // If sponsored column doesn't exist, return empty array
+            return [];
+        }
+        
         $stmt = $pdo->prepare("
             SELECT * FROM carousel_slides
             WHERE is_active = 1
