@@ -95,7 +95,9 @@ $loop = count($valid_slides) >= 3 ? 'true' : 'false';
               </div>
               <div class="text-block">
                 <h2 class="carousel-title"><?= htmlspecialchars($slide['title']) ?></h2>
-                <p class="carousel-subtitle"><?= htmlspecialchars($slide['subtitle']) ?></p>
+                <?php if (!empty($slide['subtitle']) && $slide['subtitle'] !== $slide['title']): ?>
+                  <p class="carousel-subtitle"><?= htmlspecialchars($slide['subtitle']) ?></p>
+                <?php endif; ?>
                 <?php if (!empty($slide['cta_text']) && !empty($slide['cta_link'])): ?>
                   <a href="<?= htmlspecialchars($slide['cta_link']) ?>" class="carousel-cta">
                     <?= htmlspecialchars($slide['cta_text']) ?>

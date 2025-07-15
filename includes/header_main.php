@@ -89,6 +89,7 @@ try {
     <link rel="stylesheet" href="/css/components/header.css">
     <link rel="stylesheet" href="/css/components/subscription-badges.css">
     <link rel="stylesheet" href="/css/components/search-bar.css?v=<?= time() ?>">
+    <link rel="stylesheet" href="/css/components/mobile-fixes.css">
     
     <!-- Page-specific CSS -->
     <?php if (isset($page_css)): ?>
@@ -104,7 +105,8 @@ try {
     <script src="/js/vendor/tippy.min.js"></script>
     <script>
     document.addEventListener('DOMContentLoaded', function() {
-      if (window.tippy) {
+      // ✅ FIX: Only initialize Tippy.js on desktop to prevent mobile interference
+      if (window.tippy && window.innerWidth > 768) {
         tippy('[data-tippy-content]', {
           theme: 'jshuk-elite',
           animation: 'shift-away',
@@ -116,6 +118,19 @@ try {
           placement: 'top',
         });
       }
+      
+      // ✅ FIX: Disable tooltips on mobile resize
+      window.addEventListener('resize', function() {
+        if (window.innerWidth <= 768) {
+          // Destroy all existing tooltips on mobile
+          const tooltips = document.querySelectorAll('[data-tippy-content]');
+          tooltips.forEach(element => {
+            if (element._tippy) {
+              element._tippy.destroy();
+            }
+          });
+        }
+      });
     });
     </script>
 

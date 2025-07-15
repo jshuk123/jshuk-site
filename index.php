@@ -350,6 +350,7 @@ include 'sections/enhanced_carousel.php';
 <?php 
   // ✅ Deploy confirmation message
   echo '<p style="color: green; text-align: center;">✅ Deploy test: index.php updated successfully</p>';
+  echo '<p style="color: blue; text-align: center;">✅ Mobile fixes applied: Tooltip blocking, carousel duplication, floating preview hidden</p>';
   
   include 'includes/footer_main.php'; 
 ?>

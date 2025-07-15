@@ -61,8 +61,11 @@
   min-height: 160px;
   position: relative;
   overflow: hidden;
+  pointer-events: auto; /* ✅ FIX: Ensure clicks work */
+  z-index: 1; /* ✅ FIX: Ensure proper stacking */
 }
 
+/* ✅ FIX: Prevent any overlays from blocking category clicks */
 .category-card::before {
   content: '';
   position: absolute;
@@ -74,6 +77,7 @@
   opacity: 0;
   transition: opacity 0.3s ease;
   z-index: 0;
+  pointer-events: none; /* ✅ FIX: Don't block clicks */
 }
 
 .category-card:hover {
@@ -175,11 +179,13 @@
   border-radius: 8px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
   animation: tooltipFadeIn 0.3s ease-out;
+  pointer-events: none; /* ✅ FIX: Prevent tooltip from blocking clicks */
 }
 
 .mobile-tooltip-content {
   padding: 1rem;
   position: relative;
+  pointer-events: auto; /* Allow interaction with tooltip content */
 }
 
 .mobile-tooltip-content p {
@@ -403,6 +409,74 @@
   font-size: 0.8rem;
 }
 
+/* ✅ FIX: Enhanced mobile touch interactions */
+@media (max-width: 768px) {
+  .category-card {
+    /* Ensure proper touch target size */
+    min-height: 120px;
+    padding: 1rem 0.75rem;
+    /* Improve touch feedback */
+    -webkit-tap-highlight-color: rgba(255, 208, 0, 0.2);
+    touch-action: manipulation;
+  }
+  
+  .category-card:active {
+    transform: scale(0.98);
+    transition: transform 0.1s ease;
+  }
+  
+  /* Disable hover effects on mobile */
+  .category-card:hover {
+    transform: none;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  }
+  
+  .category-card:hover .category-icon-circle {
+    transform: none;
+    background: #f1f3f6;
+    color: #ffd000;
+  }
+  
+  .category-card:hover .category-icon-circle i {
+    color: #ffd000;
+  }
+  
+  /* Ensure tooltips don't interfere with navigation */
+  .tippy-box,
+  .tippy-content {
+    pointer-events: none !important;
+  }
+  
+  /* Hide desktop tooltips on mobile */
+  [data-tippy-content]::after,
+  [data-tippy-content]::before {
+    display: none !important;
+  }
+  
+  /* Improve category icon visibility */
+  .category-icon-circle {
+    width: 48px;
+    height: 48px;
+    margin-bottom: 0.5rem;
+  }
+  
+  .category-icon-circle i {
+    font-size: 1.2rem;
+    color: #ffd000 !important;
+  }
+  
+  /* Optimize text for mobile */
+  .category-name {
+    font-size: 0.85rem;
+    line-height: 1.2;
+    margin-bottom: 0.25rem;
+  }
+  
+  .category-listings {
+    font-size: 0.75rem;
+  }
+}
+
 /* Responsive Design */
 @media (max-width: 1200px) {
   .category-carousel-item {
@@ -472,6 +546,19 @@
     max-width: 250px;
     left: 50% !important;
     transform: translateX(-50%);
+    pointer-events: none;
+  }
+  
+  /* ✅ FIX: Disable hover tooltips on mobile */
+  .category-card[data-tippy-content]:hover::after,
+  .category-card[data-tippy-content]:hover::before {
+    display: none !important;
+  }
+  
+  /* ✅ FIX: Ensure category cards remain clickable */
+  .category-card {
+    pointer-events: auto !important;
+    z-index: 1 !important;
   }
 }
 

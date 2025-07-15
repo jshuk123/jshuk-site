@@ -2675,3 +2675,113 @@ button, .btn, input, select, textarea {
     padding: 0.4rem 0.8rem;
   }
 }
+
+/* ✅ FIX: Hide floating preview elements on mobile */
+@media (max-width: 768px) {
+  /* Hide any floating preview phone screens */
+  .mobile-preview,
+  .preview-phone,
+  .floating-preview,
+  [class*="preview"],
+  [class*="floating"] {
+    display: none !important;
+  }
+  
+  /* Hide any overlay elements that might be floating previews */
+  .overlay-preview,
+  .phone-preview,
+  .screen-preview {
+    display: none !important;
+  }
+  
+  /* Ensure no floating elements interfere with mobile UX */
+  .floating-element,
+  .preview-element {
+    display: none !important;
+  }
+}
+
+/* ✅ FIX: Additional mobile-specific improvements */
+@media (max-width: 600px) {
+  .hero h1 {
+    font-size: 1.5rem;
+  }
+  .category-pill { padding: 0.5rem 0.3rem; }
+  
+  .classifieds-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .classified-card {
+    margin: 0 0.5rem;
+  }
+  
+  .classified-content {
+    padding: 1rem;
+  }
+  
+  .classified-header h4 {
+    font-size: 1rem;
+  }
+  
+  .hero-search-container {
+    margin: 1.5rem auto 0.5rem auto;
+  }
+  
+  .welcome-actions-below {
+    flex-direction: column;
+    gap: 0.75rem;
+    margin: 1.5rem auto 2rem auto;
+  }
+  
+  .welcome-title {
+    font-size: 2rem;
+  }
+  
+  .welcome-subtitle {
+    font-size: 1rem;
+  }
+  
+  .welcome-section .text-muted {
+    font-size: 0.9rem !important;
+  }
+  
+  .testimonial-quote {
+    font-size: 0.9rem;
+  }
+  
+  .testimonial-author {
+    font-size: 0.8rem;
+  }
+  
+  .section-title {
+    font-size: 1.75rem;
+  }
+  
+  .slider-item {
+    flex: 0 0 260px;
+    min-width: 260px;
+  }
+  
+  .slider-container {
+    padding: 1rem;
+  }
+  
+  .business-card {
+    padding: 1rem;
+  }
+  
+  .business-title {
+    font-size: 1.1rem;
+  }
+  
+  .slider-control {
+    width: 36px;
+    height: 36px;
+  }
+  
+  .slider-control i {
+    font-size: 1rem;
+  }
+}

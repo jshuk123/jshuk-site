@@ -213,17 +213,32 @@ document.addEventListener('DOMContentLoaded', function() {
       if (window.innerWidth > 768) {
         card.setAttribute('title', description);
       } else {
-        // Mobile: Add click handler for description
-        card.addEventListener('click', function(e) {
-          // Only show description if it's different from the name
-          const categoryName = card.querySelector('.category-name').textContent.trim();
-          if (description !== categoryName) {
-            // Show description in a mobile-friendly way
-            if (window.innerWidth <= 768) {
-              e.preventDefault();
+        // Mobile: Add long-press handler for description instead of click
+        let pressTimer;
+        let isPressed = false;
+        
+        card.addEventListener('touchstart', function(e) {
+          pressTimer = setTimeout(() => {
+            isPressed = true;
+            // Only show description if it's different from the name
+            const categoryName = card.querySelector('.category-name').textContent.trim();
+            if (description !== categoryName) {
               showMobileTooltip(description, card);
             }
+          }, 500); // 500ms long press
+        });
+        
+        card.addEventListener('touchend', function(e) {
+          clearTimeout(pressTimer);
+          if (isPressed) {
+            e.preventDefault();
+            isPressed = false;
           }
+        });
+        
+        card.addEventListener('touchmove', function(e) {
+          clearTimeout(pressTimer);
+          isPressed = false;
         });
       }
     } else {
@@ -246,6 +261,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // ✅ 8. Mobile tooltip function
 function showMobileTooltip(description, element) {
+  // Remove any existing tooltips first
+  const existingTooltips = document.querySelectorAll('.mobile-tooltip');
+  existingTooltips.forEach(tooltip => tooltip.remove());
+  
   // Create a simple mobile-friendly tooltip
   const tooltip = document.createElement('div');
   tooltip.className = 'mobile-tooltip';
@@ -256,21 +275,46 @@ function showMobileTooltip(description, element) {
     </div>
   `;
   
-  // Position tooltip near the element
+  // Position tooltip near the element but not blocking it
   const rect = element.getBoundingClientRect();
+  const viewportHeight = window.innerHeight;
+  const tooltipHeight = 80; // Approximate tooltip height
+  
   tooltip.style.position = 'fixed';
-  tooltip.style.top = `${rect.bottom + 10}px`;
-  tooltip.style.left = `${rect.left}px`;
   tooltip.style.zIndex = '9999';
+  
+  // Position above the element if there's space, otherwise below
+  if (rect.top > tooltipHeight + 20) {
+    tooltip.style.top = `${rect.top - tooltipHeight - 10}px`;
+  } else {
+    tooltip.style.top = `${rect.bottom + 10}px`;
+  }
+  
+  // Center horizontally
+  tooltip.style.left = `${rect.left + (rect.width / 2)}px`;
+  tooltip.style.transform = 'translateX(-50%)';
   
   document.body.appendChild(tooltip);
   
-  // Auto-remove after 5 seconds
+  // Auto-remove after 4 seconds
   setTimeout(() => {
     if (tooltip.parentElement) {
       tooltip.remove();
     }
-  }, 5000);
+  }, 4000);
+  
+  // Add click outside to close
+  const closeOnOutsideClick = (e) => {
+    if (!tooltip.contains(e.target)) {
+      tooltip.remove();
+      document.removeEventListener('click', closeOnOutsideClick);
+    }
+  };
+  
+  // Delay adding the click listener to prevent immediate closure
+  setTimeout(() => {
+    document.addEventListener('click', closeOnOutsideClick);
+  }, 100);
 }
 
 // ✅ 10. Suggest category function
