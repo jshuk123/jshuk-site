@@ -1,0 +1,474 @@
+/* =========================
+   Volunteer Hub Styles
+   ========================= */
+
+/* Hero Section */
+.volunteer-hero {
+    background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+.volunteer-hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="white" opacity="0.1"/><circle cx="75" cy="75" r="1" fill="white" opacity="0.1"/><circle cx="50" cy="10" r="0.5" fill="white" opacity="0.1"/><circle cx="10" cy="60" r="0.5" fill="white" opacity="0.1"/><circle cx="90" cy="40" r="0.5" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+    opacity: 0.3;
+}
+
+.volunteer-hero .container {
+    position: relative;
+    z-index: 2;
+}
+
+.hero-stats .stat-item {
+    padding: 1rem;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.hero-stats h3 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.hero-cta .btn {
+    border-radius: 50px;
+    padding: 0.75rem 2rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
+}
+
+.hero-cta .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.hero-image {
+    animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-20px); }
+}
+
+/* Filter Section */
+.volunteer-filters {
+    border-bottom: 1px solid #e9ecef;
+}
+
+.filter-form .form-control,
+.filter-form .form-select {
+    border-radius: 8px;
+    border: 2px solid #e9ecef;
+    transition: all 0.3s ease;
+}
+
+.filter-form .form-control:focus,
+.filter-form .form-select:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.filter-form .btn {
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.filter-form .btn:hover {
+    transform: translateY(-1px);
+}
+
+/* Tag Cloud */
+.tag-cloud {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.tag-cloud .badge {
+    border-radius: 20px;
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.tag-cloud .badge:hover {
+    background-color: #007bff !important;
+    color: white !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+    text-decoration: none;
+}
+
+.tag-cloud .badge .badge-secondary {
+    background-color: #6c757d;
+    color: white;
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+}
+
+/* Volunteer Cards */
+.volunteer-card {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+    transition: all 0.3s ease;
+    overflow: hidden;
+    background: white;
+}
+
+.volunteer-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
+}
+
+.volunteer-card .card-body {
+    padding: 1.5rem;
+}
+
+.volunteer-card .card-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #2c3e50;
+    line-height: 1.4;
+}
+
+.volunteer-card .card-text {
+    color: #6c757d;
+    line-height: 1.6;
+}
+
+.volunteer-meta {
+    font-size: 0.875rem;
+}
+
+.volunteer-meta i {
+    width: 16px;
+    text-align: center;
+    margin-right: 0.25rem;
+}
+
+.volunteer-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.volunteer-tags .badge {
+    border-radius: 15px;
+    padding: 0.375rem 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    background-color: #f8f9fa;
+    color: #6c757d;
+    border: 1px solid #e9ecef;
+}
+
+.volunteer-card .btn {
+    border-radius: 8px;
+    font-weight: 600;
+    padding: 0.5rem 1.5rem;
+    transition: all 0.3s ease;
+}
+
+.volunteer-card .btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+}
+
+/* Status Badges */
+.badge {
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.375rem 0.75rem;
+    border-radius: 20px;
+}
+
+.badge-success {
+    background-color: #28a745;
+    color: white;
+}
+
+.badge-danger {
+    background-color: #dc3545;
+    color: white;
+}
+
+.badge-warning {
+    background-color: #ffc107;
+    color: #212529;
+}
+
+.badge-secondary {
+    background-color: #6c757d;
+    color: white;
+}
+
+.badge-info {
+    background-color: #17a2b8;
+    color: white;
+}
+
+/* Sidebar Cards */
+.card {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #e9ecef;
+    border-radius: 12px 12px 0 0 !important;
+    padding: 1rem 1.5rem;
+}
+
+.card-header h5 {
+    margin: 0;
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+.card-header.bg-danger {
+    background-color: #dc3545 !important;
+    color: white;
+}
+
+.card-body {
+    padding: 1.5rem;
+}
+
+/* Urgent Items */
+.urgent-item {
+    padding: 0.75rem;
+    border-radius: 8px;
+    background-color: #fff5f5;
+    border-left: 4px solid #dc3545;
+}
+
+.urgent-item h6 {
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+}
+
+.urgent-item a {
+    text-decoration: none;
+    color: #dc3545;
+    font-weight: 600;
+}
+
+.urgent-item a:hover {
+    color: #c82333;
+    text-decoration: underline;
+}
+
+/* Stats */
+.stat-item {
+    text-align: center;
+    padding: 1rem;
+    border-radius: 8px;
+    background-color: #f8f9fa;
+    margin-bottom: 1rem;
+}
+
+.stat-item:last-child {
+    margin-bottom: 0;
+}
+
+.stat-item h4 {
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+/* CTA Section */
+.volunteer-cta {
+    background: linear-gradient(135deg, #ffc107 0%, #ff8c00 100%);
+    color: #212529;
+}
+
+.volunteer-cta h3 {
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+.volunteer-cta .lead {
+    font-size: 1.25rem;
+    font-weight: 500;
+}
+
+.cta-buttons .btn {
+    border-radius: 50px;
+    padding: 0.75rem 2rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
+}
+
+.cta-buttons .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .volunteer-hero {
+        text-align: center;
+        padding: 3rem 0;
+    }
+    
+    .volunteer-hero h1 {
+        font-size: 2.5rem;
+    }
+    
+    .hero-stats {
+        margin-bottom: 2rem;
+    }
+    
+    .hero-stats .col-4 {
+        margin-bottom: 1rem;
+    }
+    
+    .hero-cta .btn {
+        display: block;
+        width: 100%;
+        margin-bottom: 1rem;
+    }
+    
+    .hero-cta .btn:last-child {
+        margin-bottom: 0;
+    }
+    
+    .filter-form .row > div {
+        margin-bottom: 1rem;
+    }
+    
+    .filter-form .btn {
+        width: 100%;
+    }
+    
+    .tag-cloud {
+        justify-content: center;
+    }
+    
+    .volunteer-card {
+        margin-bottom: 1.5rem;
+    }
+    
+    .volunteer-card .card-body {
+        padding: 1rem;
+    }
+    
+    .volunteer-card .card-title {
+        font-size: 1.1rem;
+    }
+    
+    .cta-buttons .btn {
+        display: block;
+        width: 100%;
+        margin-bottom: 1rem;
+    }
+    
+    .cta-buttons .btn:last-child {
+        margin-bottom: 0;
+    }
+}
+
+@media (max-width: 576px) {
+    .volunteer-hero h1 {
+        font-size: 2rem;
+    }
+    
+    .volunteer-hero .lead {
+        font-size: 1rem;
+    }
+    
+    .hero-stats h3 {
+        font-size: 1.5rem;
+    }
+    
+    .volunteer-card .card-title {
+        font-size: 1rem;
+    }
+    
+    .volunteer-meta {
+        font-size: 0.8rem;
+    }
+    
+    .tag-cloud .badge {
+        font-size: 0.8rem;
+        padding: 0.375rem 0.75rem;
+    }
+}
+
+/* Loading States */
+.volunteer-card.loading {
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+.volunteer-card.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid #f3f3f3;
+    border-top: 2px solid #007bff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Accessibility */
+.volunteer-card:focus-within {
+    outline: 2px solid #007bff;
+    outline-offset: 2px;
+}
+
+.tag-cloud .badge:focus {
+    outline: 2px solid #007bff;
+    outline-offset: 2px;
+}
+
+/* Print Styles */
+@media print {
+    .volunteer-hero,
+    .volunteer-filters,
+    .volunteer-cta,
+    .btn {
+        display: none !important;
+    }
+    
+    .volunteer-card {
+        break-inside: avoid;
+        box-shadow: none;
+        border: 1px solid #ddd;
+    }
+} 
