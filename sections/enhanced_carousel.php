@@ -160,6 +160,8 @@ $loop = count($valid_slides) >= 3 ? 'true' : 'false';
   width: 100%;
   height: 100%;
   position: relative;
+  background: #fff;
+  /* fallback background */
 }
 
 /* ✅ FIXED: Proper carousel content structure */
@@ -177,6 +179,7 @@ $loop = count($valid_slides) >= 3 ? 'true' : 'false';
   aspect-ratio: 16 / 9;
   overflow: hidden;
   position: relative;
+  background: #fff;
 }
 
 .carousel-img {
@@ -184,9 +187,39 @@ $loop = count($valid_slides) >= 3 ? 'true' : 'false';
   height: 100%;
   object-fit: cover;
   display: block;
+  background: #fff;
 }
 
-/* ✅ FIXED: Text block positioned over image */
+/* ✅ FIX: Mobile-specific carousel image scaling */
+@media (max-width: 768px) {
+  .swiper-container {
+    height: auto !important;
+    min-height: 180px;
+    max-height: 260px;
+  }
+  .swiper-slide,
+  .carousel-content,
+  .image-container {
+    height: auto !important;
+    min-height: 180px;
+    max-height: 260px;
+    aspect-ratio: 16 / 9;
+  }
+  .carousel-img {
+    width: 100%;
+    height: 100%;
+    max-height: 260px;
+    object-fit: cover;
+    display: block;
+    background: #fff;
+  }
+}
+
+/* ✅ FIX: Prevent excess space below image */
+.carousel-content {
+  min-height: 0;
+}
+
 .text-block {
   position: absolute;
   top: 0;
