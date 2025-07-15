@@ -164,22 +164,22 @@ $loop = count($valid_slides) >= 3 ? 'true' : 'false';
   /* fallback background */
 }
 
-/* ✅ FIXED: Proper carousel content structure */
+/* ✅ FIXED: Proper carousel content structure - OVERLAY LAYOUT */
 .carousel-content {
-  display: flex;
-  flex-direction: column; /* Stack on mobile */
+  position: relative;
   height: 100%;
   width: 100%;
-  position: relative;
+  overflow: hidden;
 }
 
-/* ✅ FIXED: Image container with proper aspect ratio */
+/* ✅ FIXED: Image container - FULL WIDTH */
 .image-container {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
-  aspect-ratio: 16 / 9;
+  height: 100%;
   overflow: hidden;
-  position: relative;
-  background: #fff;
 }
 
 .carousel-img {
@@ -187,39 +187,9 @@ $loop = count($valid_slides) >= 3 ? 'true' : 'false';
   height: 100%;
   object-fit: cover;
   display: block;
-  background: #fff;
 }
 
-/* ✅ FIX: Mobile-specific carousel image scaling */
-@media (max-width: 768px) {
-  .swiper-container {
-    height: auto !important;
-    min-height: 180px;
-    max-height: 260px;
-  }
-  .swiper-slide,
-  .carousel-content,
-  .image-container {
-    height: auto !important;
-    min-height: 180px;
-    max-height: 260px;
-    aspect-ratio: 16 / 9;
-  }
-  .carousel-img {
-    width: 100%;
-    height: 100%;
-    max-height: 260px;
-    object-fit: cover;
-    display: block;
-    background: #fff;
-  }
-}
-
-/* ✅ FIX: Prevent excess space below image */
-.carousel-content {
-  min-height: 0;
-}
-
+/* ✅ FIXED: Text overlay - POSITIONED OVER IMAGE */
 .text-block {
   position: absolute;
   top: 0;
@@ -482,6 +452,33 @@ $loop = count($valid_slides) >= 3 ? 'true' : 'false';
 
 .carousel-ready #carousel-loader {
   display: none;
+}
+
+/* ✅ FIX: Mobile-specific carousel optimizations */
+@media (max-width: 768px) {
+  .swiper-container {
+    height: 300px !important;
+  }
+  
+  .swiper-slide,
+  .carousel-content {
+    height: 300px !important;
+  }
+  
+  .carousel-title {
+    font-size: 1.8rem !important;
+    line-height: 1.2 !important;
+  }
+  
+  .carousel-subtitle {
+    font-size: 1rem !important;
+    line-height: 1.3 !important;
+  }
+  
+  .carousel-cta {
+    padding: 12px 20px !important;
+    font-size: 1rem !important;
+  }
 }
 </style>
 
