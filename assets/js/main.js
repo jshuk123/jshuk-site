@@ -193,15 +193,22 @@ function initializeMobileSubmenus() {
             const submenu = document.getElementById(submenuId + '-submenu');
             const parentItem = this.closest('.mobile-nav-item');
             
-            if (!submenu || !parentItem) return;
+            if (!submenu || !parentItem) {
+                console.warn('Submenu elements not found:', submenuId);
+                return;
+            }
             
             // Close other open submenus
-            const otherSubmenus = document.querySelectorAll('.mobile-submenu.active');
-            const otherItems = document.querySelectorAll('.mobile-nav-item.has-submenu.active');
+            const otherSubmenus = document.querySelectorAll('.mobile-submenu');
+            const otherItems = document.querySelectorAll('.mobile-nav-item.has-submenu');
             
             otherSubmenus.forEach(menu => {
                 if (menu !== submenu) {
-                    menu.classList.remove('active');
+                    menu.style.maxHeight = '0';
+                    menu.style.opacity = '0';
+                    setTimeout(() => {
+                        menu.style.display = 'none';
+                    }, 300);
                 }
             });
             
@@ -212,13 +219,58 @@ function initializeMobileSubmenus() {
             });
             
             // Toggle current submenu
-            submenu.classList.toggle('active');
-            parentItem.classList.toggle('active');
+            const isCurrentlyActive = parentItem.classList.contains('active');
+            
+            if (isCurrentlyActive) {
+                // Close submenu
+                parentItem.classList.remove('active');
+                submenu.style.maxHeight = '0';
+                submenu.style.opacity = '0';
+                setTimeout(() => {
+                    submenu.style.display = 'none';
+                }, 300);
+            } else {
+                // Open submenu
+                parentItem.classList.add('active');
+                submenu.style.display = 'block';
+                // Force reflow
+                submenu.offsetHeight;
+                submenu.style.maxHeight = '60vh';
+                submenu.style.opacity = '1';
+            }
             
             // Update aria attributes
-            const isExpanded = submenu.classList.contains('active');
+            const isExpanded = parentItem.classList.contains('active');
             this.setAttribute('aria-expanded', isExpanded);
+            
+            // Focus management
+            if (isExpanded) {
+                const firstSubmenuLink = submenu.querySelector('a');
+                if (firstSubmenuLink) {
+                    setTimeout(() => firstSubmenuLink.focus(), 100);
+                }
+            }
         });
+    });
+    
+    // Close submenus when clicking outside
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('.mobile-nav-item.has-submenu')) {
+            const openSubmenus = document.querySelectorAll('.mobile-submenu');
+            const openItems = document.querySelectorAll('.mobile-nav-item.has-submenu.active');
+            
+            openSubmenus.forEach(menu => {
+                menu.style.maxHeight = '0';
+                menu.style.opacity = '0';
+                setTimeout(() => {
+                    menu.style.display = 'none';
+                }, 300);
+            });
+            
+            openItems.forEach(item => {
+                item.classList.remove('active');
+            });
+        }
     });
 }
 

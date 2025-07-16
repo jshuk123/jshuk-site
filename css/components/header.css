@@ -1267,13 +1267,81 @@ nav a:hover, .navbar-nav .nav-link:hover {
 } 
 
 @media (max-width: 1023px) {
-  .mobile-nav-menu,
+  /* Ensure mobile navigation menu is properly scrollable */
+  .mobile-nav-menu {
+    height: 100vh !important;
+    height: 100dvh !important; /* Modern browsers */
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important; /* iOS smooth scrolling */
+    overscroll-behavior: contain !important;
+  }
+  
+  /* Ensure the navigation list can scroll independently */
   .mobile-nav-list {
-    height: 100dvh !important;
-    max-height: 100dvh !important;
+    height: auto !important;
     overflow-y: auto !important;
     -webkit-overflow-scrolling: touch !important;
-    overscroll-behavior: contain !important;
-    background: rgba(255,0,0,0.05) !important; /* debug: visualize area */
+    padding-bottom: 2rem !important; /* Ensure last items are visible */
+  }
+  
+  /* Override any body overflow hidden that might interfere */
+  body.menu-open .mobile-nav-menu,
+  body:has(.mobile-nav-menu.active) .mobile-nav-menu {
+    overflow-y: auto !important;
+  }
+} 
+
+/* ===== MOBILE SUBMENU FUNCTIONALITY ===== */
+@media (max-width: 1023px) {
+  /* Hide submenus by default */
+  .mobile-submenu {
+    display: none !important;
+    overflow: hidden !important;
+    max-height: 0 !important;
+    transition: max-height 0.3s ease, opacity 0.3s ease !important;
+    opacity: 0 !important;
+  }
+  
+  /* Show submenu when parent is active */
+  .mobile-nav-item.has-submenu.active .mobile-submenu {
+    display: block !important;
+    max-height: 60vh !important;
+    opacity: 1 !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+  
+  /* Style submenu toggle arrow */
+  .submenu-arrow {
+    margin-left: auto !important;
+    transition: transform 0.3s ease !important;
+    font-size: 0.8rem !important;
+  }
+  
+  /* Rotate arrow when submenu is active */
+  .mobile-nav-item.has-submenu.active .submenu-arrow {
+    transform: rotate(180deg) !important;
+  }
+  
+  /* Style submenu items */
+  .mobile-submenu .mobile-nav-item {
+    border-bottom: none !important;
+  }
+  
+  .mobile-submenu .mobile-nav-link {
+    padding-left: 3rem !important;
+    font-size: 0.9rem !important;
+    color: rgba(255, 255, 255, 0.9) !important;
+  }
+  
+  .mobile-submenu .mobile-nav-link:hover {
+    background: rgba(255, 255, 255, 0.05) !important;
+    color: #ffd700 !important;
+  }
+  
+  /* Submenu emoji styling */
+  .submenu-emoji {
+    margin-right: 0.5rem !important;
+    font-size: 0.9rem !important;
   }
 } 
