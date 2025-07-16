@@ -1265,3 +1265,15 @@ nav a:hover, .navbar-nav .nav-link:hover {
   width: 20px;
   text-align: center;
 } 
+
+@media (max-width: 1023px) {
+  .mobile-nav-menu,
+  .mobile-nav-list {
+    height: 100dvh !important;
+    max-height: 100dvh !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    overscroll-behavior: contain !important;
+    background: rgba(255,0,0,0.05) !important; /* debug: visualize area */
+  }
+} 
