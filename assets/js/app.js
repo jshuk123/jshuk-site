@@ -462,7 +462,10 @@ class JShukApp {
             if (this.menuToggle) {
                 this.menuToggle.setAttribute('aria-expanded', 'true');
             }
+            // Prevent body scroll but allow sidebar to scroll
             document.body.style.overflow = 'hidden';
+            document.body.style.position = 'fixed';
+            document.body.style.width = '100%';
         }
     }
     
@@ -478,7 +481,10 @@ class JShukApp {
                 if (this.menuToggle) {
                     this.menuToggle.setAttribute('aria-expanded', 'false');
                 }
+                // Restore body scroll
                 document.body.style.overflow = '';
+                document.body.style.position = '';
+                document.body.style.width = '';
             }, 300);
         }
     }

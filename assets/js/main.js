@@ -90,6 +90,23 @@ function initializeMobileMenu() {
     mobileMenu.addEventListener('touchend', function() {
         isDragging = false;
     }, { passive: true });
+    
+    // Add scroll overflow detection
+    const mobileNavList = mobileMenu.querySelector('.mobile-nav-list');
+    if (mobileNavList) {
+        mobileNavList.addEventListener('scroll', function() {
+            checkScrollOverflow(this);
+        });
+        
+        // Check on menu open
+        const originalOpenMobileMenu = openMobileMenu;
+        openMobileMenu = function() {
+            originalOpenMobileMenu();
+            setTimeout(() => {
+                checkScrollOverflow(mobileNavList);
+            }, 100);
+        };
+    }
 }
 
 /**
@@ -103,7 +120,11 @@ function openMobileMenu() {
     
     mobileMenu.classList.add('active');
     menuToggle.setAttribute('aria-expanded', 'true');
+    
+    // Prevent body scroll but allow sidebar to scroll
     document.body.style.overflow = 'hidden';
+    document.body.style.position = 'fixed';
+    document.body.style.width = '100%';
     
     // Focus management
     const firstLink = mobileMenu.querySelector('a');
@@ -123,10 +144,38 @@ function closeMobileMenu() {
     
     mobileMenu.classList.remove('active');
     menuToggle.setAttribute('aria-expanded', 'false');
+    
+    // Restore body scroll
     document.body.style.overflow = '';
+    document.body.style.position = '';
+    document.body.style.width = '';
     
     // Return focus to menu toggle
     menuToggle.focus();
+}
+
+/**
+ * Check if navigation list has scroll overflow and add visual indicator
+ */
+function checkScrollOverflow(element) {
+    if (!element) return;
+    
+    const hasOverflow = element.scrollHeight > element.clientHeight;
+    const isAtBottom = element.scrollTop + element.clientHeight >= element.scrollHeight - 1;
+    
+    if (hasOverflow) {
+        element.classList.add('has-overflow');
+        
+        // Add scroll shadow at bottom when not at bottom
+        if (!isAtBottom) {
+            element.style.setProperty('--scroll-shadow-opacity', '1');
+        } else {
+            element.style.setProperty('--scroll-shadow-opacity', '0');
+        }
+    } else {
+        element.classList.remove('has-overflow');
+        element.style.setProperty('--scroll-shadow-opacity', '0');
+    }
 }
 
 /**

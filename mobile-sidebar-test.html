@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile Sidebar Test - JShuk</title>
+    <link rel="stylesheet" href="css/components/header.css">
+    <link rel="stylesheet" href="css/components/mobile-fixes.css">
+    <style>
+        /* Test styles */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+        
+        .test-header {
+            background: linear-gradient(135deg, #1a3353 0%, #2C4E6D 100%);
+            color: white;
+            padding: 1rem;
+            text-align: center;
+        }
+        
+        .test-content {
+            padding: 2rem;
+            min-height: 200vh; /* Create scrollable content */
+        }
+        
+        /* Simulate mobile viewport */
+        @media (max-width: 1023px) {
+            body {
+                padding-bottom: 80px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="test-header">
+        <h1>Mobile Sidebar Test</h1>
+        <p>Open this on mobile or use browser dev tools mobile view</p>
+    </div>
+    
+    <!-- Mobile Header -->
+    <header class="header-main-mobile d-xl-none">
+        <div class="mobile-header-inner">
+            <div class="mobile-header-top">
+                <a class="mobile-brand" href="/">
+                    <img src="/images/jshuk-logo.png" alt="JShuk Logo" class="mobile-logo">
+                    <span class="mobile-brand-text">JShuk</span>
+                </a>
+                <div class="mobile-header-actions">
+                    <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Open menu" aria-expanded="false" aria-controls="mobileNavMenu">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Mobile Navigation Menu (Side Drawer) -->
+            <div class="mobile-nav-menu" id="mobileNavMenu" role="dialog" aria-modal="true" aria-label="Navigation menu">
+                <div class="mobile-nav-header">
+                    <span class="mobile-nav-title">Menu</span>
+                    <button class="mobile-nav-close" id="mobileNavClose" aria-label="Close menu">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <ul class="mobile-nav-list">
+                    <li class="mobile-nav-item">
+                        <a href="#" class="mobile-nav-link">
+                            <i class="fas fa-home"></i>
+                            <span>Home</span>
+                        </a>
+                    </li>
+                    <li class="mobile-nav-item">
+                        <a href="#" class="mobile-nav-link">
+                            <i class="fas fa-store"></i>
+                            <span>Browse Businesses</span>
+                        </a>
+                    </li>
+                    <li class="mobile-nav-item">
+                        <a href="#" class="mobile-nav-link">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>London</span>
+                        </a>
+                    </li>
+                    <li class="mobile-nav-item">
+                        <a href="#" class="mobile-nav-link">
+                            <i class="fas fa-briefcase"></i>
+                            <span>Jobs</span>
+                        </a>
+                    </li>
+                    <li class="mobile-nav-item">
+                        <a href="#" class="mobile-nav-link">
+                            <i class="fas fa-tags"></i>
+                            <span>Classifieds</span>
+                        </a>
+                    </li>
+                    <li class="mobile-nav-item">
+                        <a href="#" class="mobile-nav-link">
+                            <i class="fas fa-users"></i>
+                            <span>Community</span>
+                        </a>
+                    </li>
+                    <li class="mobile-nav-item">
+                        <a href="#" class="mobile-nav-link">
+                            <i class="fas fa-home"></i>
+                            <span>Retreats</span>
+                        </a>
+                    </li>
+                    <li class="mobile-nav-item">
+                        <a href="#" class="mobile-nav-link">
+                            <i class="fas fa-heart"></i>
+                            <span>Gemachim</span>
+                        </a>
+                    </li>
+                    <li class="mobile-nav-item">
+                        <a href="#" class="mobile-nav-link">
+                            <i class="fas fa-search"></i>
+                            <span>Lost & Found</span>
+                        </a>
+                    </li>
+                    <li class="mobile-nav-item">
+                        <a href="#" class="mobile-nav-link">
+                            <i class="fas fa-calendar"></i>
+                            <span>Events</span>
+                        </a>
+                    </li>
+                    <li class="mobile-nav-item">
+                        <a href="#" class="mobile-nav-link">
+                            <i class="fas fa-newspaper"></i>
+                            <span>News</span>
+                        </a>
+                    </li>
+                    <li class="mobile-nav-item">
+                        <a href="#" class="mobile-nav-link">
+                            <i class="fas fa-info-circle"></i>
+                            <span>About</span>
+                        </a>
+                    </li>
+                    <li class="mobile-nav-item">
+                        <a href="#" class="mobile-nav-link">
+                            <i class="fas fa-envelope"></i>
+                            <span>Contact</span>
+                        </a>
+                    </li>
+                    <li class="mobile-nav-item">
+                        <a href="#" class="mobile-nav-link">
+                            <i class="fas fa-question-circle"></i>
+                            <span>Help</span>
+                        </a>
+                    </li>
+                    <li class="mobile-nav-item">
+                        <a href="#" class="mobile-nav-link">
+                            <i class="fas fa-cog"></i>
+                            <span>Settings</span>
+                        </a>
+                    </li>
+                    <li class="mobile-nav-item">
+                        <a href="#" class="mobile-nav-link">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span>Logout</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </header>
+
+    <div class="test-content">
+        <h2>Test Content</h2>
+        <p>This page has enough content to make the mobile sidebar scrollable. Open the mobile menu and test the scrolling behavior.</p>
+        
+        <h3>Testing Checklist:</h3>
+        <ul>
+            <li>✅ Menu opens smoothly from right side</li>
+            <li>✅ Menu scrolls properly to show all items</li>
+            <li>✅ Scroll shadow appears when content overflows</li>
+            <li>✅ Touch scrolling works smoothly on iOS</li>
+            <li>✅ Body scroll is prevented when menu is open</li>
+            <li>✅ Menu closes properly and restores body scroll</li>
+            <li>✅ Swipe to close works</li>
+            <li>✅ Escape key closes menu</li>
+            <li>✅ Focus management works correctly</li>
+        </ul>
+        
+        <p>Scroll down to test body scrolling behavior...</p>
+        
+        <!-- Add more content to make page scrollable -->
+        <div style="height: 100vh; background: #f0f0f0; margin: 2rem 0; display: flex; align-items: center; justify-content: center;">
+            <p>More content to test body scrolling</p>
+        </div>
+        
+        <div style="height: 100vh; background: #e0e0e0; margin: 2rem 0; display: flex; align-items: center; justify-content: center;">
+            <p>Even more content</p>
+        </div>
+    </div>
+
+    <script src="assets/js/main.js"></script>
+    <script>
+        // Initialize mobile menu
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeMobileMenu();
+        });
+    </script>
+</body>
+</html> 

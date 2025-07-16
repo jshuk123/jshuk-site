@@ -851,14 +851,18 @@ nav a:hover, .navbar-nav .nav-link:hover {
   right: -100%;
   width: 100%;
   max-width: 320px;
+  height: 100dvh; /* Use dynamic viewport height for better mobile support */
   height: 100vh;
   background: linear-gradient(135deg, #1a3353 0%, #2C4E6D 100%);
   z-index: 1001;
   transition: right 0.3s ease;
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch; /* Enable smooth scrolling on iOS */
   box-shadow: -2px 0 10px rgba(0,0,0,0.3);
   display: flex;
   flex-direction: column;
+  /* Ensure the sidebar can scroll independently */
+  overscroll-behavior: contain;
 }
 
 .mobile-nav-menu.active {
@@ -872,6 +876,8 @@ nav a:hover, .navbar-nav .nav-link:hover {
   padding: 1rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   background: rgba(0, 0, 0, 0.1);
+  /* Prevent header from scrolling */
+  flex-shrink: 0;
 }
 
 .mobile-nav-title {
@@ -906,6 +912,11 @@ nav a:hover, .navbar-nav .nav-link:hover {
   padding: 0;
   margin: 0;
   flex-grow: 1;
+  /* Ensure the list can scroll */
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  /* Add padding to ensure last items are visible */
+  padding-bottom: 2rem;
 }
 
 .mobile-nav-item {
