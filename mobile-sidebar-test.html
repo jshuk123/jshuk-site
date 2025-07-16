@@ -32,11 +32,41 @@
                 padding-bottom: 80px;
             }
         }
+        
+        /* Debug styles */
+        .debug-info {
+            background: #f0f0f0;
+            border: 1px solid #ccc;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 0.9rem;
+        }
+        
+        .test-status {
+            padding: 0.5rem;
+            margin: 0.5rem 0;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        
+        .test-status.pass {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .test-status.fail {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
     </style>
 </head>
 <body>
     <div class="test-header">
-        <h1>Mobile Sidebar Test</h1>
+        <h1>Mobile Sidebar Test - JShuk</h1>
         <p>Open this on mobile or use browser dev tools mobile view</p>
     </div>
     
@@ -94,12 +124,67 @@
                             <span>Classifieds</span>
                         </a>
                     </li>
-                    <li class="mobile-nav-item">
-                        <a href="#" class="mobile-nav-link">
+                    
+                    <!-- CRITICAL TEST: Community Submenu -->
+                    <li class="mobile-nav-item has-submenu">
+                        <a href="#" class="mobile-nav-link submenu-toggle" data-submenu="community">
                             <i class="fas fa-users"></i>
-                            <span>Community</span>
+                            <span>📣 Community</span>
+                            <span class="submenu-arrow">▾</span>
                         </a>
+                        <ul class="mobile-submenu" id="community-submenu">
+                            <li class="mobile-nav-item">
+                                <a href="#" class="mobile-nav-link">
+                                    <span class="submenu-emoji">🫶</span>
+                                    <span>Community Corner</span>
+                                </a>
+                            </li>
+                            <li class="mobile-nav-item">
+                                <a href="#" class="mobile-nav-link">
+                                    <span class="submenu-emoji">🍼</span>
+                                    <span>Gemachim</span>
+                                </a>
+                            </li>
+                            <li class="mobile-nav-item">
+                                <a href="#" class="mobile-nav-link">
+                                    <span class="submenu-emoji">🎒</span>
+                                    <span>Lost & Found</span>
+                                </a>
+                            </li>
+                            <li class="mobile-nav-item">
+                                <a href="#" class="mobile-nav-link">
+                                    <span class="submenu-emoji">📜</span>
+                                    <span>Ask the Rabbi</span>
+                                </a>
+                            </li>
+                            <li class="mobile-nav-item">
+                                <a href="#" class="mobile-nav-link">
+                                    <span class="submenu-emoji">🕯️</span>
+                                    <span>Divrei Torah</span>
+                                </a>
+                            </li>
+                            <li class="mobile-nav-item">
+                                <a href="#" class="mobile-nav-link">
+                                    <span class="submenu-emoji">🎉</span>
+                                    <span>Simchas</span>
+                                </a>
+                            </li>
+                            <li class="mobile-nav-item">
+                                <a href="#" class="mobile-nav-link">
+                                    <span class="submenu-emoji">❤️</span>
+                                    <span>Charity Alerts</span>
+                                </a>
+                            </li>
+                            <li class="mobile-nav-item">
+                                <a href="#" class="mobile-nav-link">
+                                    <span class="submenu-emoji">🤝</span>
+                                    <span>Volunteer</span>
+                                </a>
+                            </li>
+                        </ul>
                     </li>
+                    
+                    <!-- Additional items to test scrolling -->
                     <li class="mobile-nav-item">
                         <a href="#" class="mobile-nav-link">
                             <i class="fas fa-home"></i>
@@ -166,21 +251,35 @@
     </header>
 
     <div class="test-content">
-        <h2>Test Content</h2>
-        <p>This page has enough content to make the mobile sidebar scrollable. Open the mobile menu and test the scrolling behavior.</p>
+        <h2>Mobile Sidebar Test Results</h2>
         
-        <h3>Testing Checklist:</h3>
-        <ul>
-            <li>✅ Menu opens smoothly from right side</li>
-            <li>✅ Menu scrolls properly to show all items</li>
-            <li>✅ Scroll shadow appears when content overflows</li>
-            <li>✅ Touch scrolling works smoothly on iOS</li>
-            <li>✅ Body scroll is prevented when menu is open</li>
-            <li>✅ Menu closes properly and restores body scroll</li>
-            <li>✅ Swipe to close works</li>
-            <li>✅ Escape key closes menu</li>
-            <li>✅ Focus management works correctly</li>
-        </ul>
+        <div class="debug-info">
+            <h3>🔍 Test Instructions:</h3>
+            <ol>
+                <li>Open this page on mobile or use Chrome DevTools mobile emulation</li>
+                <li>Tap the hamburger menu (☰) to open the sidebar</li>
+                <li>Test scrolling to the bottom of the menu</li>
+                <li>Test the Community submenu by tapping "📣 Community"</li>
+                <li>Check the test results below</li>
+            </ol>
+        </div>
+        
+        <div id="testResults">
+            <h3>🧪 Test Results:</h3>
+            <div id="scrollTest" class="test-status">⏳ Testing scroll functionality...</div>
+            <div id="submenuTest" class="test-status">⏳ Testing submenu functionality...</div>
+            <div id="accessibilityTest" class="test-status">⏳ Testing accessibility...</div>
+        </div>
+        
+        <div class="debug-info">
+            <h3>✅ Expected Behavior:</h3>
+            <ul>
+                <li><strong>Scroll Test:</strong> Should scroll smoothly to the bottom, showing "Logout" as the last item</li>
+                <li><strong>Submenu Test:</strong> Tapping "📣 Community" should expand/collapse the submenu with smooth animation</li>
+                <li><strong>Accessibility:</strong> Arrow should rotate, focus should be managed properly</li>
+                <li><strong>Touch:</strong> All items should be easily tappable (44px minimum)</li>
+            </ul>
+        </div>
         
         <p>Scroll down to test body scrolling behavior...</p>
         
@@ -196,10 +295,57 @@
 
     <script src="assets/js/main.js"></script>
     <script>
-        // Initialize mobile menu
+        // Test functionality
         document.addEventListener('DOMContentLoaded', function() {
+            console.log('Mobile sidebar test page loaded');
+            
+            // Initialize mobile menu
             initializeMobileMenu();
+            initializeMobileSubmenus();
+            
+            // Test scroll functionality
+            setTimeout(() => {
+                testScrollFunctionality();
+            }, 1000);
+            
+            // Test submenu functionality
+            setTimeout(() => {
+                testSubmenuFunctionality();
+            }, 1500);
         });
+        
+        function testScrollFunctionality() {
+            const mobileNavList = document.querySelector('.mobile-nav-list');
+            const scrollTest = document.getElementById('scrollTest');
+            
+            if (mobileNavList) {
+                const hasOverflow = mobileNavList.scrollHeight > mobileNavList.clientHeight;
+                const canScroll = mobileNavList.style.overflowY === 'auto' || 
+                                 getComputedStyle(mobileNavList).overflowY === 'auto';
+                
+                if (hasOverflow && canScroll) {
+                    scrollTest.className = 'test-status pass';
+                    scrollTest.textContent = '✅ PASS: Sidebar is scrollable';
+                } else {
+                    scrollTest.className = 'test-status fail';
+                    scrollTest.textContent = '❌ FAIL: Sidebar is not scrollable';
+                }
+            }
+        }
+        
+        function testSubmenuFunctionality() {
+            const submenuToggle = document.querySelector('.submenu-toggle');
+            const submenu = document.getElementById('community-submenu');
+            const submenuTest = document.getElementById('submenuTest');
+            
+            if (submenuToggle && submenu) {
+                submenuTest.className = 'test-status pass';
+                submenuTest.textContent = '✅ PASS: Community submenu structure found';
+            } else {
+                submenuTest.className = 'test-status fail';
+                submenuTest.textContent = '❌ FAIL: Community submenu structure missing';
+            }
+        }
     </script>
 </body>
 </html> 

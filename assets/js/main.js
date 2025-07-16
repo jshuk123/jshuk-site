@@ -184,6 +184,8 @@ function checkScrollOverflow(element) {
 function initializeMobileSubmenus() {
     const submenuToggles = document.querySelectorAll('.submenu-toggle');
     
+    console.log('Initializing mobile submenus, found:', submenuToggles.length, 'toggles');
+    
     submenuToggles.forEach(toggle => {
         toggle.addEventListener('click', function(e) {
             e.preventDefault();
@@ -192,6 +194,8 @@ function initializeMobileSubmenus() {
             const submenuId = this.getAttribute('data-submenu');
             const submenu = document.getElementById(submenuId + '-submenu');
             const parentItem = this.closest('.mobile-nav-item');
+            
+            console.log('Submenu toggle clicked:', submenuId, 'Submenu found:', !!submenu, 'Parent found:', !!parentItem);
             
             if (!submenu || !parentItem) {
                 console.warn('Submenu elements not found:', submenuId);
@@ -223,6 +227,7 @@ function initializeMobileSubmenus() {
             
             if (isCurrentlyActive) {
                 // Close submenu
+                console.log('Closing submenu:', submenuId);
                 parentItem.classList.remove('active');
                 submenu.style.maxHeight = '0';
                 submenu.style.opacity = '0';
@@ -231,6 +236,7 @@ function initializeMobileSubmenus() {
                 }, 300);
             } else {
                 // Open submenu
+                console.log('Opening submenu:', submenuId);
                 parentItem.classList.add('active');
                 submenu.style.display = 'block';
                 // Force reflow
@@ -259,6 +265,10 @@ function initializeMobileSubmenus() {
             const openSubmenus = document.querySelectorAll('.mobile-submenu');
             const openItems = document.querySelectorAll('.mobile-nav-item.has-submenu.active');
             
+            if (openSubmenus.length > 0) {
+                console.log('Closing submenus due to outside click');
+            }
+            
             openSubmenus.forEach(menu => {
                 menu.style.maxHeight = '0';
                 menu.style.opacity = '0';
@@ -272,6 +282,34 @@ function initializeMobileSubmenus() {
             });
         }
     });
+    
+    // Close submenus when menu closes
+    const mobileMenu = document.getElementById('mobileNavMenu');
+    if (mobileMenu) {
+        const observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+                if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+                    if (!mobileMenu.classList.contains('active')) {
+                        // Menu closed, close all submenus
+                        const openSubmenus = document.querySelectorAll('.mobile-submenu');
+                        const openItems = document.querySelectorAll('.mobile-nav-item.has-submenu.active');
+                        
+                        openSubmenus.forEach(menu => {
+                            menu.style.maxHeight = '0';
+                            menu.style.opacity = '0';
+                            menu.style.display = 'none';
+                        });
+                        
+                        openItems.forEach(item => {
+                            item.classList.remove('active');
+                        });
+                    }
+                }
+            });
+        });
+        
+        observer.observe(mobileMenu, { attributes: true });
+    }
 }
 
 /**

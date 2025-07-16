@@ -1267,42 +1267,66 @@ nav a:hover, .navbar-nav .nav-link:hover {
 } 
 
 @media (max-width: 1023px) {
-  /* Ensure mobile navigation menu is properly scrollable */
+  /* CRITICAL: Ensure mobile navigation menu is properly scrollable */
   .mobile-nav-menu {
     height: 100vh !important;
     height: 100dvh !important; /* Modern browsers */
+    max-height: 100vh !important;
+    max-height: 100dvh !important;
     overflow-y: auto !important;
-    -webkit-overflow-scrolling: touch !important; /* iOS smooth scrolling */
+    -webkit-overflow-scrolling: touch !important; /* Smooth scroll on iOS */
     overscroll-behavior: contain !important;
+    display: flex !important;
+    flex-direction: column !important;
   }
   
-  /* Ensure the navigation list can scroll independently */
+  /* CRITICAL: Ensure the navigation list can scroll independently */
   .mobile-nav-list {
     height: auto !important;
+    max-height: none !important;
     overflow-y: auto !important;
     -webkit-overflow-scrolling: touch !important;
     padding-bottom: 2rem !important; /* Ensure last items are visible */
+    flex-grow: 1 !important;
+    flex-shrink: 1 !important;
+    min-height: 0 !important; /* Critical for flex child scrolling */
   }
   
-  /* Override any body overflow hidden that might interfere */
+  /* CRITICAL: Fix header to prevent it from scrolling */
+  .mobile-nav-header {
+    flex-shrink: 0 !important;
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 2 !important;
+  }
+  
+  /* CRITICAL: Override any body overflow hidden that might interfere */
   body.menu-open .mobile-nav-menu,
   body:has(.mobile-nav-menu.active) .mobile-nav-menu {
     overflow-y: auto !important;
+  }
+  
+  /* CRITICAL: Ensure no parent containers block scrolling */
+  .mobile-header-inner,
+  .mobile-header-top {
+    overflow: visible !important;
   }
 } 
 
 /* ===== MOBILE SUBMENU FUNCTIONALITY ===== */
 @media (max-width: 1023px) {
-  /* Hide submenus by default */
+  /* CRITICAL: Hide submenus by default */
   .mobile-submenu {
     display: none !important;
     overflow: hidden !important;
     max-height: 0 !important;
     transition: max-height 0.3s ease, opacity 0.3s ease !important;
     opacity: 0 !important;
+    background: rgba(0, 0, 0, 0.1) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
   }
   
-  /* Show submenu when parent is active */
+  /* CRITICAL: Show submenu when parent is active */
   .mobile-nav-item.has-submenu.active .mobile-submenu {
     display: block !important;
     max-height: 60vh !important;
@@ -1311,19 +1335,21 @@ nav a:hover, .navbar-nav .nav-link:hover {
     -webkit-overflow-scrolling: touch !important;
   }
   
-  /* Style submenu toggle arrow */
+  /* CRITICAL: Style submenu toggle arrow */
   .submenu-arrow {
     margin-left: auto !important;
     transition: transform 0.3s ease !important;
     font-size: 0.8rem !important;
+    color: rgba(255, 255, 255, 0.7) !important;
   }
   
-  /* Rotate arrow when submenu is active */
+  /* CRITICAL: Rotate arrow when submenu is active */
   .mobile-nav-item.has-submenu.active .submenu-arrow {
     transform: rotate(180deg) !important;
+    color: #ffd700 !important;
   }
   
-  /* Style submenu items */
+  /* CRITICAL: Style submenu items */
   .mobile-submenu .mobile-nav-item {
     border-bottom: none !important;
   }
@@ -1332,6 +1358,7 @@ nav a:hover, .navbar-nav .nav-link:hover {
     padding-left: 3rem !important;
     font-size: 0.9rem !important;
     color: rgba(255, 255, 255, 0.9) !important;
+    background: rgba(0, 0, 0, 0.05) !important;
   }
   
   .mobile-submenu .mobile-nav-link:hover {
@@ -1339,9 +1366,23 @@ nav a:hover, .navbar-nav .nav-link:hover {
     color: #ffd700 !important;
   }
   
-  /* Submenu emoji styling */
+  /* CRITICAL: Submenu emoji styling */
   .submenu-emoji {
     margin-right: 0.5rem !important;
     font-size: 0.9rem !important;
+    display: inline-block !important;
+    width: 20px !important;
+    text-align: center !important;
+  }
+  
+  /* CRITICAL: Ensure submenu toggle is properly styled */
+  .mobile-nav-item.has-submenu .mobile-nav-link {
+    justify-content: space-between !important;
+    cursor: pointer !important;
+  }
+  
+  .mobile-nav-item.has-submenu .mobile-nav-link:hover {
+    background: rgba(255, 255, 255, 0.1) !important;
+    color: #ffd700 !important;
   }
 } 
