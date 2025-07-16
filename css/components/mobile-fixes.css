@@ -134,6 +134,30 @@
     max-height: 60vh !important;
   }
   
+  /* CRITICAL: Debug styles for submenu visibility */
+  .mobile-submenu .mobile-nav-link {
+    /* Ensure text is visible */
+    color: rgba(255, 255, 255, 0.9) !important;
+    background: rgba(0, 0, 0, 0.1) !important;
+    
+    /* Ensure proper layout */
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    
+    /* Ensure text doesn't get cut off */
+    white-space: nowrap !important;
+    overflow: visible !important;
+  }
+  
+  .mobile-submenu .mobile-nav-link span {
+    /* Ensure text spans are visible */
+    color: inherit !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    display: inline-block !important;
+  }
+  
   /* Fix iOS Safari specific issues */
   @supports (-webkit-touch-callout: none) {
     .mobile-nav-menu {

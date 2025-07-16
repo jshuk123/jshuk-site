@@ -219,6 +219,10 @@ function initializeMobileSubmenus() {
             otherItems.forEach(item => {
                 if (item !== parentItem) {
                     item.classList.remove('active');
+                    const otherToggle = item.querySelector('.submenu-toggle');
+                    if (otherToggle) {
+                        otherToggle.setAttribute('aria-expanded', 'false');
+                    }
                 }
             });
             
@@ -229,6 +233,7 @@ function initializeMobileSubmenus() {
                 // Close submenu
                 console.log('Closing submenu:', submenuId);
                 parentItem.classList.remove('active');
+                this.setAttribute('aria-expanded', 'false');
                 submenu.style.maxHeight = '0';
                 submenu.style.opacity = '0';
                 setTimeout(() => {
@@ -238,6 +243,7 @@ function initializeMobileSubmenus() {
                 // Open submenu
                 console.log('Opening submenu:', submenuId);
                 parentItem.classList.add('active');
+                this.setAttribute('aria-expanded', 'true');
                 submenu.style.display = 'block';
                 // Force reflow
                 submenu.offsetHeight;
@@ -245,16 +251,20 @@ function initializeMobileSubmenus() {
                 submenu.style.opacity = '1';
             }
             
-            // Update aria attributes
-            const isExpanded = parentItem.classList.contains('active');
-            this.setAttribute('aria-expanded', isExpanded);
-            
             // Focus management
-            if (isExpanded) {
-                const firstSubmenuLink = submenu.querySelector('a');
+            if (!isCurrentlyActive) {
+                const firstSubmenuLink = submenu.querySelector('a[role="menuitem"]');
                 if (firstSubmenuLink) {
                     setTimeout(() => firstSubmenuLink.focus(), 100);
                 }
+            }
+        });
+        
+        // Add keyboard support
+        toggle.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                this.click();
             }
         });
     });
@@ -279,6 +289,10 @@ function initializeMobileSubmenus() {
             
             openItems.forEach(item => {
                 item.classList.remove('active');
+                const toggle = item.querySelector('.submenu-toggle');
+                if (toggle) {
+                    toggle.setAttribute('aria-expanded', 'false');
+                }
             });
         }
     });
@@ -302,6 +316,10 @@ function initializeMobileSubmenus() {
                         
                         openItems.forEach(item => {
                             item.classList.remove('active');
+                            const toggle = item.querySelector('.submenu-toggle');
+                            if (toggle) {
+                                toggle.setAttribute('aria-expanded', 'false');
+                            }
                         });
                     }
                 }

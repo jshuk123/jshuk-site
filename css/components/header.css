@@ -1349,40 +1349,75 @@ nav a:hover, .navbar-nav .nav-link:hover {
     color: #ffd700 !important;
   }
   
-  /* CRITICAL: Style submenu items */
+  /* CRITICAL: Style submenu items - FIXED TEXT VISIBILITY */
   .mobile-submenu .mobile-nav-item {
     border-bottom: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
   }
   
   .mobile-submenu .mobile-nav-link {
-    padding-left: 3rem !important;
+    display: flex !important;
+    align-items: center !important;
+    padding: 0.75rem 1rem 0.75rem 3rem !important;
     font-size: 0.9rem !important;
     color: rgba(255, 255, 255, 0.9) !important;
     background: rgba(0, 0, 0, 0.05) !important;
+    text-decoration: none !important;
+    min-height: 44px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    border-radius: 0 !important;
+    margin: 0 !important;
   }
   
   .mobile-submenu .mobile-nav-link:hover {
-    background: rgba(255, 255, 255, 0.05) !important;
+    background: rgba(255, 255, 255, 0.1) !important;
     color: #ffd700 !important;
   }
   
-  /* CRITICAL: Submenu emoji styling */
+  /* CRITICAL: Submenu emoji styling - FIXED ALIGNMENT */
   .submenu-emoji {
-    margin-right: 0.5rem !important;
-    font-size: 0.9rem !important;
     display: inline-block !important;
     width: 20px !important;
     text-align: center !important;
+    margin-right: 0.75rem !important;
+    font-size: 0.9rem !important;
+    flex-shrink: 0 !important;
   }
   
   /* CRITICAL: Ensure submenu toggle is properly styled */
   .mobile-nav-item.has-submenu .mobile-nav-link {
     justify-content: space-between !important;
     cursor: pointer !important;
+    padding: 1rem !important;
   }
   
   .mobile-nav-item.has-submenu .mobile-nav-link:hover {
     background: rgba(255, 255, 255, 0.1) !important;
     color: #ffd700 !important;
+  }
+  
+  /* CRITICAL: Fix text overflow and ensure visibility */
+  .mobile-submenu .mobile-nav-link span {
+    display: inline-block !important;
+    white-space: nowrap !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+    color: inherit !important;
+  }
+  
+  /* CRITICAL: Ensure proper flex layout for submenu items */
+  .mobile-submenu .mobile-nav-link {
+    flex-direction: row !important;
+    justify-content: flex-start !important;
+    align-items: center !important;
+  }
+  
+  /* CRITICAL: Fix any potential text hiding issues */
+  .mobile-submenu .mobile-nav-link * {
+    color: inherit !important;
+    visibility: visible !important;
+    opacity: 1 !important;
   }
 } 
