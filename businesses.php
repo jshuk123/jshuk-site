@@ -61,12 +61,18 @@ function extractLocation($address) {
     return $address;
 }
 
+// Function to handle selected option in dropdown
+function selected($current, $value) {
+    return $current === $value ? 'selected' : '';
+}
+
 $page_css = "businesses.css";
 include 'includes/header_main.php';
 
 // Get filter parameters
 $category_filter = $_GET['category'] ?? '';
 $search_query = $_GET['search'] ?? '';
+$current_sort_value = $_GET['sort'] ?? 'newest';
 
 // Enhanced query to get businesses with location and rating data
 try {
@@ -96,7 +102,21 @@ try {
         $params[] = $search_param;
     }
 
-    $query .= " GROUP BY b.id ORDER BY b.created_at DESC";
+    $query .= " GROUP BY b.id";
+    
+    // Apply sorting
+    switch ($current_sort_value) {
+        case 'reviews':
+            $query .= " ORDER BY review_count DESC, b.business_name ASC";
+            break;
+        case 'alphabetical':
+            $query .= " ORDER BY b.business_name ASC";
+            break;
+        case 'newest':
+        default:
+            $query .= " ORDER BY b.created_at DESC";
+            break;
+    }
 
     $stmt = $pdo->prepare($query);
     $stmt->execute($params);
@@ -112,15 +132,44 @@ try {
     $categories_stmt->execute();
     $categories = $categories_stmt->fetchAll();
 
+    // Calculate result numbers for display
+    $total_businesses = count($businesses);
+    $start_result_number = $total_businesses > 0 ? 1 : 0;
+    $end_result_number = $total_businesses;
+
 } catch (Exception $e) {
     echo "Error: " . $e->getMessage();
     $businesses = [];
     $categories = [];
+    $total_businesses = 0;
+    $start_result_number = 0;
+    $end_result_number = 0;
 }
 ?>
 
 <div class="container mt-4">
     <h1>Browse Jewish Businesses</h1>
+    
+    <!-- Results Header with Count and Sorting -->
+    <div class="results-header d-flex justify-content-between align-items-center mb-4">
+        <p class="result-count mb-0">
+            Showing <?php echo $start_result_number; ?>-<?php echo $end_result_number; ?> of <?php echo $total_businesses; ?> businesses
+        </p>
+        
+        <form action="" method="get" class="sorting-form">
+            <label for="sort-by">Sort by:</label>
+            <select name="sort" id="sort-by" onchange="this.form.submit()">
+                <option value="newest" <?php selected($current_sort_value, 'newest'); ?>>Newest</option>
+                <option value="reviews" <?php selected($current_sort_value, 'reviews'); ?>>Most Reviewed</option>
+                <option value="alphabetical" <?php selected($current_sort_value, 'alphabetical'); ?>>Alphabetical (A-Z)</option>
+            </select>
+            <?php foreach ($_GET as $key => $value) {
+                if ($key != 'sort') {
+                    echo '<input type="hidden" name="'.htmlspecialchars($key).'" value="'.htmlspecialchars($value).'">';
+                }
+            } ?>
+        </form>
+    </div>
     
     <!-- Simple Search Form -->
     <div class="row mb-4">
@@ -209,15 +258,6 @@ try {
                 </div>
             <?php endforeach; ?>
         <?php endif; ?>
-    </div>
-    
-    <!-- Stats -->
-    <div class="row mt-4">
-        <div class="col-12">
-            <div class="alert alert-light">
-                <strong>Total businesses found:</strong> <?= count($businesses) ?>
-            </div>
-        </div>
     </div>
 </div>
 
