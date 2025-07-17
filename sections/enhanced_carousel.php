@@ -132,7 +132,7 @@ $loop = $numSlides > 1;
   left: 0;
   right: 0;
   bottom: 0;
-  background-image: linear-gradient(rgba(26, 51, 83, 0.7), rgba(26, 51, 83, 0.8)), url('https://images.unsplash.com/photo-1557804506-669a67965ba0?ixlib=rb-4.0.3&auto=format&fit=crop&w=2074&q=80');
+  background-image: linear-gradient(rgba(26, 51, 83, 0.7), rgba(26, 51, 83, 0.8)), url('/images/hero-background.jpg');
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
@@ -142,7 +142,7 @@ $loop = $numSlides > 1;
 /* Fallback background for debugging */
 .hero-section {
   background-color: #1a3353;
-  background-image: linear-gradient(rgba(26, 51, 83, 0.7), rgba(26, 51, 83, 0.8)), url('https://images.unsplash.com/photo-1557804506-669a67965ba0?ixlib=rb-4.0.3&auto=format&fit=crop&w=2074&q=80');
+  background-image: linear-gradient(rgba(26, 51, 83, 0.7), rgba(26, 51, 83, 0.8)), url('/images/hero-background.jpg');
   background-size: cover;
   background-position: center;
 }
