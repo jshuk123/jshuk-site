@@ -202,39 +202,74 @@ include 'sections/enhanced_carousel.php';
     <?php if (!empty($communityCornerItems)): ?>
       <div class="community-cards">
         <?php foreach ($communityCornerItems as $item): ?>
-          <div class="community-card card-hover-effect" data-item-id="<?= $item['id'] ?>">
-            <span class="community-emoji"><?= htmlspecialchars($item['emoji']) ?></span>
-            <p><?= htmlspecialchars($item['body_text']) ?></p>
-            <?php if ($item['link_url']): ?>
-              <a href="<?= htmlspecialchars($item['link_url']) ?>" class="btn-jshuk-primary" onclick="trackCommunityCornerClick(<?= $item['id'] ?>)">
-                <?= htmlspecialchars($item['link_text']) ?>
-              </a>
-            <?php endif; ?>
+          <div class="community-card interactive-card" data-item-id="<?= $item['id'] ?>">
+            <div class="card-visible-content">
+              <div class="card-main-icon">
+                <i class="fas fa-heart"></i>
+              </div>
+              <h4><?= htmlspecialchars($item['title'] ?? 'Community') ?></h4>
+            </div>
+            <div class="card-hidden-content">
+              <p><?= htmlspecialchars($item['body_text']) ?></p>
+              <?php if ($item['link_url']): ?>
+                <a href="<?= htmlspecialchars($item['link_url']) ?>" class="btn-jshuk-primary" onclick="trackCommunityCornerClick(<?= $item['id'] ?>)">
+                  <?= htmlspecialchars($item['link_text']) ?>
+                </a>
+              <?php endif; ?>
+            </div>
           </div>
         <?php endforeach; ?>
       </div>
     <?php else: ?>
       <div class="community-cards">
-        <div class="community-card card-hover-effect">
-          <span class="community-emoji">🍼</span>
-          <p><strong>Shared:</strong> 3 baby items borrowed via local Gemachs this week.</p>
-          <a href="/gemachim.php" class="btn-jshuk-primary">Explore Gemachim →</a>
+        <div class="community-card interactive-card">
+          <div class="card-visible-content">
+            <div class="card-main-icon">
+              <i class="fas fa-gift"></i>
+            </div>
+            <h4>Shared</h4>
+          </div>
+          <div class="card-hidden-content">
+            <p><strong>Shared:</strong> 3 baby items borrowed via local Gemachs this week.</p>
+            <a href="/gemachim.php" class="btn-jshuk-primary">Explore Gemachim →</a>
+          </div>
         </div>
-        <div class="community-card card-hover-effect">
-          <span class="community-emoji">🎒</span>
-          <p><strong>Lost:</strong> Blue school bag in Hendon — please contact if found.</p>
-          <a href="/lost_and_found.php" class="btn-jshuk-primary">View Lost & Found →</a>
+        <div class="community-card interactive-card">
+          <div class="card-visible-content">
+            <div class="card-main-icon">
+              <i class="fas fa-search"></i>
+            </div>
+            <h4>Lost & Found</h4>
+          </div>
+          <div class="card-hidden-content">
+            <p><strong>Lost:</strong> Blue school bag in Hendon — please contact if found.</p>
+            <a href="/lost_and_found.php" class="btn-jshuk-primary">View Lost & Found →</a>
+          </div>
         </div>
-        <div class="community-card card-hover-effect">
-          <span class="community-emoji">📜</span>
-          <p><strong>Ask the Rabbi:</strong> Can I pay my cleaner during the 9 Days?</p>
-          <a href="/ask-the-rabbi.php" class="btn-jshuk-primary">See the answer →</a>
+        <div class="community-card interactive-card">
+          <div class="card-visible-content">
+            <div class="card-main-icon">
+              <i class="fas fa-comments"></i>
+            </div>
+            <h4>Ask the Rabbi</h4>
+          </div>
+          <div class="card-hidden-content">
+            <p><strong>Ask the Rabbi:</strong> Can I pay my cleaner during the 9 Days?</p>
+            <a href="/ask-the-rabbi.php" class="btn-jshuk-primary">See the answer →</a>
+          </div>
         </div>
-        <div class="community-card card-hover-effect">
-          <span class="community-emoji">🕯️</span>
-          <p>"Words matter. Like the shevuah of Bnei Gad, promises are sacred."</p>
-          <p class="attribution">— Rabbi Cohen, Parshas Mattos</p>
-          <a href="/divrei-torah.php" class="btn-jshuk-primary">More Torah Thoughts →</a>
+        <div class="community-card interactive-card">
+          <div class="card-visible-content">
+            <div class="card-main-icon">
+              <i class="fas fa-book-open"></i>
+            </div>
+            <h4>Words Matter</h4>
+          </div>
+          <div class="card-hidden-content">
+            <p>"Words matter. Like the shevuah of Bnei Gad, promises are sacred."</p>
+            <p class="attribution">— Rabbi Cohen, Parshas Mattos</p>
+            <a href="/divrei-torah.php" class="btn-jshuk-primary">More Torah Thoughts →</a>
+          </div>
         </div>
       </div>
     <?php endif; ?>

@@ -269,7 +269,109 @@ main {
 .community-cards {
   display: grid;
   gap: 25px;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
+}
+
+/* --- Final Community Corner Design: Interactive Cards --- */
+.interactive-card {
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  background: var(--surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border);
+  transition: all 0.3s ease;
+  min-height: 200px;
+}
+
+.interactive-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-lg);
+}
+
+.card-visible-content {
+  padding: 2rem;
+  text-align: center;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.card-main-icon {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-hover) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 4px 16px rgba(26, 51, 83, 0.2);
+  transition: all 0.3s ease;
+}
+
+.card-main-icon i {
+  font-size: 2rem;
+  color: var(--secondary-color);
+}
+
+.interactive-card:hover .card-main-icon {
+  transform: scale(1.1);
+  box-shadow: 0 6px 20px rgba(26, 51, 83, 0.3);
+}
+
+.card-visible-content h4 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+  transition: color 0.3s ease;
+}
+
+.interactive-card:hover .card-visible-content h4 {
+  color: var(--primary-color);
+}
+
+.card-hidden-content {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(248, 249, 250, 0.95) 100%);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  padding: 2rem;
+  transform: translateY(100%);
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  border-top: 1px solid var(--border);
+}
+
+.interactive-card:hover .card-hidden-content {
+  transform: translateY(0);
+}
+
+.card-hidden-content p {
+  margin-bottom: 1.5rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  font-size: 1rem;
+}
+
+.card-hidden-content .attribution {
+  font-style: italic;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  margin-bottom: 1.5rem;
+}
+
+.card-hidden-content .btn-jshuk-primary {
+  width: 100%;
+  text-align: center;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
 }
 
 /* Responsive design for Community Corner */
@@ -277,11 +379,36 @@ main {
   .community-cards {
     grid-template-columns: repeat(2, 1fr);
   }
+  
+  .card-visible-content {
+    padding: 1.5rem;
+  }
+  
+  .card-main-icon {
+    width: 60px;
+    height: 60px;
+  }
+  
+  .card-main-icon i {
+    font-size: 1.5rem;
+  }
+  
+  .card-visible-content h4 {
+    font-size: 1.1rem;
+  }
 }
 
 @media (max-width: 768px) {
   .community-cards {
     grid-template-columns: 1fr;
+  }
+  
+  .interactive-card {
+    min-height: 180px;
+  }
+  
+  .card-hidden-content {
+    padding: 1.5rem;
   }
 }
 
