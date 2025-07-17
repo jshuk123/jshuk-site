@@ -73,7 +73,8 @@ $loop = $numSlides > 1;
 <!-- STATIC HERO SECTION (Converted from Carousel) -->
 <section class="hero-section">
   <div class="hero-content">
-    <h1 class="hero-title">Find Trusted Jewish Businesses in London. Instantly.</h1>
+    <h1 class="hero-title">Connect with Your Jewish Community</h1>
+    <p class="hero-subtitle">Discover trusted businesses, services, and opportunities across the UK</p>
     
     <!-- ENHANCED SEARCH FORM WITH LIVE SEARCH -->
     <div class="hero-search-container">
@@ -131,9 +132,10 @@ $loop = $numSlides > 1;
   left: 0;
   right: 0;
   bottom: 0;
-  background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('/images/jshuk-logo.png');
+  background-image: linear-gradient(rgba(26, 51, 83, 0.7), rgba(26, 51, 83, 0.8)), url('/images/hero-background.jpg');
   background-size: cover;
   background-position: center;
+  background-attachment: fixed;
   z-index: -1;
 }
 
@@ -144,12 +146,21 @@ $loop = $numSlides > 1;
 
 /* ACTION 1.2: Hero Headline Styling */
 .hero-title {
-  font-size: 3rem;
+  font-size: 3.5rem;
   font-weight: 700;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
   color: #FFFFFF;
   text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.6);
   line-height: 1.2;
+}
+
+.hero-subtitle {
+  font-size: 1.3rem;
+  font-weight: 400;
+  margin-bottom: 2rem;
+  color: #FFD700;
+  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.6);
+  line-height: 1.4;
 }
 
 /* ACTION 1.3: Modern Search Form Design */
@@ -345,7 +356,11 @@ $loop = $numSlides > 1;
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .hero-title {
-    font-size: 2rem;
+    font-size: 2.5rem;
+  }
+  
+  .hero-subtitle {
+    font-size: 1.1rem;
   }
   
   .hero-search-form {
