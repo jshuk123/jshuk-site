@@ -175,6 +175,14 @@ include 'sections/enhanced_carousel.php';
 <!-- DISCOVERY HUB SECTION -->
 <?php include 'sections/discovery_hub.php'; ?>
 
+<!-- SECONDARY BUSINESS CTA -->
+<div class="secondary-business-cta">
+    <div class="container">
+        <p class="cta-text">Are you a business owner? Help the community find you.</p>
+        <a href="<?= BASE_PATH ?>auth/register.php" class="btn-jshuk-secondary">List Your Business <i class="fas fa-arrow-right"></i></a>
+    </div>
+</div>
+
 <!-- WHATSAPP CTA BANNER -->
 <section class="whatsapp-cta-banner">
     <div class="container">
