@@ -166,11 +166,11 @@ $location = null; // Will auto-detect user location
 include 'sections/enhanced_carousel.php'; 
 ?>
 
-<!-- SEARCH BAR -->
-<?php include 'sections/search_bar.php'; ?>
-
 <!-- HERO SECTION (Secondary) -->
 <?php include 'sections/hero.php'; ?>
+
+<!-- FEATURED SHOWCASE SECTION -->
+<?php include 'sections/featured_showcase.php'; ?>
 
 <!-- CATEGORY SHOWCASE -->
 <?php include 'sections/categories.php'; ?>
