@@ -666,6 +666,42 @@ body {
     font-size: 0.9rem;
 }
 
+/* ===== ENHANCED BUSINESS CARD STYLES ===== */
+.card-location {
+    font-size: 0.875rem;
+    color: #6c757d;
+    margin-bottom: 0.5rem;
+}
+
+.card-location i {
+    font-size: 0.8rem;
+}
+
+.card-rating {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.75rem;
+}
+
+.card-rating .stars {
+    display: inline-flex;
+    align-items: center;
+    gap: 1px;
+}
+
+.card-rating .stars i {
+    font-size: 0.8rem;
+}
+
+.card-rating .review-count {
+    font-size: 0.75rem;
+    color: #6c757d;
+}
+
+.card-rating .text-muted {
+    font-size: 0.75rem;
+}
+
 /* ===== TESTIMONIAL SNIPPET ===== */
 .testimonial-snippet {
     background: #f8f9fa;

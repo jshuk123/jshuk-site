@@ -23,6 +23,44 @@ function getBusinessLogoUrl($file_path, $business_name = '') {
     return '/uploads/' . $file_path;
 }
 
+// Function to generate star rating HTML
+function generateStars($rating) {
+    if (!$rating || $rating == 0) {
+        return '<span class="text-muted">No rating</span>';
+    }
+    
+    $html = '<span class="stars">';
+    for ($i = 1; $i <= 5; $i++) {
+        if ($i <= $rating) {
+            $html .= '<i class="fas fa-star text-warning"></i>';
+        } elseif ($i - $rating < 1) {
+            $html .= '<i class="fas fa-star-half-alt text-warning"></i>';
+        } else {
+            $html .= '<i class="far fa-star text-muted"></i>';
+        }
+    }
+    $html .= '</span>';
+    
+    return $html;
+}
+
+// Function to extract location from address
+function extractLocation($address) {
+    if (empty($address)) {
+        return 'Location not specified';
+    }
+    
+    // Try to extract city/area from address
+    $address_parts = explode(',', $address);
+    if (count($address_parts) > 1) {
+        // Take the last part (usually city/area)
+        $location = trim(end($address_parts));
+        return $location;
+    }
+    
+    return $address;
+}
+
 $page_css = "businesses.css";
 include 'includes/header_main.php';
 
@@ -30,12 +68,16 @@ include 'includes/header_main.php';
 $category_filter = $_GET['category'] ?? '';
 $search_query = $_GET['search'] ?? '';
 
-// Simple query to get businesses
+// Enhanced query to get businesses with location and rating data
 try {
-    $query = "SELECT b.*, c.name as category_name, u.subscription_tier
+    $query = "SELECT b.*, c.name as category_name, u.subscription_tier,
+                     COALESCE(b.location, b.address) as business_location,
+                     COALESCE(AVG(r.rating), 0) as average_rating,
+                     COUNT(r.id) as review_count
               FROM businesses b 
               LEFT JOIN business_categories c ON b.category_id = c.id 
               LEFT JOIN users u ON b.user_id = u.id
+              LEFT JOIN reviews r ON b.id = r.business_id 
               WHERE b.status = 'active'";
 
     $params = [];
@@ -54,11 +96,16 @@ try {
         $params[] = $search_param;
     }
 
-    $query .= " ORDER BY b.created_at DESC";
+    $query .= " GROUP BY b.id ORDER BY b.created_at DESC";
 
     $stmt = $pdo->prepare($query);
     $stmt->execute($params);
     $businesses = $stmt->fetchAll();
+    
+    // Process location data for each business
+    foreach ($businesses as &$business) {
+        $business['business_location'] = extractLocation($business['business_location']);
+    }
 
     // Get categories for filter
     $categories_stmt = $pdo->prepare("SELECT * FROM business_categories ORDER BY name");
@@ -124,6 +171,20 @@ try {
                                     </h5>
                                     <small class="text-muted"><?= htmlspecialchars($business['category_name'] ?? 'Uncategorized') ?></small>
                                 </div>
+                            </div>
+                            
+                            <!-- Location Information -->
+                            <p class="card-location mb-2">
+                                <i class="fas fa-map-marker-alt text-muted me-1"></i> 
+                                <?= htmlspecialchars($business['business_location'] ?? 'Location not specified') ?>
+                            </p>
+                            
+                            <!-- Star Rating and Review Count -->
+                            <div class="card-rating mb-3">
+                                <?= generateStars($business['average_rating']) ?>
+                                <?php if ($business['review_count'] > 0): ?>
+                                    <span class="review-count text-muted ms-1">(<?= $business['review_count'] ?> reviews)</span>
+                                <?php endif; ?>
                             </div>
                             
                             <?php if (!empty($business['description'])): ?>
