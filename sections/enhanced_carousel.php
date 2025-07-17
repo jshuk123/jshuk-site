@@ -75,7 +75,7 @@ $loop = $numSlides > 1;
   <div class="hero-content">
     <h1 class="hero-title">Find Trusted Jewish Businesses in London. Instantly.</h1>
     
-    <!-- INTEGRATED SEARCH FORM -->
+    <!-- ENHANCED SEARCH FORM WITH LIVE SEARCH -->
     <div class="hero-search-container">
       <?php
       $location_filter = $_GET['location'] ?? '';
@@ -97,7 +97,10 @@ $loop = $numSlides > 1;
             <?php endforeach; ?>
           <?php endif; ?>
         </select>
-        <input type="text" name="search" class="form-control" placeholder="🔍 Search businesses..." value="<?= htmlspecialchars($search_query) ?>" />
+        <div class="search-input-container">
+          <input type="text" name="search" id="heroSearchInput" class="form-control" placeholder="🔍 Search businesses..." value="<?= htmlspecialchars($search_query) ?>" autocomplete="off" />
+          <div id="heroSearchResults" class="search-results-dropdown"></div>
+        </div>
         <button type="submit" class="btn btn-search" aria-label="Search">
           <i class="fa fa-search"></i>
           <span class="d-none d-md-inline">Search</span>
@@ -198,6 +201,143 @@ $loop = $numSlides > 1;
 
 .hero-search-form .btn-search:hover {
   background: linear-gradient(90deg, #FFCC00 0%, #FFD700 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 215, 0, 0.4);
+}
+
+/* Live Search Dropdown Styles */
+.search-input-container {
+  position: relative;
+  flex-grow: 1;
+}
+
+.search-results-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  max-height: 400px;
+  overflow-y: auto;
+  display: none;
+  margin-top: 4px;
+}
+
+.search-results-dropdown.show {
+  display: block;
+}
+
+.search-result-item {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  border-bottom: 1px solid #f0f0f0;
+  text-decoration: none;
+  color: #333;
+  transition: background-color 0.2s ease;
+}
+
+.search-result-item:last-child {
+  border-bottom: none;
+}
+
+.search-result-item:hover {
+  background-color: #f8f9fa;
+  text-decoration: none;
+  color: #333;
+}
+
+.search-result-item:focus {
+  background-color: #e9ecef;
+  outline: none;
+}
+
+.search-result-image {
+  width: 40px;
+  height: 40px;
+  border-radius: 6px;
+  object-fit: cover;
+  margin-right: 12px;
+  flex-shrink: 0;
+}
+
+.search-result-content {
+  flex-grow: 1;
+  min-width: 0;
+}
+
+.search-result-name {
+  font-weight: 600;
+  font-size: 14px;
+  margin-bottom: 2px;
+  color: #2c3e50;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.search-result-category {
+  font-size: 12px;
+  color: #6c757d;
+  margin-bottom: 2px;
+}
+
+.search-result-description {
+  font-size: 12px;
+  color: #868e96;
+  line-height: 1.3;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.search-result-tier {
+  margin-left: 8px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.search-result-tier.premium_plus {
+  background-color: #ffd700;
+  color: #1a3353;
+}
+
+.search-result-tier.premium {
+  background-color: #e9ecef;
+  color: #495057;
+}
+
+.search-result-tier.basic {
+  background-color: #f8f9fa;
+  color: #6c757d;
+}
+
+.search-loading {
+  padding: 20px;
+  text-align: center;
+  color: #6c757d;
+}
+
+.search-no-results {
+  padding: 20px;
+  text-align: center;
+  color: #6c757d;
+  font-style: italic;
+}
+
+.search-error {
+  padding: 20px;
+  text-align: center;
+  color: #dc3545;
+}
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(255, 215, 0, 0.4);
 }
@@ -418,4 +558,148 @@ ORIGINAL CAROUSEL CODE - TO BE MOVED TO FEATURED SHOWCASE SECTION:
   }
 }
 </style>
---> 
+-->
+
+<script>
+// Enhanced Live Search Functionality
+document.addEventListener('DOMContentLoaded', function() {
+  const searchInput = document.getElementById('heroSearchInput');
+  const searchResults = document.getElementById('heroSearchResults');
+  
+  if (!searchInput || !searchResults) return;
+  
+  let searchTimeout;
+  let currentRequest = null;
+  
+  // Debounce function
+  function debounce(func, wait) {
+    return function executedFunction(...args) {
+      const later = () => {
+        clearTimeout(searchTimeout);
+        func(...args);
+      };
+      clearTimeout(searchTimeout);
+      searchTimeout = setTimeout(later, wait);
+    };
+  }
+  
+  // Perform live search
+  async function performLiveSearch(query) {
+    // Cancel previous request if still pending
+    if (currentRequest) {
+      currentRequest.abort();
+    }
+    
+    // Show loading state
+    searchResults.innerHTML = '<div class="search-loading"><i class="fa fa-spinner fa-spin"></i> Searching...</div>';
+    searchResults.classList.add('show');
+    
+    try {
+      // Create abort controller for this request
+      const controller = new AbortController();
+      currentRequest = controller;
+      
+      const response = await fetch(`/api/live_search.php?q=${encodeURIComponent(query)}&limit=8`, {
+        signal: controller.signal
+      });
+      
+      if (!response.ok) {
+        throw new Error('Search request failed');
+      }
+      
+      const data = await response.json();
+      
+      if (data.success && data.results.length > 0) {
+        let html = '';
+        data.results.forEach(function(result) {
+          html += `
+            <a href="${result.url}" class="search-result-item">
+              <img src="${result.image}" alt="${result.name}" class="search-result-image" onerror="this.src='/images/jshuk-logo.png'">
+              <div class="search-result-content">
+                <div class="search-result-name">${result.name}</div>
+                <div class="search-result-category">${result.category}</div>
+                <div class="search-result-description">${result.description}</div>
+              </div>
+              <span class="search-result-tier ${result.tier}">${result.tier.replace('_', ' ')}</span>
+            </a>
+          `;
+        });
+        searchResults.innerHTML = html;
+      } else {
+        searchResults.innerHTML = '<div class="search-no-results">No businesses found</div>';
+      }
+    } catch (error) {
+      if (error.name === 'AbortError') {
+        // Request was cancelled, do nothing
+        return;
+      }
+      console.error('Search error:', error);
+      searchResults.innerHTML = '<div class="search-error">Search error occurred</div>';
+    } finally {
+      currentRequest = null;
+    }
+  }
+  
+  // Debounced search function
+  const debouncedSearch = debounce(performLiveSearch, 300);
+  
+  // Input event listener
+  searchInput.addEventListener('input', function() {
+    const query = this.value.trim();
+    
+    if (query.length < 2) {
+      searchResults.classList.remove('show');
+      return;
+    }
+    
+    debouncedSearch(query);
+  });
+  
+  // Focus event listener
+  searchInput.addEventListener('focus', function() {
+    const query = this.value.trim();
+    if (query.length >= 2) {
+      searchResults.classList.add('show');
+    }
+  });
+  
+  // Hide results when clicking outside
+  document.addEventListener('click', function(e) {
+    if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) {
+      searchResults.classList.remove('show');
+    }
+  });
+  
+  // Keyboard navigation
+  searchInput.addEventListener('keydown', function(e) {
+    const visibleResults = searchResults.querySelectorAll('.search-result-item');
+    
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      const firstResult = visibleResults[0];
+      if (firstResult) {
+        firstResult.focus();
+      }
+    }
+  });
+  
+  // Keyboard navigation for results
+  searchResults.addEventListener('keydown', function(e) {
+    const visibleResults = Array.from(this.querySelectorAll('.search-result-item'));
+    const currentIndex = visibleResults.findIndex(item => item === document.activeElement);
+    
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      const nextIndex = (currentIndex + 1) % visibleResults.length;
+      visibleResults[nextIndex].focus();
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      const prevIndex = currentIndex > 0 ? currentIndex - 1 : visibleResults.length - 1;
+      visibleResults[prevIndex].focus();
+    } else if (e.key === 'Escape') {
+      searchResults.classList.remove('show');
+      searchInput.focus();
+    }
+  });
+});
+</script> 
