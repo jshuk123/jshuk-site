@@ -74,7 +74,7 @@ if (!empty($categories_with_counts)) {
                             }
                             ?>
                             <a href="/category.php?category_id=<?= $cat['id'] ?>"
-                               class="category-card text-center flex-shrink-0 p-3 rounded shadow-sm text-decoration-none <?= $dimClass ?>"
+                               class="category-card text-center flex-shrink-0 p-3 rounded shadow-sm text-decoration-none card-hover-effect <?= $dimClass ?>"
                                style="min-width: 160px; max-width: 200px; background: #f8f9fa;"<?= $attr ?> data-category-description="<?= htmlspecialchars($desc) ?>">
                                 <?php if ($badge): ?>
                                     <div class="category-badge-container">
@@ -137,7 +137,7 @@ if (!empty($categories_with_counts)) {
                 <?php if (!empty($newBusinesses)): ?>
                     <?php foreach (array_slice($newBusinesses, 0, 6) as $biz): ?>
                         <div class="business-card-wrapper">
-                            <div class="business-card new-business-card">
+                            <div class="business-card new-business-card card-hover-effect">
                                 <div class="business-logo">
                                     <?php
                                     if (isset($pdo)) {

@@ -1,5 +1,5 @@
 <!-- TRUST SECTION -->
-<section class="trust-section" data-scroll>
+<section class="trust-section" data-scroll id="trust-section">
   <div class="container">
     <div class="trust-grid">
       <div class="trust-item">
@@ -7,7 +7,7 @@
           <i class="fa-solid fa-users"></i>
         </div>
         <div class="trust-content">
-          <h3><?= number_format($stats['monthly_users'] ?? 1200) ?>+</h3>
+          <h3 class="stat-number" data-target="<?= $stats['monthly_users'] ?? 1200 ?>">0</h3>
           <p>Monthly Users</p>
         </div>
       </div>
@@ -16,7 +16,7 @@
           <i class="fa-solid fa-store"></i>
         </div>
         <div class="trust-content">
-          <h3><?= number_format($stats['total_businesses'] ?? 500) ?>+</h3>
+          <h3 class="stat-number" data-target="<?= $stats['total_businesses'] ?? 500 ?>">0</h3>
           <p>Businesses Listed</p>
         </div>
       </div>
@@ -25,7 +25,7 @@
           <i class="fa-brands fa-whatsapp"></i>
         </div>
         <div class="trust-content">
-          <h3>1,000+</h3>
+          <h3 class="stat-number" data-target="1000">0</h3>
           <p>WhatsApp Status Views</p>
         </div>
       </div>
