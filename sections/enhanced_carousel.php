@@ -132,11 +132,19 @@ $loop = $numSlides > 1;
   left: 0;
   right: 0;
   bottom: 0;
-  background-image: linear-gradient(rgba(26, 51, 83, 0.7), rgba(26, 51, 83, 0.8)), url('/images/hero-background.jpg');
+  background-image: linear-gradient(rgba(26, 51, 83, 0.7), rgba(26, 51, 83, 0.8)), url('../images/hero-background.jpg?v=1');
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
   z-index: -1;
+}
+
+/* Fallback background for debugging */
+.hero-section {
+  background-color: #1a3353;
+  background-image: linear-gradient(rgba(26, 51, 83, 0.7), rgba(26, 51, 83, 0.8)), url('../images/hero-background.jpg?v=1');
+  background-size: cover;
+  background-position: center;
 }
 
 .hero-content {
