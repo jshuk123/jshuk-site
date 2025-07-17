@@ -61,6 +61,9 @@ try {
     <meta name="googlebot" content="index, follow">
     <link rel="canonical" href="https://jshuk.com<?= $_SERVER['REQUEST_URI'] ?>">
     
+    <!-- Content Security Policy to fix font loading -->
+    <meta http-equiv="Content-Security-Policy" content="font-src 'self' data: https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com;">
+    
     <!-- Google Analytics (replace GA_MEASUREMENT_ID with your actual ID) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID"></script>
     <script>
