@@ -2551,22 +2551,9 @@ button, .btn, input, select, textarea {
 
 /* Community Corner Section */
 .community-section {
-  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-  padding: 4rem 0;
-  margin: 2rem 0;
+  background-color: #f8f9fa;
+  padding: 60px 0;
   position: relative;
-}
-
-.community-section::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="hearts" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse"><text x="10" y="15" font-size="12" text-anchor="middle" fill="%23f0f0f0">❤️</text></pattern></defs><rect width="100" height="100" fill="url(%23hearts)"/></svg>');
-  opacity: 0.3;
-  pointer-events: none;
 }
 
 .community-cards {
@@ -2632,24 +2619,11 @@ button, .btn, input, select, textarea {
   margin-top: 0.5rem;
 }
 
-.community-cta-link {
-  color: #1a3353;
-  text-decoration: none;
-  font-weight: 600;
-  font-size: 0.9rem;
-  display: inline-block;
-  padding: 0.5rem 1rem;
-  border: 2px solid #1a3353;
-  border-radius: 8px;
-  transition: all 0.3s ease;
+/* Community Corner buttons now use .btn-jshuk-primary class */
+.community-card .btn-jshuk-primary {
   margin-top: 0.5rem;
-}
-
-.community-cta-link:hover {
-  background: #1a3353;
-  color: #fff;
-  text-decoration: none;
-  transform: translateY(-1px);
+  font-size: 0.9rem;
+  padding: 0.5rem 1rem;
 }
 
 @media (max-width: 768px) {

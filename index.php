@@ -175,6 +175,54 @@ include 'sections/enhanced_carousel.php';
 <!-- DISCOVERY HUB SECTION -->
 <?php include 'sections/discovery_hub.php'; ?>
 
+<!-- COMMUNITY CORNER SECTION -->
+<section id="community-corner" class="community-section" data-scroll>
+  <div class="container">
+    <h2 class="section-title">Community Corner</h2>
+    <p class="section-subtitle">The heart of your neighborhood — shared, celebrated, supported.</p>
+    
+    <?php if (!empty($communityCornerItems)): ?>
+      <div class="community-cards">
+        <?php foreach ($communityCornerItems as $item): ?>
+          <div class="community-card" data-item-id="<?= $item['id'] ?>">
+            <span class="community-emoji"><?= htmlspecialchars($item['emoji']) ?></span>
+            <p><?= htmlspecialchars($item['body_text']) ?></p>
+            <?php if ($item['link_url']): ?>
+              <a href="<?= htmlspecialchars($item['link_url']) ?>" class="btn-jshuk-primary" onclick="trackCommunityCornerClick(<?= $item['id'] ?>)">
+                <?= htmlspecialchars($item['link_text']) ?>
+              </a>
+            <?php endif; ?>
+          </div>
+        <?php endforeach; ?>
+      </div>
+    <?php else: ?>
+      <div class="community-cards">
+        <div class="community-card">
+          <span class="community-emoji">🍼</span>
+          <p><strong>Shared:</strong> 3 baby items borrowed via local Gemachs this week.</p>
+          <a href="/gemachim.php" class="btn-jshuk-primary">Explore Gemachim →</a>
+        </div>
+        <div class="community-card">
+          <span class="community-emoji">🎒</span>
+          <p><strong>Lost:</strong> Blue school bag in Hendon — please contact if found.</p>
+          <a href="/lost_and_found.php" class="btn-jshuk-primary">View Lost & Found →</a>
+        </div>
+        <div class="community-card">
+          <span class="community-emoji">📜</span>
+          <p><strong>Ask the Rabbi:</strong> Can I pay my cleaner during the 9 Days?</p>
+          <a href="/ask-the-rabbi.php" class="btn-jshuk-primary">See the answer →</a>
+        </div>
+        <div class="community-card">
+          <span class="community-emoji">🕯️</span>
+          <p>"Words matter. Like the shevuah of Bnei Gad, promises are sacred."</p>
+          <p class="attribution">— Rabbi Cohen, Parshas Mattos</p>
+          <a href="/divrei-torah.php" class="btn-jshuk-primary">More Torah Thoughts →</a>
+        </div>
+      </div>
+    <?php endif; ?>
+  </div>
+</section>
+
 <!-- TRUST SECTION -->
 <?php include 'sections/trust.php'; ?>
 
@@ -283,56 +331,6 @@ include 'sections/enhanced_carousel.php';
     <div class="section-actions">
       <a href="<?= BASE_PATH ?>auth/register.php" class="btn-jshuk-primary" data-track="post_business_cta" data-category="conversion">Post Your Business for Free</a>
     </div>
-  </div>
-</section>
-
-
-
-<!-- COMMUNITY CORNER SECTION -->
-<section id="community-corner" class="community-section" data-scroll>
-  <div class="container">
-    <h2 class="section-title">Community Corner</h2>
-    <p class="section-subtitle">The heart of your neighborhood — shared, celebrated, supported.</p>
-    
-    <?php if (!empty($communityCornerItems)): ?>
-      <div class="community-cards">
-        <?php foreach ($communityCornerItems as $item): ?>
-          <div class="community-card" data-item-id="<?= $item['id'] ?>">
-            <span class="community-emoji"><?= htmlspecialchars($item['emoji']) ?></span>
-            <p><?= htmlspecialchars($item['body_text']) ?></p>
-            <?php if ($item['link_url']): ?>
-              <a href="<?= htmlspecialchars($item['link_url']) ?>" class="community-cta-link" onclick="trackCommunityCornerClick(<?= $item['id'] ?>)">
-                <?= htmlspecialchars($item['link_text']) ?>
-              </a>
-            <?php endif; ?>
-          </div>
-        <?php endforeach; ?>
-      </div>
-    <?php else: ?>
-      <div class="community-cards">
-        <div class="community-card">
-          <span class="community-emoji">🍼</span>
-          <p><strong>Shared:</strong> 3 baby items borrowed via local Gemachs this week.</p>
-          <a href="/gemachim.php" class="community-cta-link">Explore Gemachim →</a>
-        </div>
-        <div class="community-card">
-          <span class="community-emoji">🎒</span>
-          <p><strong>Lost:</strong> Blue school bag in Hendon — please contact if found.</p>
-          <a href="/lost_and_found.php" class="community-cta-link">View Lost & Found →</a>
-        </div>
-        <div class="community-card">
-          <span class="community-emoji">📜</span>
-          <p><strong>Ask the Rabbi:</strong> Can I pay my cleaner during the 9 Days?</p>
-          <a href="/ask-the-rabbi.php" class="community-cta-link">See the answer →</a>
-        </div>
-        <div class="community-card">
-          <span class="community-emoji">🕯️</span>
-          <p>"Words matter. Like the shevuah of Bnei Gad, promises are sacred."</p>
-          <p class="attribution">— Rabbi Cohen, Parshas Mattos</p>
-          <a href="/divrei-torah.php" class="community-cta-link">More Torah Thoughts →</a>
-        </div>
-      </div>
-    <?php endif; ?>
   </div>
 </section>
 
