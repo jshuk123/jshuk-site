@@ -137,6 +137,11 @@ $loop = $numSlides > 1;
   background-position: center;
   background-attachment: fixed;
   z-index: -1;
+  /* Optimize image loading */
+  background-repeat: no-repeat;
+  will-change: background-image;
+  /* Add smooth transition for when image loads */
+  transition: background-image 0.3s ease;
 }
 
 /* Fallback background for debugging */
@@ -145,6 +150,8 @@ $loop = $numSlides > 1;
   background-image: linear-gradient(rgba(26, 51, 83, 0.7), rgba(26, 51, 83, 0.8)), url('/images/hero-background.jpg');
   background-size: cover;
   background-position: center;
+  /* Progressive loading - show gradient immediately, then image */
+  background-image: linear-gradient(135deg, rgba(26, 51, 83, 0.9) 0%, rgba(44, 78, 109, 0.8) 50%, rgba(26, 51, 83, 0.9) 100%), url('/images/hero-background.jpg');
 }
 
 .hero-content {

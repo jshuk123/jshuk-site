@@ -102,6 +102,9 @@ try {
     <!-- Favicon -->
     <link rel="icon" href="/images/jshuk-logo.png" type="image/png">
     
+    <!-- Preload hero background image for faster loading -->
+    <link rel="preload" href="/images/hero-background.jpg" as="image" type="image/jpeg">
+    
     <!-- Tippy.js Tooltip Library (local theme) -->
     <link rel="stylesheet" href="/css/tippy-light.css" />
     <script src="/js/vendor/popper.min.js"></script>
