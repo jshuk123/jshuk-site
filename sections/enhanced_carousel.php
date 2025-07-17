@@ -132,7 +132,7 @@ $loop = $numSlides > 1;
   left: 0;
   right: 0;
   bottom: 0;
-  background-image: linear-gradient(rgba(26, 51, 83, 0.7), rgba(26, 51, 83, 0.8)), url('/images/hero-background.jpg');
+  background-image: linear-gradient(rgba(26, 51, 83, 0.7), rgba(26, 51, 83, 0.8)), url('https://googleusercontent.com/image_generation_content/2');
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
