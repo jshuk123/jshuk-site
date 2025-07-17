@@ -265,6 +265,26 @@ main {
   filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
 }
 
+/* --- Stage 3: Community Corner Grid Layout --- */
+.community-cards {
+  display: grid;
+  gap: 25px;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+/* Responsive design for Community Corner */
+@media (max-width: 992px) {
+  .community-cards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .community-cards {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* --- Stage 1: WhatsApp CTA Banner --- */
 .whatsapp-cta-banner {
   background-color: var(--primary-color);
