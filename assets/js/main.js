@@ -450,8 +450,9 @@ function initializeFeaturedSlider() {
  * Search Bar Functionality
  */
 function initializeSearchBar() {
-    const searchBar = document.querySelector('.airbnb-search-bar');
-    const searchInput = document.querySelector('.airbnb-search-bar input[name="search"]');
+    // Support both old and new search bar classes
+    const searchBar = document.querySelector('.airbnb-search-bar') || document.querySelector('.unified-search-bar');
+    const searchInput = document.querySelector('.airbnb-search-bar input[name="search"]') || document.querySelector('.unified-search-bar input[name="search"]');
     
     if (!searchBar || !searchInput) return;
     

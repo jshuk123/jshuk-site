@@ -140,32 +140,41 @@ if (isset($_GET['debug_ads'])) {
 <!-- SEARCH BAR: Use homepage Airbnb-style search -->
 <section class="search-banner bg-white py-4 shadow-sm">
   <div class="container">
-    <form action="/classifieds.php" method="GET" class="airbnb-search-bar" role="search">
-      <select name="category" class="form-select" aria-label="Select category">
-        <option value="" disabled selected>🏷️ Select Category</option>
-        <option value="free-stuff" <?= ($_GET['category'] ?? '') === 'free-stuff' ? 'selected' : '' ?>>♻️ Free Stuff</option>
-        <option value="furniture" <?= ($_GET['category'] ?? '') === 'furniture' ? 'selected' : '' ?>>Furniture</option>
-        <option value="electronics" <?= ($_GET['category'] ?? '') === 'electronics' ? 'selected' : '' ?>>Electronics</option>
-        <option value="books-seforim" <?= ($_GET['category'] ?? '') === 'books-seforim' ? 'selected' : '' ?>>Books & Seforim</option>
-        <option value="clothing" <?= ($_GET['category'] ?? '') === 'clothing' ? 'selected' : '' ?>>Clothing</option>
-        <option value="toys-games" <?= ($_GET['category'] ?? '') === 'toys-games' ? 'selected' : '' ?>>Toys & Games</option>
-        <option value="kitchen-items" <?= ($_GET['category'] ?? '') === 'kitchen-items' ? 'selected' : '' ?>>Kitchen Items</option>
-        <option value="jewelry" <?= ($_GET['category'] ?? '') === 'jewelry' ? 'selected' : '' ?>>Jewelry</option>
-        <option value="judaica" <?= ($_GET['category'] ?? '') === 'judaica' ? 'selected' : '' ?>>Judaica</option>
-        <option value="office-school" <?= ($_GET['category'] ?? '') === 'office-school' ? 'selected' : '' ?>>Office & School</option>
-        <option value="baby-kids" <?= ($_GET['category'] ?? '') === 'baby-kids' ? 'selected' : '' ?>>Baby & Kids</option>
-        <option value="miscellaneous" <?= ($_GET['category'] ?? '') === 'miscellaneous' ? 'selected' : '' ?>>Miscellaneous</option>
-      </select>
-      <select name="location" class="form-select" aria-label="Select location">
-        <option value="" disabled selected>📍 Select Location</option>
-        <option value="manchester">Manchester</option>
-        <option value="london">London</option>
-        <option value="leeds">Leeds</option>
-        <option value="liverpool">Liverpool</option>
-        <option value="birmingham">Birmingham</option>
-      </select>
-      <input type="text" name="q" class="form-control" placeholder="🔍 Search classifieds..." value="<?= htmlspecialchars($_GET['q'] ?? '') ?>" />
-      <button type="submit" class="btn btn-search" aria-label="Search">
+    <form action="/classifieds.php" method="GET" class="unified-search-bar" role="search">
+      <div class="search-segment category-segment">
+        <i class="fas fa-tags"></i>
+        <select name="category" class="form-select" aria-label="Select category">
+          <option value="" disabled selected>Select Category</option>
+          <option value="free-stuff" <?= ($_GET['category'] ?? '') === 'free-stuff' ? 'selected' : '' ?>>♻️ Free Stuff</option>
+          <option value="furniture" <?= ($_GET['category'] ?? '') === 'furniture' ? 'selected' : '' ?>>Furniture</option>
+          <option value="electronics" <?= ($_GET['category'] ?? '') === 'electronics' ? 'selected' : '' ?>>Electronics</option>
+          <option value="books-seforim" <?= ($_GET['category'] ?? '') === 'books-seforim' ? 'selected' : '' ?>>Books & Seforim</option>
+          <option value="clothing" <?= ($_GET['category'] ?? '') === 'clothing' ? 'selected' : '' ?>>Clothing</option>
+          <option value="toys-games" <?= ($_GET['category'] ?? '') === 'toys-games' ? 'selected' : '' ?>>Toys & Games</option>
+          <option value="kitchen-items" <?= ($_GET['category'] ?? '') === 'kitchen-items' ? 'selected' : '' ?>>Kitchen Items</option>
+          <option value="jewelry" <?= ($_GET['category'] ?? '') === 'jewelry' ? 'selected' : '' ?>>Jewelry</option>
+          <option value="judaica" <?= ($_GET['category'] ?? '') === 'judaica' ? 'selected' : '' ?>>Judaica</option>
+          <option value="office-school" <?= ($_GET['category'] ?? '') === 'office-school' ? 'selected' : '' ?>>Office & School</option>
+          <option value="baby-kids" <?= ($_GET['category'] ?? '') === 'baby-kids' ? 'selected' : '' ?>>Baby & Kids</option>
+          <option value="miscellaneous" <?= ($_GET['category'] ?? '') === 'miscellaneous' ? 'selected' : '' ?>>Miscellaneous</option>
+        </select>
+      </div>
+      <div class="search-segment location-segment">
+        <i class="fas fa-map-marker-alt"></i>
+        <select name="location" class="form-select" aria-label="Select location">
+          <option value="" disabled selected>Select Location</option>
+          <option value="manchester">Manchester</option>
+          <option value="london">London</option>
+          <option value="leeds">Leeds</option>
+          <option value="liverpool">Liverpool</option>
+          <option value="birmingham">Birmingham</option>
+        </select>
+      </div>
+      <div class="search-segment keyword-segment">
+        <i class="fas fa-search"></i>
+        <input type="text" name="q" class="form-control" placeholder="Search classifieds..." value="<?= htmlspecialchars($_GET['q'] ?? '') ?>" />
+      </div>
+      <button type="submit" class="search-button-unified" aria-label="Search">
         <i class="fa fa-search"></i>
         <span class="d-none d-md-inline">Search</span>
       </button>
@@ -421,11 +430,11 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     // Add smooth scrolling for search form
-    const searchForm = document.querySelector('.airbnb-search-bar');
+    const searchForm = document.querySelector('.unified-search-bar');
     if (searchForm) {
         searchForm.addEventListener('submit', function() {
             // Add a small delay to show loading state
-            const submitBtn = this.querySelector('button[type="submit"]');
+            const submitBtn = this.querySelector('.search-button-unified');
             if (submitBtn) {
                 submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Searching...';
                 submitBtn.disabled = true;
