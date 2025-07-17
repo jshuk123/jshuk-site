@@ -175,6 +175,16 @@ include 'sections/enhanced_carousel.php';
 <!-- DISCOVERY HUB SECTION -->
 <?php include 'sections/discovery_hub.php'; ?>
 
+<!-- WHATSAPP CTA BANNER -->
+<section class="whatsapp-cta-banner">
+    <div class="container">
+        <i class="fab fa-whatsapp whatsapp-banner-icon"></i>
+        <h2>Get Instant Updates on WhatsApp</h2>
+        <p>Join 1,000+ members for the latest businesses, community events, and special offers.</p>
+        <a href="https://wa.me/447123456789" class="btn-jshuk-primary" target="_blank" rel="noopener noreferrer">Join The Community</a>
+    </div>
+</section>
+
 <!-- COMMUNITY CORNER SECTION -->
 <section id="community-corner" class="community-section" data-scroll>
   <div class="container">
@@ -194,14 +204,6 @@ include 'sections/enhanced_carousel.php';
             <?php endif; ?>
           </div>
         <?php endforeach; ?>
-        
-        <!-- WhatsApp Community Card -->
-        <div class="community-card card-hover-effect">
-          <span class="community-emoji">💬</span>
-          <h4>Stay Updated</h4>
-          <p>Join our WhatsApp community for the latest businesses and events.</p>
-          <a href="#" class="btn-jshuk-primary">Join Here</a>
-        </div>
       </div>
     <?php else: ?>
       <div class="community-cards">
@@ -225,14 +227,6 @@ include 'sections/enhanced_carousel.php';
           <p>"Words matter. Like the shevuah of Bnei Gad, promises are sacred."</p>
           <p class="attribution">— Rabbi Cohen, Parshas Mattos</p>
           <a href="/divrei-torah.php" class="btn-jshuk-primary">More Torah Thoughts →</a>
-        </div>
-        
-        <!-- WhatsApp Community Card -->
-        <div class="community-card card-hover-effect">
-          <span class="community-emoji">💬</span>
-          <h4>Stay Updated</h4>
-          <p>Join our WhatsApp community for the latest businesses and events.</p>
-          <a href="#" class="btn-jshuk-primary">Join Here</a>
         </div>
       </div>
     <?php endif; ?>
