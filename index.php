@@ -172,16 +172,8 @@ include 'sections/enhanced_carousel.php';
 <!-- FEATURED SHOWCASE SECTION -->
 <?php include 'sections/featured_showcase.php'; ?>
 
-<!-- CATEGORY SHOWCASE -->
-<?php include 'sections/categories.php'; ?>
-
-
-
-<!-- FEATURED BUSINESSES SECTION -->
-<?php include 'sections/featured_businesses.php'; ?>
-
-<!-- NEW BUSINESSES SECTION -->
-<?php include 'sections/new_businesses.php'; ?>
+<!-- DISCOVERY HUB SECTION -->
+<?php include 'sections/discovery_hub.php'; ?>
 
 <!-- TRUST SECTION -->
 <?php include 'sections/trust.php'; ?>
