@@ -2759,3 +2759,267 @@ button, .btn, input, select, textarea {
     font-size: 1rem;
   }
 }
+
+/* --- BUSINESS PITCH SECTION STYLES --- */
+.business-pitch-section {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  padding: 4rem 0;
+  margin-top: 2rem;
+}
+
+.business-pitch-section .section-title {
+  text-align: center;
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--primary-color);
+  margin-bottom: 3rem;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.business-pitch-section .subsection-title {
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: var(--primary-color);
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.business-pitch-section .section-subtitle {
+  text-align: center;
+  color: #6c757d;
+  font-size: 1.1rem;
+  margin-bottom: 2rem;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* How It Works Content */
+.how-it-works-content {
+  margin-bottom: 4rem;
+}
+
+.how-it-works-content .steps-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  margin: 2rem 0;
+}
+
+.how-it-works-content .step-card {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+  text-align: center;
+  transition: all 0.3s ease;
+  border: 1px solid #e9ecef;
+}
+
+.how-it-works-content .step-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+}
+
+.how-it-works-content .step-icon {
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(135deg, var(--secondary-color) 0%, #FFD700 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.5rem;
+  font-size: 2rem;
+  color: var(--primary-color);
+  transition: all 0.3s ease;
+}
+
+.how-it-works-content .step-card:hover .step-icon {
+  transform: scale(1.1);
+}
+
+.how-it-works-content .step-card h3 {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--primary-color);
+  margin-bottom: 1rem;
+}
+
+.how-it-works-content .step-card p {
+  color: #6c757d;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* FAQ Content */
+.faq-content {
+  margin-bottom: 4rem;
+}
+
+.faq-content .accordion {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.faq-content .accordion-item {
+  background: #fff;
+  border: 1px solid #e9ecef;
+  border-radius: 12px;
+  margin-bottom: 1rem;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.faq-content .accordion-item:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+.faq-content .accordion-button {
+  background: #fff;
+  border: none;
+  padding: 1.5rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--primary-color);
+  text-align: left;
+  width: 100%;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.faq-content .accordion-button:hover {
+  background: #f8f9fa;
+}
+
+.faq-content .accordion-button:not(.collapsed) {
+  background: var(--secondary-color);
+  color: var(--primary-color);
+}
+
+.faq-content .accordion-body {
+  padding: 1.5rem;
+  background: #f8f9fa;
+  color: #6c757d;
+  line-height: 1.6;
+}
+
+/* Final CTA Banner */
+.final-cta-banner {
+  background: linear-gradient(135deg, var(--primary-color) 0%, #1a3353 100%);
+  color: white;
+  text-align: center;
+  padding: 3rem 2rem;
+  border-radius: 20px;
+  margin-top: 2rem;
+  box-shadow: 0 8px 32px rgba(26, 51, 83, 0.2);
+}
+
+.final-cta-banner h3 {
+  color: white;
+  margin-bottom: 1.5rem;
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.final-cta-banner .btn-jshuk-primary {
+  background: var(--secondary-color);
+  color: var(--primary-color);
+  font-size: 1.2rem;
+  padding: 1rem 2.5rem;
+  border-radius: 12px;
+  font-weight: 700;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 16px rgba(255, 215, 0, 0.3);
+}
+
+.final-cta-banner .btn-jshuk-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(255, 215, 0, 0.4);
+  background: #FFD700;
+}
+
+/* Responsive Design for Business Pitch */
+@media (max-width: 900px) {
+  .business-pitch-section .section-title {
+    font-size: 2rem;
+  }
+  
+  .business-pitch-section .subsection-title {
+    font-size: 1.5rem;
+  }
+  
+  .how-it-works-content .steps-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  
+  .how-it-works-content .step-card {
+    padding: 1.5rem;
+  }
+  
+  .how-it-works-content .step-icon {
+    width: 60px;
+    height: 60px;
+    font-size: 1.5rem;
+  }
+  
+  .final-cta-banner h3 {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .business-pitch-section {
+    padding: 2rem 0;
+  }
+  
+  .business-pitch-section .section-title {
+    font-size: 1.8rem;
+    margin-bottom: 2rem;
+  }
+  
+  .business-pitch-section .subsection-title {
+    font-size: 1.3rem;
+  }
+  
+  .how-it-works-content .step-card {
+    padding: 1rem;
+  }
+  
+  .how-it-works-content .step-icon {
+    width: 50px;
+    height: 50px;
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+  }
+  
+  .how-it-works-content .step-card h3 {
+    font-size: 1.1rem;
+  }
+  
+  .faq-content .accordion-button {
+    padding: 1rem;
+    font-size: 1rem;
+  }
+  
+  .faq-content .accordion-body {
+    padding: 1rem;
+  }
+  
+  .final-cta-banner {
+    padding: 2rem 1rem;
+    border-radius: 16px;
+  }
+  
+  .final-cta-banner h3 {
+    font-size: 1.3rem;
+  }
+  
+  .final-cta-banner .btn-jshuk-primary {
+    font-size: 1rem;
+    padding: 0.9rem 2rem;
+  }
+}

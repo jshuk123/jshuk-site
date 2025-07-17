@@ -226,121 +226,114 @@ include 'sections/enhanced_carousel.php';
 <!-- TRUST SECTION -->
 <?php include 'sections/trust.php'; ?>
 
+<!-- BUSINESS PITCH SECTION -->
+<section id="business-pitch" class="business-pitch-section" data-scroll>
+  <div class="container">
+    <h2 class="section-title">Spend less time marketing, more time on what matters.</h2>
+    
+    <!-- How It Works Content -->
+    <div class="how-it-works-content">
+      <h3 class="subsection-title">How It Works</h3>
+      <p class="section-subtitle">Get started in just three simple steps</p>
+      <div class="steps-grid">
+        <div class="step-card">
+          <div class="step-icon">
+            <i class="fa-solid fa-user-plus"></i>
+          </div>
+          <h3>1. Sign Up</h3>
+          <p>Create your free account and join our growing community of Jewish businesses and customers.</p>
+        </div>
+        <div class="step-card">
+          <div class="step-icon">
+            <i class="fa-solid fa-store"></i>
+          </div>
+          <h3>2. List Your Business</h3>
+          <p>Add your business details, photos, and services to showcase what makes you unique.</p>
+        </div>
+        <div class="step-card">
+          <div class="step-icon">
+            <i class="fa-solid fa-search"></i>
+          </div>
+          <h3>3. Get Discovered</h3>
+          <p>Connect with local customers who are actively searching for businesses like yours.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- FAQ Content -->
+    <div class="faq-content">
+      <h3 class="subsection-title">Frequently Asked Questions</h3>
+      <div class="accordion" id="faqAccordion">
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="faq1">
+            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse1" aria-expanded="true" aria-controls="collapse1">
+              How do I post a business?
+            </button>
+          </h2>
+          <div id="collapse1" class="accordion-collapse collapse show" aria-labelledby="faq1" data-bs-parent="#faqAccordion">
+            <div class="accordion-body">
+              Simply click "Post Your Business" above, create a free account, and fill out your business details. It takes just a few minutes to get started!
+            </div>
+          </div>
+        </div>
+        
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="faq2">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse2" aria-expanded="false" aria-controls="collapse2">
+              Is JShuk free to use?
+            </button>
+          </h2>
+          <div id="collapse2" class="accordion-collapse collapse" aria-labelledby="faq2" data-bs-parent="#faqAccordion">
+            <div class="accordion-body">
+              Yes! Basic listings are completely free. We also offer premium features for businesses who want enhanced visibility and additional tools.
+            </div>
+          </div>
+        </div>
+        
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="faq3">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse3" aria-expanded="false" aria-controls="collapse3">
+              How do I find local Jewish businesses?
+            </button>
+          </h2>
+          <div id="collapse3" class="accordion-collapse collapse" aria-labelledby="faq3" data-bs-parent="#faqAccordion">
+            <div class="accordion-body">
+              Use our search bar above or browse by categories. You can filter by location, service type, and more to find exactly what you need.
+            </div>
+          </div>
+        </div>
+        
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="faq4">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse4" aria-expanded="false" aria-controls="collapse4">
+              Are all businesses kosher-certified?
+            </button>
+          </h2>
+          <div id="collapse4" class="accordion-collapse collapse" aria-labelledby="faq4" data-bs-parent="#faqAccordion">
+            <div class="accordion-body">
+              We list all Jewish-owned businesses. For kosher certification, please check with individual businesses as requirements vary.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Final CTA Banner -->
+    <div class="final-cta-banner">
+      <h3>Ready to get your business seen by the right community?</h3>
+      <a href="<?= BASE_PATH ?>auth/register.php" class="btn-jshuk-primary" data-track="business_pitch_cta" data-category="conversion">List Your Business For Free</a>
+    </div>
+  </div>
+</section>
+
 <!-- WHATSAPP HOOK -->
 <?php include 'sections/whatsapp_hook.php'; ?>
-
-<!-- ABOUT LINK -->
-<section class="about-link-section" data-scroll>
-  <div class="container">
-    <div class="about-link-content">
-      <h3>Want to learn more about JShuk?</h3>
-      <p>Discover how it works and find answers to common questions</p>
-      <a href="<?= BASE_PATH ?>about.php" class="btn-jshuk-outline">Learn More</a>
-    </div>
-  </div>
-</section>
-
-<!-- FAQ SECTION -->
-<section class="faq-section" data-scroll id="about-jshuk">
-  <div class="container">
-    <h2 class="section-title">Frequently Asked Questions</h2>
-    <div class="accordion" id="faqAccordion">
-      <div class="accordion-item">
-        <h2 class="accordion-header" id="faq1">
-          <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse1" aria-expanded="true" aria-controls="collapse1">
-            How do I post a business?
-          </button>
-        </h2>
-        <div id="collapse1" class="accordion-collapse collapse show" aria-labelledby="faq1" data-bs-parent="#faqAccordion">
-          <div class="accordion-body">
-            Simply click "Post Your Business" above, create a free account, and fill out your business details. It takes just a few minutes to get started!
-          </div>
-        </div>
-      </div>
-      
-      <div class="accordion-item">
-        <h2 class="accordion-header" id="faq2">
-          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse2" aria-expanded="false" aria-controls="collapse2">
-            Is JShuk free to use?
-          </button>
-        </h2>
-        <div id="collapse2" class="accordion-collapse collapse" aria-labelledby="faq2" data-bs-parent="#faqAccordion">
-          <div class="accordion-body">
-            Yes! Basic listings are completely free. We also offer premium features for businesses who want enhanced visibility and additional tools.
-          </div>
-        </div>
-      </div>
-      
-      <div class="accordion-item">
-        <h2 class="accordion-header" id="faq3">
-          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse3" aria-expanded="false" aria-controls="collapse3">
-            How do I find local Jewish businesses?
-          </button>
-        </h2>
-        <div id="collapse3" class="accordion-collapse collapse" aria-labelledby="faq3" data-bs-parent="#faqAccordion">
-          <div class="accordion-body">
-            Use our search bar above or browse by categories. You can filter by location, service type, and more to find exactly what you need.
-          </div>
-        </div>
-      </div>
-      
-      <div class="accordion-item">
-        <h2 class="accordion-header" id="faq4">
-          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse4" aria-expanded="false" aria-controls="collapse4">
-            Are all businesses kosher-certified?
-          </button>
-        </h2>
-        <div id="collapse4" class="accordion-collapse collapse" aria-labelledby="faq4" data-bs-parent="#faqAccordion">
-          <div class="accordion-body">
-            We list all Jewish-owned businesses. For kosher certification, please check with individual businesses as requirements vary.
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- HOW IT WORKS -->
-<section class="how-it-works-section" data-scroll>
-  <div class="container">
-    <h2 class="section-title">How It Works</h2>
-    <p class="section-subtitle">Get started in just three simple steps</p>
-    <div class="steps-grid">
-      <div class="step-card">
-        <div class="step-icon">
-          <i class="fa-solid fa-user-plus"></i>
-        </div>
-        <h3>1. Sign Up</h3>
-        <p>Create your free account and join our growing community of Jewish businesses and customers.</p>
-      </div>
-      <div class="step-card">
-        <div class="step-icon">
-          <i class="fa-solid fa-store"></i>
-        </div>
-        <h3>2. List Your Business</h3>
-        <p>Add your business details, photos, and services to showcase what makes you unique.</p>
-      </div>
-      <div class="step-card">
-        <div class="step-icon">
-          <i class="fa-solid fa-search"></i>
-        </div>
-        <h3>3. Get Discovered</h3>
-        <p>Connect with local customers who are actively searching for businesses like yours.</p>
-      </div>
-    </div>
-    <div class="section-actions">
-      <a href="<?= BASE_PATH ?>auth/register.php" class="btn-jshuk-primary" data-track="post_business_cta" data-category="conversion">Post Your Business for Free</a>
-    </div>
-  </div>
-</section>
-
-<!-- FOOTER CTA -->
-<?php include 'sections/footer_cta.php'; ?>
 
 <?php 
   // ✅ Deploy confirmation message
   echo '<p style="color: green; text-align: center;">✅ Deploy test: index.php updated successfully</p>';
   echo '<p style="color: blue; text-align: center;">✅ Mobile fixes applied: Tooltip blocking, carousel duplication, floating preview hidden</p>';
+  echo '<p style="color: purple; text-align: center;">✅ Step 5 Complete: Business Pitch section consolidated</p>';
   
   include 'includes/footer_main.php'; 
 ?>
