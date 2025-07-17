@@ -194,6 +194,14 @@ include 'sections/enhanced_carousel.php';
             <?php endif; ?>
           </div>
         <?php endforeach; ?>
+        
+        <!-- WhatsApp Community Card -->
+        <div class="community-card card-hover-effect">
+          <span class="community-emoji">💬</span>
+          <h4>Stay Updated</h4>
+          <p>Join our WhatsApp community for the latest businesses and events.</p>
+          <a href="#" class="btn-jshuk-primary">Join Here</a>
+        </div>
       </div>
     <?php else: ?>
       <div class="community-cards">
@@ -218,8 +226,30 @@ include 'sections/enhanced_carousel.php';
           <p class="attribution">— Rabbi Cohen, Parshas Mattos</p>
           <a href="/divrei-torah.php" class="btn-jshuk-primary">More Torah Thoughts →</a>
         </div>
+        
+        <!-- WhatsApp Community Card -->
+        <div class="community-card card-hover-effect">
+          <span class="community-emoji">💬</span>
+          <h4>Stay Updated</h4>
+          <p>Join our WhatsApp community for the latest businesses and events.</p>
+          <a href="#" class="btn-jshuk-primary">Join Here</a>
+        </div>
       </div>
     <?php endif; ?>
+  </div>
+</section>
+
+<!-- TESTIMONIALS SECTION -->
+<section id="testimonials" class="testimonials-section">
+  <div class="container">
+    <h2 class="section-title">What Our Community is Saying</h2>
+    <div class="testimonial-card">
+      <div class="testimonial-rating">★★★★★</div>
+      <blockquote>
+        "JShuk has been a game-changer for my home-based catering business. I'm getting more calls than ever before, and the process was so simple. A must for any small Jewish business!"
+      </blockquote>
+      <cite>— Sarah L., Small Business Owner</cite>
+    </div>
   </div>
 </section>
 
@@ -325,9 +355,6 @@ include 'sections/enhanced_carousel.php';
     </div>
   </div>
 </section>
-
-<!-- WHATSAPP HOOK -->
-<?php include 'sections/whatsapp_hook.php'; ?>
 
 <?php 
   // ✅ Deploy confirmation message

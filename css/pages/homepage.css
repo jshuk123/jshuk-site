@@ -211,3 +211,56 @@ main {
   transform: translateY(-5px); /* Lifts the card up */
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.12), 0 4px 8px rgba(0, 0, 0, 0.08); /* Adds a deeper, softer shadow */
 }
+
+/* --- Stage 3.1: Testimonials Section --- */
+.testimonials-section {
+  background-color: var(--background-light);
+  padding: 60px 0;
+}
+
+.testimonial-card {
+  background-color: #FFFFFF;
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.07);
+  max-width: 700px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.testimonial-rating {
+  color: var(--secondary-color);
+  font-size: 1.5rem;
+  margin-bottom: 15px;
+}
+
+.testimonial-card blockquote {
+  font-size: 1.1rem;
+  font-style: italic;
+  border: none;
+  padding: 0;
+  margin: 0 0 15px 0;
+  color: var(--text-dark);
+  line-height: 1.6;
+}
+
+.testimonial-card cite {
+  font-weight: 600;
+  color: var(--primary-color);
+  font-style: normal;
+}
+
+/* --- Stage 3.2: WhatsApp Community Card --- */
+.community-card h4 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-dark);
+  margin: 0.5rem 0;
+}
+
+.community-card .community-emoji {
+  font-size: 2.5rem;
+  display: block;
+  margin-bottom: 1rem;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
