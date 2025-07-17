@@ -108,7 +108,7 @@ $loop = $numSlides > 1;
 </section>
 
 <style>
-/* Hero Section Styles */
+/* Hero Section Styles - Stage 1 Implementation */
 .hero-section {
   position: relative;
   display: flex;
@@ -120,6 +120,7 @@ $loop = $numSlides > 1;
   padding: 2rem;
 }
 
+/* ACTION 1.1: Background Image & Overlay */
 .hero-section::before {
   content: '';
   position: absolute;
@@ -127,7 +128,7 @@ $loop = $numSlides > 1;
   left: 0;
   right: 0;
   bottom: 0;
-  background-image: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('/images/jshuk-logo.png');
+  background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('/images/jshuk-logo.png');
   background-size: cover;
   background-position: center;
   z-index: -1;
@@ -138,14 +139,17 @@ $loop = $numSlides > 1;
   z-index: 2;
 }
 
+/* ACTION 1.2: Hero Headline Styling */
 .hero-title {
   font-size: 3rem;
   font-weight: 700;
   margin-bottom: 2rem;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+  color: #FFFFFF;
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.6);
   line-height: 1.2;
 }
 
+/* ACTION 1.3: Modern Search Form Design */
 .hero-search-container {
   margin-top: 2rem;
 }
@@ -155,32 +159,47 @@ $loop = $numSlides > 1;
   gap: 1rem;
   max-width: 600px;
   margin: 0 auto;
-  background: rgba(255, 255, 255, 0.95);
-  padding: 1.5rem;
-  border-radius: 12px;
+  background-color: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  padding: 20px;
+  border-radius: 15px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 }
 
 .hero-search-form .form-select,
 .hero-search-form .form-control {
-  border: 1px solid #ddd;
+  border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: 8px;
   padding: 0.75rem;
   font-size: 1rem;
+  background-color: rgba(255, 255, 255, 0.9);
+  color: #333;
+}
+
+.hero-search-form .form-select:focus,
+.hero-search-form .form-control:focus {
+  outline: none;
+  border-color: #FFD700;
+  box-shadow: 0 0 0 2px rgba(255, 215, 0, 0.3);
 }
 
 .hero-search-form .btn-search {
-  background: #007bff;
-  color: white;
+  background: linear-gradient(90deg, #FFD700 0%, #FFCC00 100%);
+  color: #1a3353;
   border: none;
   border-radius: 8px;
   padding: 0.75rem 1.5rem;
   font-weight: 600;
-  transition: background-color 0.3s ease;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 16px rgba(255, 215, 0, 0.3);
 }
 
 .hero-search-form .btn-search:hover {
-  background: #0056b3;
+  background: linear-gradient(90deg, #FFCC00 0%, #FFD700 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 215, 0, 0.4);
 }
 
 /* Responsive adjustments */
@@ -192,6 +211,11 @@ $loop = $numSlides > 1;
   .hero-search-form {
     flex-direction: column;
     gap: 0.75rem;
+    padding: 15px;
+  }
+  
+  .hero-search-form .btn-search {
+    padding: 0.75rem 1rem;
   }
 }
 </style>
