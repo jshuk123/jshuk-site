@@ -16,31 +16,38 @@ $all_slides = [];
 
 try {
     // QUERY A: Get sponsored slides from Enhanced Carousel Manager
-    $stmt = $pdo->prepare("
-        SELECT 
-            id,
-            title,
-            subtitle,
-            image_url,
-            cta_text,
-            cta_link,
-            priority,
-            sponsored,
-            'carousel_slide' as slide_type
-        FROM carousel_slides
-        WHERE active = 1
-          AND zone = :zone
-          AND (start_date IS NULL OR start_date <= :today)
-          AND (end_date IS NULL OR end_date >= :today)
-        ORDER BY priority DESC, id DESC
-    ");
-    $stmt->execute([':zone' => $zone, ':today' => $today]);
-    $sponsored_slides = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    // First check if carousel_slides table exists
+    $tableExists = $pdo->query("SHOW TABLES LIKE 'carousel_slides'")->rowCount() > 0;
     
-    // Add sponsored slides to combined array with their priority
-    foreach ($sponsored_slides as $slide) {
-        $slide['priority'] = $slide['priority'] ?? 0;
-        $all_slides[] = $slide;
+    if ($tableExists) {
+        $stmt = $pdo->prepare("
+            SELECT 
+                id,
+                title,
+                subtitle,
+                image_url,
+                cta_text,
+                cta_link,
+                priority,
+                sponsored,
+                'carousel_slide' as slide_type
+            FROM carousel_slides
+            WHERE active = 1
+              AND zone = :zone
+              AND (start_date IS NULL OR start_date <= :today)
+              AND (end_date IS NULL OR end_date >= :today)
+            ORDER BY priority DESC, id DESC
+        ");
+        $stmt->execute([':zone' => $zone, ':today' => $today]);
+        $sponsored_slides = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        // Add sponsored slides to combined array with their priority
+        foreach ($sponsored_slides as $slide) {
+            $slide['priority'] = $slide['priority'] ?? 0;
+            $all_slides[] = $slide;
+        }
+    } else {
+        $sponsored_slides = [];
     }
     
     // QUERY B: Get featured businesses from directory
@@ -85,7 +92,9 @@ try {
     
 } catch (PDOException $e) {
     echo "<div style='background:#f8d7da;color:#721c24;padding:10px;z-index:9999;position:relative;'>
-        ❌ SQL Error: " . htmlspecialchars($e->getMessage()) . "</div>";
+        ❌ SQL Error: " . htmlspecialchars($e->getMessage()) . "<br>
+        File: " . basename(__FILE__) . "<br>
+        Line: " . $e->getLine() . "</div>";
     $all_slides = [];
 }
 
