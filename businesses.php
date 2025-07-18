@@ -86,8 +86,9 @@ $rating_filter = $_GET['rating'] ?? '';
 
 // Enhanced query to get businesses with location and rating data
 try {
-    $query = "SELECT b.*, c.name as category_name, u.subscription_tier,
+    $query = "SELECT b.*, c.name as category_name,
                      COALESCE(b.location, b.address) as business_location,
+                     b.latitude, b.longitude, b.geocoded,
                      COALESCE(AVG(r.rating), 0) as average_rating,
                      COUNT(r.id) as review_count
               FROM businesses b 
@@ -413,6 +414,10 @@ try {
 <!-- Business Data for Map -->
 <script>
 window.businessMapData = <?php echo json_encode(array_map(function($business) {
+    // Use real coordinates if available, otherwise use London center
+    $lat = !empty($business['latitude']) ? (float) $business['latitude'] : 51.5074;
+    $lng = !empty($business['longitude']) ? (float) $business['longitude'] : -0.1278;
+    
     return [
         'id' => $business['id'],
         'name' => htmlspecialchars($business['business_name']),
@@ -424,9 +429,9 @@ window.businessMapData = <?php echo json_encode(array_map(function($business) {
         'description' => htmlspecialchars(substr($business['description'] ?? '', 0, 100)),
         'url' => '/business.php?id=' . $business['id'],
         'logo_url' => getBusinessLogoUrl('', $business['business_name']),
-        // Default coordinates for London (will be enhanced with real geocoding)
-        'lat' => 51.5074 + (rand(-10, 10) / 100), // Random offset for demo
-        'lng' => -0.1278 + (rand(-10, 10) / 100)  // Random offset for demo
+        'lat' => $lat,
+        'lng' => $lng,
+        'geocoded' => !empty($business['latitude']) && !empty($business['longitude'])
     ];
 }, $businesses)); ?>;
 </script>

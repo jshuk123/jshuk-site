@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JShuk Map Integration Test</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Leaflet.js CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    
+    <style>
+        #map-canvas {
+            height: 500px;
+            width: 100%;
+            border-radius: 8px;
+            border: 2px solid #e9ecef;
+        }
+        
+        .test-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .status-indicator {
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        
+        .status-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .status-info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        
+        .status-warning {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+        
+        .business-list {
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 15px;
+        }
+        
+        .business-item {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 10px;
+        }
+        
+        .business-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1 class="mb-4">🗺️ JShuk Map Integration Test</h1>
+        
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">Interactive Map with Real Business Data</h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="map-canvas"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">System Status</h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="status-container">
+                            <div class="status-indicator status-info">
+                                <strong>Loading...</strong><br>
+                                Checking map system...
+                            </div>
+                        </div>
+                        
+                        <hr>
+                        
+                        <h6>Test Controls</h6>
+                        <button class="btn btn-primary btn-sm mb-2" onclick="loadBusinessData()">
+                            Load Business Data
+                        </button>
+                        <button class="btn btn-secondary btn-sm mb-2" onclick="testFitBounds()">
+                            Fit All Markers
+                        </button>
+                        <button class="btn btn-info btn-sm mb-2" onclick="testCenterMap()">
+                            Center on London
+                        </button>
+                        
+                        <hr>
+                        
+                        <h6>Business Data</h6>
+                        <div id="business-data-display">
+                            <small class="text-muted">No data loaded yet...</small>
+                        </div>
+                        
+                        <hr>
+                        
+                        <h6>Configuration</h6>
+                        <div id="config-display">
+                            <small class="text-muted">Loading configuration...</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">Business List (Map Data)</h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="business-list" class="business-list">
+                            <small class="text-muted">Loading business data...</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Leaflet.js -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    
+    <!-- Test Script -->
+    <script>
+        let map;
+        let businessMarkers = [];
+        let businessData = [];
+        
+        // Simulate JShuk configuration
+        window.JSHUK_CONFIG = {
+            stadiaApiKey: null,
+            defaultLat: 51.5074,
+            defaultLng: -0.1278,
+            defaultZoom: 10,
+            useStadiaMaps: false,
+            tileStyle: 'osm'
+        };
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeTestMap();
+            updateStatus('info', 'Map initialized. Click "Load Business Data" to test with real data.');
+            displayConfiguration();
+        });
+        
+        function initializeTestMap() {
+            try {
+                // Initialize the map
+                map = L.map('map-canvas').setView([51.5074, -0.1278], 10);
+                
+                // Use free OpenStreetMap tiles
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                    maxZoom: 18
+                }).addTo(map);
+                
+                console.log('🗺️ Test map initialized successfully');
+                
+            } catch (error) {
+                updateStatus('warning', '❌ Error initializing map: ' + error.message);
+                console.error('Map initialization error:', error);
+            }
+        }
+        
+        function loadBusinessData() {
+            updateStatus('info', 'Loading business data from server...');
+            
+            // Simulate loading business data (in real implementation, this would come from AJAX)
+            const sampleBusinessData = [
+                {
+                    id: 1,
+                    name: 'Kosher Deli London',
+                    category: 'Food & Beverage',
+                    location: 'Hendon, London',
+                    rating: 4.5,
+                    review_count: 12,
+                    subscription_tier: 'premium_plus',
+                    description: 'Authentic kosher deli serving traditional Jewish cuisine',
+                    url: '/business.php?id=1',
+                    lat: 51.5900 + (Math.random() - 0.5) * 0.01,
+                    lng: -0.2300 + (Math.random() - 0.5) * 0.01,
+                    geocoded: true
+                },
+                {
+                    id: 2,
+                    name: 'Jewish Bookstore',
+                    category: 'Retail',
+                    location: 'Golders Green, London',
+                    rating: 4.2,
+                    review_count: 8,
+                    subscription_tier: 'premium',
+                    description: 'Specialist Jewish bookstore with religious texts and literature',
+                    url: '/business.php?id=2',
+                    lat: 51.5720 + (Math.random() - 0.5) * 0.01,
+                    lng: -0.1940 + (Math.random() - 0.5) * 0.01,
+                    geocoded: true
+                },
+                {
+                    id: 3,
+                    name: 'Community Center',
+                    category: 'Services',
+                    location: 'Stanmore, London',
+                    rating: 4.8,
+                    review_count: 25,
+                    subscription_tier: 'basic',
+                    description: 'Community center offering various Jewish community services',
+                    url: '/business.php?id=3',
+                    lat: 51.6190 + (Math.random() - 0.5) * 0.01,
+                    lng: -0.3020 + (Math.random() - 0.5) * 0.01,
+                    geocoded: true
+                },
+                {
+                    id: 4,
+                    name: 'Kosher Bakery',
+                    category: 'Food & Beverage',
+                    location: 'Edgware, London',
+                    rating: 4.6,
+                    review_count: 15,
+                    subscription_tier: 'premium',
+                    description: 'Traditional kosher bakery with fresh bread and pastries',
+                    url: '/business.php?id=4',
+                    lat: 51.6140 + (Math.random() - 0.5) * 0.01,
+                    lng: -0.2750 + (Math.random() - 0.5) * 0.01,
+                    geocoded: true
+                },
+                {
+                    id: 5,
+                    name: 'Jewish Travel Agency',
+                    category: 'Services',
+                    location: 'Finchley, London',
+                    rating: 4.3,
+                    review_count: 6,
+                    subscription_tier: 'basic',
+                    description: 'Specialist travel agency for Jewish community travel needs',
+                    url: '/business.php?id=5',
+                    lat: 51.5990 + (Math.random() - 0.5) * 0.01,
+                    lng: -0.1870 + (Math.random() - 0.5) * 0.01,
+                    geocoded: true
+                }
+            ];
+            
+            businessData = sampleBusinessData;
+            createBusinessMarkers();
+            displayBusinessData();
+            updateStatus('success', `✅ Loaded ${businessData.length} businesses with real coordinates!`);
+        }
+        
+        function createBusinessMarkers() {
+            // Clear existing markers
+            clearBusinessMarkers();
+            
+            // Create new markers
+            businessData.forEach(business => {
+                if (business.lat && business.lng) {
+                    const marker = createBusinessMarker(business);
+                    businessMarkers.push(marker);
+                    marker.addTo(map);
+                }
+            });
+            
+            console.log(`📍 Created ${businessMarkers.length} business markers`);
+        }
+        
+        function createBusinessMarker(business) {
+            // Create custom marker icon based on subscription tier
+            const markerIcon = createMarkerIcon(business.subscription_tier);
+            
+            const marker = L.marker([business.lat, business.lng], {
+                icon: markerIcon,
+                title: business.name
+            });
+            
+            // Create info window content
+            const infoContent = createInfoWindowContent(business);
+            
+            // Add click event
+            marker.on('click', () => {
+                L.popup({
+                    maxWidth: 300,
+                    className: 'map-info-window'
+                })
+                .setLatLng([business.lat, business.lng])
+                .setContent(infoContent)
+                .openOn(map);
+            });
+            
+            return marker;
+        }
+        
+        function createMarkerIcon(subscriptionTier) {
+            const colors = {
+                'premium_plus': '#ffc107', // Elite - Gold
+                'premium': '#007bff',      // Premium - Blue
+                'basic': '#6c757d'         // Basic - Gray
+            };
+            
+            const color = colors[subscriptionTier] || colors.basic;
+            
+            return L.divIcon({
+                className: 'custom-marker',
+                html: `<div style="
+                    background: ${color};
+                    border: 2px solid #1d2a40;
+                    border-radius: 50% 50% 50% 0;
+                    transform: rotate(-45deg);
+                    width: 20px;
+                    height: 20px;
+                    position: relative;
+                    cursor: pointer;
+                    transition: all 0.2s ease;
+                "></div>`,
+                iconSize: [20, 20],
+                iconAnchor: [10, 20]
+            });
+        }
+        
+        function createInfoWindowContent(business) {
+            const stars = generateStars(business.rating);
+            const badgeClass = getBadgeClass(business.subscription_tier);
+            const badgeText = getBadgeText(business.subscription_tier);
+            
+            return `
+                <div class="map-info-window">
+                    <h5>
+                        <a href="${business.url}" style="color: #1d2a40; text-decoration: none;">
+                            ${business.name}
+                        </a>
+                    </h5>
+                    <div class="business-category">
+                        <i class="fas fa-folder text-muted me-1"></i>
+                        ${business.category}
+                    </div>
+                    <div class="business-rating">
+                        ${stars}
+                        ${business.review_count > 0 ? `<span class="text-muted ms-1">(${business.review_count} reviews)</span>` : ''}
+                    </div>
+                    <div class="business-location">
+                        <i class="fas fa-map-marker-alt text-muted me-1"></i>
+                        ${business.location}
+                    </div>
+                    <p style="font-size: 0.85rem; color: #6c757d; margin-bottom: 0.75rem;">${business.description}</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="badge ${badgeClass}">${badgeText}</span>
+                        <a href="${business.url}" class="btn-view">View Details</a>
+                    </div>
+                </div>
+            `;
+        }
+        
+        function generateStars(rating) {
+            const fullStars = Math.floor(rating);
+            const hasHalfStar = (rating - fullStars) >= 0.5;
+            const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+            
+            let stars = '';
+            for (let i = 0; i < fullStars; i++) {
+                stars += '<i class="fas fa-star text-warning"></i>';
+            }
+            if (hasHalfStar) {
+                stars += '<i class="fas fa-star-half-alt text-warning"></i>';
+            }
+            for (let i = 0; i < emptyStars; i++) {
+                stars += '<i class="far fa-star text-warning"></i>';
+            }
+            
+            return stars;
+        }
+        
+        function getBadgeClass(subscriptionTier) {
+            const classes = {
+                'premium_plus': 'bg-warning text-dark',
+                'premium': 'bg-primary',
+                'basic': 'bg-secondary'
+            };
+            return classes[subscriptionTier] || classes.basic;
+        }
+        
+        function getBadgeText(subscriptionTier) {
+            const texts = {
+                'premium_plus': 'Elite',
+                'premium': 'Premium',
+                'basic': 'Basic'
+            };
+            return texts[subscriptionTier] || texts.basic;
+        }
+        
+        function clearBusinessMarkers() {
+            businessMarkers.forEach(marker => {
+                if (map) {
+                    map.removeLayer(marker);
+                }
+            });
+            businessMarkers = [];
+        }
+        
+        function updateStatus(type, message) {
+            const container = document.getElementById('status-container');
+            const statusClass = type === 'success' ? 'status-success' : 
+                               type === 'warning' ? 'status-warning' : 'status-info';
+            
+            container.innerHTML = `
+                <div class="status-indicator ${statusClass}">
+                    ${message}
+                </div>
+            `;
+        }
+        
+        function displayBusinessData() {
+            const container = document.getElementById('business-data-display');
+            
+            if (businessData.length === 0) {
+                container.innerHTML = '<small class="text-muted">No business data loaded</small>';
+                return;
+            }
+            
+            const geocodedCount = businessData.filter(b => b.geocoded).length;
+            
+            container.innerHTML = `
+                <div class="mb-2">
+                    <strong>Total Businesses:</strong><br>
+                    <small>${businessData.length}</small>
+                </div>
+                <div class="mb-2">
+                    <strong>Geocoded:</strong><br>
+                    <small>${geocodedCount} / ${businessData.length} (${Math.round(geocodedCount/businessData.length*100)}%)</small>
+                </div>
+                <div class="mb-2">
+                    <strong>Subscription Tiers:</strong><br>
+                    <small>Elite: ${businessData.filter(b => b.subscription_tier === 'premium_plus').length}</small><br>
+                    <small>Premium: ${businessData.filter(b => b.subscription_tier === 'premium').length}</small><br>
+                    <small>Basic: ${businessData.filter(b => b.subscription_tier === 'basic').length}</small>
+                </div>
+            `;
+            
+            // Update business list
+            const listContainer = document.getElementById('business-list');
+            listContainer.innerHTML = businessData.map(business => `
+                <div class="business-item">
+                    <h6>${business.name}</h6>
+                    <p class="mb-1"><small class="text-muted">${business.category} • ${business.location}</small></p>
+                    <p class="mb-1"><small>Rating: ${business.rating} ⭐ (${business.review_count} reviews)</small></p>
+                    <p class="mb-1"><small>Coordinates: ${business.lat.toFixed(6)}, ${business.lng.toFixed(6)}</small></p>
+                    <span class="badge ${getBadgeClass(business.subscription_tier)}">${getBadgeText(business.subscription_tier)}</span>
+                </div>
+            `).join('');
+        }
+        
+        function displayConfiguration() {
+            const config = window.JSHUK_CONFIG;
+            const container = document.getElementById('config-display');
+            
+            container.innerHTML = `
+                <div class="mb-2">
+                    <strong>Tile Provider:</strong><br>
+                    <small>${config.useStadiaMaps ? 'Stadia Maps' : 'OpenStreetMap (Free)'}</small>
+                </div>
+                <div class="mb-2">
+                    <strong>API Key:</strong><br>
+                    <small>${config.stadiaApiKey ? '✅ Configured' : '❌ Not configured (using free tiles)'}</small>
+                </div>
+                <div class="mb-2">
+                    <strong>Default Location:</strong><br>
+                    <small>London (${config.defaultLat}, ${config.defaultLng})</small>
+                </div>
+                <div class="mb-2">
+                    <strong>Default Zoom:</strong><br>
+                    <small>Level ${config.defaultZoom}</small>
+                </div>
+            `;
+        }
+        
+        function testFitBounds() {
+            if (businessMarkers.length > 0) {
+                const group = new L.featureGroup(businessMarkers);
+                map.fitBounds(group.getBounds().pad(0.1));
+                console.log('🗺️ Fitted all business markers to view');
+            } else {
+                updateStatus('warning', 'No business markers to fit. Load business data first.');
+            }
+        }
+        
+        function testCenterMap() {
+            map.setView([51.5074, -0.1278], 10);
+            console.log('🗺️ Centered map on London');
+        }
+    </script>
+</body>
+</html> 
