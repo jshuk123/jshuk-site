@@ -79,4 +79,22 @@ function handleGoogleSignIn(response) {
         }
         hideGoogleLoading();
     });
+}
+
+// Manual Google Sign-In function as fallback
+function initiateGoogleSignIn() {
+    console.log('Attempting manual Google Sign-In...');
+    
+    // Try to trigger the Google Sign-In flow manually
+    if (typeof google !== 'undefined' && typeof google.accounts !== 'undefined' && typeof google.accounts.id !== 'undefined') {
+        google.accounts.id.prompt();
+    } else {
+        // If Google library still isn't loaded, redirect to Google OAuth directly
+        const clientId = '718581742318-e4q3putg0b10e08eab4ma2sr9urbqb31.apps.googleusercontent.com';
+        const redirectUri = encodeURIComponent(window.location.origin + '/auth/google-verify.php');
+        const scope = encodeURIComponent('email profile');
+        const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scope}&response_type=code`;
+        
+        window.location.href = googleAuthUrl;
+    }
 } 

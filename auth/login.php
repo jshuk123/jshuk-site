@@ -150,6 +150,12 @@ include '../includes/header_main.php';
                         <div id="google-loading" class="text-muted" style="display: none;">
                             <small>Loading Google Sign-In...</small>
                         </div>
+                        <!-- Manual Google Sign-In button as fallback -->
+                        <div id="google-manual" style="display: none;">
+                            <button type="button" onclick="initiateGoogleSignIn()" class="btn btn-outline-primary">
+                                <i class="fab fa-google me-2"></i>Sign in with Google
+                            </button>
+                        </div>
                     </div>
                     
                     <!-- Debug Information (only show in development) -->
@@ -182,9 +188,13 @@ window.addEventListener('load', function() {
         if (typeof google === 'undefined' || typeof google.accounts === 'undefined') {
             console.error('Google Sign-In library failed to load');
             const errorDiv = document.getElementById('login-error');
+            const manualBtn = document.getElementById('google-manual');
             if (errorDiv) {
                 errorDiv.innerHTML = '<strong>Google Sign-In temporarily unavailable.</strong><br>You can still login with your email and password, or try refreshing the page.';
                 errorDiv.style.display = 'block';
+            }
+            if (manualBtn) {
+                manualBtn.style.display = 'block';
             }
         } else {
             console.log('Google Sign-In library loaded successfully');
@@ -194,18 +204,22 @@ window.addEventListener('load', function() {
                 errorDiv.style.display = 'none';
             }
         }
-    }, 2000); // Wait 2 seconds for library to load
+    }, 3000); // Wait 3 seconds for library to load
 });
 
-// Fallback: If Google library doesn't load after 5 seconds, show a helpful message
+// Fallback: If Google library doesn't load after 8 seconds, show manual button
 setTimeout(function() {
     if (typeof google === 'undefined' || typeof google.accounts === 'undefined') {
         const errorDiv = document.getElementById('login-error');
+        const manualBtn = document.getElementById('google-manual');
         if (errorDiv && errorDiv.style.display !== 'none') {
             errorDiv.innerHTML = '<strong>Google Sign-In is taking longer than usual to load.</strong><br>You can still login with your email and password below.';
             errorDiv.style.display = 'block';
         }
+        if (manualBtn) {
+            manualBtn.style.display = 'block';
+        }
     }
-}, 5000);
+}, 8000);
 </script>
 <?php include '../includes/footer_main.php'; ?> 
