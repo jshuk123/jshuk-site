@@ -35,7 +35,7 @@ RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
     Header set Permissions-Policy "geolocation=(self), microphone=(), camera=()"
     Header set Content-Security-Policy "default-src 'self'; \
     script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com https://maps.googleapis.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://accounts.google.com https://www.googletagmanager.com https://www.google-analytics.com https://unpkg.com https://www.gstatic.com https://oauth2.googleapis.com; \
-    style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://fonts.googleapis.com https://unpkg.com https://www.gstatic.com; \
+    style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://fonts.googleapis.com https://unpkg.com https://www.gstatic.com https://accounts.google.com; \
     font-src 'self' data: https://fonts.gstatic.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; \
     img-src 'self' data: https: https://www.gstatic.com; \
     connect-src 'self' https: https://oauth2.googleapis.com; \
