@@ -79,7 +79,8 @@ try {
             https://cdnjs.cloudflare.com 
             https://unpkg.com 
             https://fonts.googleapis.com
-            https://www.gstatic.com;
+            https://www.gstatic.com
+            https://accounts.google.com;
         font-src 'self' data: 
             https://fonts.googleapis.com 
             https://fonts.gstatic.com 
