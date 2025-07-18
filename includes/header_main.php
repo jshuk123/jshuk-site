@@ -70,19 +70,24 @@ try {
             https://cdn.jsdelivr.net 
             https://cdnjs.cloudflare.com 
             https://unpkg.com 
-            https://maps.googleapis.com;
+            https://maps.googleapis.com
+            https://accounts.google.com
+            https://www.gstatic.com
+            https://oauth2.googleapis.com;
         style-src 'self' 'unsafe-inline' 
             https://cdn.jsdelivr.net 
             https://cdnjs.cloudflare.com 
             https://unpkg.com 
-            https://fonts.googleapis.com;
+            https://fonts.googleapis.com
+            https://www.gstatic.com;
         font-src 'self' data: 
             https://fonts.googleapis.com 
             https://fonts.gstatic.com 
-            https://cdnjs.cloudflare.com;
-        img-src 'self' data: https:;
-        connect-src 'self' https:;
-        frame-src 'self';
+            https://cdnjs.cloudflare.com
+            https://cdn.jsdelivr.net;
+        img-src 'self' data: https: https://www.gstatic.com;
+        connect-src 'self' https: https://oauth2.googleapis.com;
+        frame-src 'self' https://accounts.google.com;
     ">
     
     <!-- Google Analytics (replace GA_MEASUREMENT_ID with your actual ID) -->
