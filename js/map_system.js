@@ -12,24 +12,30 @@ class BusinessMap {
         this.currentView = 'grid'; // 'grid' or 'map'
         this.businessData = [];
         
+        console.log('🗺️ BusinessMap constructor called');
         this.init();
     }
     
     init() {
+        console.log('🗺️ Initializing map system...');
         this.loadLeaflet();
         this.bindViewToggleEvents();
         this.bindMapControlEvents();
     }
     
     loadLeaflet() {
+        console.log('🗺️ Loading Leaflet...');
         // Leaflet is now loaded in the header, so we can initialize directly
         if (typeof L !== 'undefined') {
+            console.log('✅ Leaflet.js is available');
             this.initializeMap();
         } else {
+            console.log('⚠️ Leaflet.js not available, waiting...');
             // Fallback: wait for Leaflet to load
             const checkLeaflet = setInterval(() => {
                 if (typeof L !== 'undefined') {
                     clearInterval(checkLeaflet);
+                    console.log('✅ Leaflet.js loaded, initializing map');
                     this.initializeMap();
                 }
             }, 100);
@@ -37,35 +43,46 @@ class BusinessMap {
     }
     
     initializeMap() {
-        // Initialize the map centered on London
-        this.map = L.map('map-canvas').setView([51.5074, -0.1278], 10);
+        console.log('🗺️ Initializing map...');
         
-        // Try to use Stadia Maps first (if API key is available), fallback to OpenStreetMap
-        const stadiaApiKey = this.getStadiaApiKey();
-        
-        if (stadiaApiKey) {
-            // Use Stadia Maps with API key for better performance and features
-            L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png?api_key=' + stadiaApiKey, {
-                maxZoom: 20,
-                attribution: '&copy; <a href="https://www.stadiamaps.com/" target="_blank">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>'
-            }).addTo(this.map);
-            console.log('🗺️ Using Stadia Maps with API key');
-        } else {
-            // Fallback to free OpenStreetMap tiles
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-                maxZoom: 18
-            }).addTo(this.map);
-            console.log('🗺️ Using free OpenStreetMap tiles');
+        try {
+            // Initialize the map centered on London
+            this.map = L.map('map-canvas').setView([51.5074, -0.1278], 10);
+            console.log('✅ Map object created');
+            
+            // Try to use Stadia Maps first (if API key is available), fallback to OpenStreetMap
+            const stadiaApiKey = this.getStadiaApiKey();
+            
+            if (stadiaApiKey) {
+                // Use Stadia Maps with API key for better performance and features
+                L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png?api_key=' + stadiaApiKey, {
+                    maxZoom: 20,
+                    attribution: '&copy; <a href="https://www.stadiamaps.com/" target="_blank">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>'
+                }).addTo(this.map);
+                console.log('🗺️ Using Stadia Maps with API key');
+            } else {
+                // Fallback to free OpenStreetMap tiles
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                    maxZoom: 18
+                }).addTo(this.map);
+                console.log('🗺️ Using free OpenStreetMap tiles');
+            }
+            
+            // Initialize business data
+            if (window.businessMapData) {
+                console.log(`📊 Found ${window.businessMapData.length} businesses in window.businessMapData`);
+                this.businessData = window.businessMapData;
+                this.createMarkers();
+            } else {
+                console.log('⚠️ No business data found in window.businessMapData');
+            }
+            
+            console.log('✅ Map initialized successfully');
+            
+        } catch (error) {
+            console.error('❌ Error initializing map:', error);
         }
-        
-        // Initialize business data
-        if (window.businessMapData) {
-            this.businessData = window.businessMapData;
-            this.createMarkers();
-        }
-        
-        console.log('🗺️ Map initialized successfully');
     }
     
     getStadiaApiKey() {
@@ -92,6 +109,9 @@ class BusinessMap {
         if (gridBtn && mapBtn) {
             gridBtn.addEventListener('click', () => this.switchToView('grid'));
             mapBtn.addEventListener('click', () => this.switchToView('map'));
+            console.log('✅ View toggle events bound');
+        } else {
+            console.log('⚠️ View toggle buttons not found');
         }
     }
     
@@ -106,6 +126,8 @@ class BusinessMap {
         if (centerMapBtn) {
             centerMapBtn.addEventListener('click', () => this.centerOnLondon());
         }
+        
+        console.log('✅ Map control events bound');
     }
     
     switchToView(view) {
@@ -144,7 +166,12 @@ class BusinessMap {
     }
     
     createMarkers() {
-        if (!this.map || !this.businessData.length) return;
+        if (!this.map || !this.businessData.length) {
+            console.log('⚠️ Cannot create markers: map not ready or no business data');
+            return;
+        }
+        
+        console.log(`📍 Creating markers for ${this.businessData.length} businesses`);
         
         // Clear existing markers
         this.clearMarkers();
@@ -155,13 +182,16 @@ class BusinessMap {
                 const marker = this.createMarker(business);
                 this.markers.push(marker);
                 marker.addTo(this.map);
+                console.log(`📍 Created marker for ${business.name} at (${business.lat}, ${business.lng})`);
+            } else {
+                console.log(`⚠️ Skipping ${business.name} - no coordinates`);
             }
         });
         
         // Update business count
         this.updateBusinessCount();
         
-        console.log(`📍 Created ${this.markers.length} markers`);
+        console.log(`✅ Created ${this.markers.length} markers`);
     }
     
     createMarker(business) {
@@ -297,9 +327,11 @@ class BusinessMap {
             }
         });
         this.markers = [];
+        console.log('🗑️ Cleared existing markers');
     }
     
     updateBusinessData(newData) {
+        console.log(`📊 Updating business data: ${newData.length} businesses`);
         this.businessData = newData;
         this.createMarkers();
     }
@@ -312,7 +344,10 @@ class BusinessMap {
     }
     
     fitAllMarkers() {
-        if (!this.map || this.markers.length === 0) return;
+        if (!this.map || this.markers.length === 0) {
+            console.log('⚠️ Cannot fit markers: map not ready or no markers');
+            return;
+        }
         
         const group = new L.featureGroup(this.markers);
         this.map.fitBounds(group.getBounds().pad(0.1));
@@ -339,11 +374,14 @@ class BusinessMap {
 
 // Initialize map system when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('🗺️ DOM loaded, initializing map system...');
+    
     // Initialize the map system
     window.businessMap = new BusinessMap();
     
     // Add map functionality to existing AJAX filter system
     if (window.businessFilter) {
+        console.log('✅ Found businessFilter, integrating with map system');
         const originalUpdatePageContent = window.businessFilter.updatePageContent;
         
         window.businessFilter.updatePageContent = function(response) {
@@ -352,10 +390,13 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Update map data if available
             if (response.map_data && window.businessMap) {
+                console.log('🗺️ Updating map with new data from AJAX response');
                 window.businessMap.updateBusinessData(response.map_data);
             }
         };
+    } else {
+        console.log('⚠️ businessFilter not found');
     }
     
-    console.log('🗺️ Map system initialized');
+    console.log('✅ Map system initialization complete');
 }); 

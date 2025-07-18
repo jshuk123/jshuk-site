@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Map System Debug Test</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Leaflet.js CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    
+    <style>
+        #map-canvas {
+            height: 500px;
+            width: 100%;
+            border-radius: 8px;
+            border: 2px solid #e9ecef;
+        }
+        
+        .debug-info {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        
+        .debug-success {
+            color: #155724;
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+        }
+        
+        .debug-error {
+            color: #721c24;
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+        }
+        
+        .debug-warning {
+            color: #856404;
+            background-color: #fff3cd;
+            border-color: #ffeaa7;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-4">
+        <h1>🗺️ Map System Debug Test</h1>
+        
+        <div class="debug-info">
+            <h4>Debug Information</h4>
+            <div id="debug-output">
+                <p>Loading debug information...</p>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">Map Test</h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="map-canvas"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">Test Controls</h5>
+                    </div>
+                    <div class="card-body">
+                        <button class="btn btn-primary btn-sm mb-2" onclick="testMapInitialization()">
+                            Test Map Init
+                        </button>
+                        <button class="btn btn-success btn-sm mb-2" onclick="testBusinessData()">
+                            Test Business Data
+                        </button>
+                        <button class="btn btn-info btn-sm mb-2" onclick="testMarkers()">
+                            Test Markers
+                        </button>
+                        <button class="btn btn-warning btn-sm mb-2" onclick="checkConsole()">
+                            Check Console
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Leaflet.js -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    
+    <script>
+        let map;
+        let testBusinessData = [
+            {
+                id: 1,
+                name: 'Test Business 1',
+                category: 'Test Category',
+                location: 'London',
+                rating: 4.5,
+                review_count: 10,
+                subscription_tier: 'premium_plus',
+                description: 'Test business description',
+                url: '/business.php?id=1',
+                lat: 51.5074,
+                lng: -0.1278,
+                geocoded: true
+            },
+            {
+                id: 2,
+                name: 'Test Business 2',
+                category: 'Test Category',
+                location: 'London',
+                rating: 4.2,
+                review_count: 8,
+                subscription_tier: 'premium',
+                description: 'Test business description',
+                url: '/business.php?id=2',
+                lat: 51.5200,
+                lng: -0.1000,
+                geocoded: true
+            }
+        ];
+        
+        function updateDebug(message, type = 'info') {
+            const debugOutput = document.getElementById('debug-output');
+            const timestamp = new Date().toLocaleTimeString();
+            const className = type === 'success' ? 'debug-success' : 
+                             type === 'error' ? 'debug-error' : 
+                             type === 'warning' ? 'debug-warning' : '';
+            
+            debugOutput.innerHTML += `
+                <div class="${className}" style="padding: 5px; margin: 5px 0; border-radius: 4px;">
+                    <strong>[${timestamp}]</strong> ${message}
+                </div>
+            `;
+        }
+        
+        function testMapInitialization() {
+            try {
+                updateDebug('Testing map initialization...', 'info');
+                
+                if (typeof L === 'undefined') {
+                    updateDebug('❌ Leaflet.js not loaded!', 'error');
+                    return;
+                }
+                
+                updateDebug('✅ Leaflet.js is loaded', 'success');
+                
+                if (!map) {
+                    map = L.map('map-canvas').setView([51.5074, -0.1278], 10);
+                    updateDebug('✅ Map initialized', 'success');
+                } else {
+                    updateDebug('⚠️ Map already initialized', 'warning');
+                }
+                
+                // Add tile layer
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                    maxZoom: 18
+                }).addTo(map);
+                
+                updateDebug('✅ Tile layer added', 'success');
+                
+            } catch (error) {
+                updateDebug(`❌ Map initialization error: ${error.message}`, 'error');
+                console.error('Map initialization error:', error);
+            }
+        }
+        
+        function testBusinessData() {
+            updateDebug('Testing business data...', 'info');
+            updateDebug(`Business data count: ${testBusinessData.length}`, 'info');
+            
+            testBusinessData.forEach((business, index) => {
+                updateDebug(`Business ${index + 1}: ${business.name} at (${business.lat}, ${business.lng})`, 'info');
+            });
+        }
+        
+        function testMarkers() {
+            if (!map) {
+                updateDebug('❌ Map not initialized. Run map initialization first.', 'error');
+                return;
+            }
+            
+            updateDebug('Testing marker creation...', 'info');
+            
+            try {
+                testBusinessData.forEach(business => {
+                    const marker = L.marker([business.lat, business.lng], {
+                        title: business.name
+                    }).addTo(map);
+                    
+                    const popup = L.popup()
+                        .setLatLng([business.lat, business.lng])
+                        .setContent(`<strong>${business.name}</strong><br>${business.category}`)
+                        .openOn(map);
+                    
+                    updateDebug(`✅ Created marker for ${business.name}`, 'success');
+                });
+                
+                // Fit bounds
+                const group = new L.featureGroup(testBusinessData.map(b => L.marker([b.lat, b.lng])));
+                map.fitBounds(group.getBounds().pad(0.1));
+                updateDebug('✅ Fitted all markers to view', 'success');
+                
+            } catch (error) {
+                updateDebug(`❌ Marker creation error: ${error.message}`, 'error');
+                console.error('Marker creation error:', error);
+            }
+        }
+        
+        function checkConsole() {
+            updateDebug('Checking browser console for errors...', 'info');
+            updateDebug('Open browser developer tools (F12) and check the Console tab for any JavaScript errors.', 'warning');
+        }
+        
+        // Auto-run tests on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            updateDebug('Page loaded, starting debug tests...', 'info');
+            
+            setTimeout(() => {
+                testMapInitialization();
+            }, 500);
+            
+            setTimeout(() => {
+                testBusinessData();
+            }, 1000);
+            
+            setTimeout(() => {
+                testMarkers();
+            }, 1500);
+        });
+    </script>
+</body>
+</html> 
