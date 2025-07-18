@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AJAX Filter Test - JShuk</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="/css/pages/businesses.css" rel="stylesheet">
+    <style>
+        .test-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .test-info {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 2rem;
+        }
+        .test-info h3 {
+            color: #1d2a40;
+            margin-bottom: 0.5rem;
+        }
+        .test-info p {
+            margin-bottom: 0.5rem;
+            color: #6c757d;
+        }
+        .test-status {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+        .status-success {
+            background: #d4edda;
+            color: #155724;
+        }
+        .status-error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <div class="test-info">
+            <h3>🔧 AJAX Filter System Test</h3>
+            <p>This page tests the new AJAX filtering functionality for the JShuk businesses page.</p>
+            <p><strong>Test Status:</strong> <span id="test-status" class="test-status status-pending">Initializing...</span></p>
+            <p><strong>API Endpoint:</strong> <code>/api/ajax_filter_businesses.php</code></p>
+            <p><strong>JavaScript File:</strong> <code>/js/ajax_filter.js</code></p>
+        </div>
+
+        <div class="container mt-4">
+            <h1>Browse Jewish Businesses</h1>
+            
+            <!-- Results Header with Count and Sorting -->
+            <div class="results-header d-flex justify-content-between align-items-center mb-4">
+                <p class="result-count mb-0">
+                    Showing 0-0 of 0 businesses
+                </p>
+                
+                <form action="" method="get" class="sorting-form">
+                    <label for="sort-by">Sort by:</label>
+                    <select name="sort" id="sort-by" data-filter="sort">
+                        <option value="newest">Newest</option>
+                        <option value="reviews">Most Reviewed</option>
+                        <option value="alphabetical">Alphabetical (A-Z)</option>
+                    </select>
+                </form>
+            </div>
+            
+            <!-- Two-Column Layout with Sidebar and Results -->
+            <div class="page-container-with-sidebar">
+                <!-- Filter Sidebar -->
+                <aside class="filter-sidebar">
+                    <form method="GET" class="filter-form" id="filter-form">
+                        <!-- Existing Filters -->
+                        <div class="filter-block">
+                            <h4>Search & Category</h4>
+                            <div class="mb-3">
+                                <label for="category" class="form-label">Category</label>
+                                <select name="category" id="category" class="form-select" data-filter="category">
+                                    <option value="">All Categories</option>
+                                    <option value="1">Food & Dining</option>
+                                    <option value="2">Health & Wellness</option>
+                                    <option value="3">Education</option>
+                                    <option value="4">Shopping</option>
+                                </select>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="search" class="form-label">Search</label>
+                                <input type="text" name="search" id="search" class="form-control" 
+                                       placeholder="Search businesses..." 
+                                       data-filter="search"
+                                       autocomplete="off">
+                            </div>
+                        </div>
+
+                        <!-- Location Filter -->
+                        <div class="filter-block">
+                            <h4>Filter by Location</h4>
+                            <div class="filter-options">
+                                <label class="filter-option">
+                                    <input type="checkbox" name="locations[]" value="hendon" data-filter="location">
+                                    <span>Hendon</span>
+                                </label>
+                                <label class="filter-option">
+                                    <input type="checkbox" name="locations[]" value="golders green" data-filter="location">
+                                    <span>Golders Green</span>
+                                </label>
+                                <label class="filter-option">
+                                    <input type="checkbox" name="locations[]" value="stanmore" data-filter="location">
+                                    <span>Stanmore</span>
+                                </label>
+                                <label class="filter-option">
+                                    <input type="checkbox" name="locations[]" value="edgware" data-filter="location">
+                                    <span>Edgware</span>
+                                </label>
+                                <label class="filter-option">
+                                    <input type="checkbox" name="locations[]" value="finchley" data-filter="location">
+                                    <span>Finchley</span>
+                                </label>
+                                <label class="filter-option">
+                                    <input type="checkbox" name="locations[]" value="barnet" data-filter="location">
+                                    <span>Barnet</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Rating Filter -->
+                        <div class="filter-block">
+                            <h4>Filter by Rating</h4>
+                            <div class="filter-options">
+                                <label class="filter-option">
+                                    <input type="radio" name="rating" value="5" data-filter="rating">
+                                    <span>★★★★★ 5 stars & up</span>
+                                </label>
+                                <label class="filter-option">
+                                    <input type="radio" name="rating" value="4" data-filter="rating">
+                                    <span>★★★★☆ 4 stars & up</span>
+                                </label>
+                                <label class="filter-option">
+                                    <input type="radio" name="rating" value="3" data-filter="rating">
+                                    <span>★★★☆☆ 3 stars & up</span>
+                                </label>
+                                <label class="filter-option">
+                                    <input type="radio" name="rating" value="2" data-filter="rating">
+                                    <span>★★☆☆☆ 2 stars & up</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Preserve sort parameter -->
+                        <input type="hidden" name="sort" value="newest">
+                        
+                        <!-- Action Buttons -->
+                        <div class="filter-actions">
+                            <button type="button" class="btn-jshuk-primary" id="apply-filters">Apply Filters</button>
+                            <a href="/businesses.php" class="btn btn-outline-secondary">Reset All</a>
+                        </div>
+                    </form>
+                </aside>
+
+                <!-- Results Grid Area -->
+                <main class="results-grid-area">
+                    <!-- Businesses List -->
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="alert alert-info text-center">
+                                <h4>Test Mode Active</h4>
+                                <p>This is a test page for the AJAX filtering system. Try changing the filters above to see the instant updates!</p>
+                                <p><small>Check the browser console for detailed logs.</small></p>
+                            </div>
+                        </div>
+                    </div>
+                </main>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/ajax_filter.js"></script>
+    <script>
+        // Test-specific functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const testStatus = document.getElementById('test-status');
+            
+            // Test if the AJAX filter system loaded
+            if (window.businessFilter) {
+                testStatus.textContent = 'AJAX System Loaded';
+                testStatus.className = 'test-status status-success';
+                console.log('✅ AJAX Filter System loaded successfully');
+            } else {
+                testStatus.textContent = 'AJAX System Failed to Load';
+                testStatus.className = 'test-status status-error';
+                console.error('❌ AJAX Filter System failed to load');
+            }
+            
+            // Add test logging
+            const originalHandleFilterChange = window.businessFilter?.handleFilterChange;
+            if (originalHandleFilterChange) {
+                window.businessFilter.handleFilterChange = async function() {
+                    console.log('🔄 Filter change triggered');
+                    console.log('Current filters:', this.getCurrentFilterValues());
+                    
+                    try {
+                        await originalHandleFilterChange.call(this);
+                        console.log('✅ Filter update completed successfully');
+                    } catch (error) {
+                        console.error('❌ Filter update failed:', error);
+                    }
+                };
+            }
+            
+            // Test API endpoint
+            testApiEndpoint();
+        });
+        
+        async function testApiEndpoint() {
+            try {
+                const response = await fetch('/api/ajax_filter_businesses.php', {
+                    method: 'POST',
+                    body: new FormData()
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log('✅ API endpoint test successful:', data);
+                } else {
+                    console.error('❌ API endpoint test failed:', response.status);
+                }
+            } catch (error) {
+                console.error('❌ API endpoint test error:', error);
+            }
+        }
+    </script>
+</body>
+</html> 

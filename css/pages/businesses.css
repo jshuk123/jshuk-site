@@ -1891,4 +1891,108 @@ body {
     border-top: 2px solid transparent;
     border-radius: 50%;
     animation: spin 1s linear infinite;
+}
+
+/* ===== AJAX LOADING STATES ===== */
+.results-grid-area.loading {
+    position: relative;
+    opacity: 0.7;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.loading-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    backdrop-filter: blur(2px);
+}
+
+.loading-spinner {
+    text-align: center;
+    padding: 2rem;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e9ecef;
+}
+
+.loading-spinner .spinner-border {
+    width: 3rem;
+    height: 3rem;
+}
+
+.loading-spinner p {
+    margin: 0;
+    font-weight: 500;
+    color: #6c757d;
+}
+
+/* ===== ENHANCED FILTER INTERACTIONS ===== */
+.filter-option {
+    transition: all 0.2s ease;
+    cursor: pointer;
+    border-radius: 6px;
+    padding: 0.5rem;
+    margin-bottom: 0.25rem;
+}
+
+.filter-option:hover {
+    background-color: #f8f9fa;
+    transform: translateX(2px);
+}
+
+.filter-option input[type="checkbox"]:checked + span,
+.filter-option input[type="radio"]:checked + span {
+    color: #1d2a40;
+    font-weight: 600;
+}
+
+.filter-option:focus-within {
+    background-color: #fff3cd;
+    box-shadow: 0 0 0 2px rgba(255, 215, 0, 0.25);
+}
+
+/* ===== SEARCH INPUT ENHANCEMENTS ===== */
+.form-control:focus {
+    border-color: #ffd700;
+    box-shadow: 0 0 0 0.2rem rgba(255, 215, 0, 0.25);
+}
+
+.form-select:focus {
+    border-color: #ffd700;
+    box-shadow: 0 0 0 0.2rem rgba(255, 215, 0, 0.25);
+}
+
+/* ===== SMOOTH TRANSITIONS ===== */
+.card {
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+/* ===== RESPONSIVE LOADING STATES ===== */
+@media (max-width: 768px) {
+    .loading-overlay {
+        padding: 1rem;
+    }
+    
+    .loading-spinner {
+        padding: 1.5rem;
+    }
+    
+    .loading-spinner .spinner-border {
+        width: 2rem;
+        height: 2rem;
+    }
 } 

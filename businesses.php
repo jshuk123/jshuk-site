@@ -184,7 +184,7 @@ try {
         
         <form action="" method="get" class="sorting-form">
             <label for="sort-by">Sort by:</label>
-            <select name="sort" id="sort-by" onchange="this.form.submit()">
+            <select name="sort" id="sort-by" data-filter="sort">
                 <option value="newest" <?php selected($current_sort_value, 'newest'); ?>>Newest</option>
                 <option value="reviews" <?php selected($current_sort_value, 'reviews'); ?>>Most Reviewed</option>
                 <option value="alphabetical" <?php selected($current_sort_value, 'alphabetical'); ?>>Alphabetical (A-Z)</option>
@@ -207,13 +207,13 @@ try {
     <div class="page-container-with-sidebar">
         <!-- Filter Sidebar -->
         <aside class="filter-sidebar">
-            <form method="GET" class="filter-form">
+            <form method="GET" class="filter-form" id="filter-form">
                 <!-- Existing Filters -->
                 <div class="filter-block">
                     <h4>Search & Category</h4>
                     <div class="mb-3">
                         <label for="category" class="form-label">Category</label>
-                        <select name="category" id="category" class="form-select">
+                        <select name="category" id="category" class="form-select" data-filter="category">
                             <option value="">All Categories</option>
                             <?php foreach ($categories as $cat): ?>
                                 <option value="<?= $cat['id'] ?>" <?= $category_filter == $cat['id'] ? 'selected' : '' ?>>
@@ -227,7 +227,9 @@ try {
                         <label for="search" class="form-label">Search</label>
                         <input type="text" name="search" id="search" class="form-control" 
                                placeholder="Search businesses..." 
-                               value="<?= htmlspecialchars($search_query) ?>">
+                               value="<?= htmlspecialchars($search_query) ?>"
+                               data-filter="search"
+                               autocomplete="off">
                     </div>
                 </div>
 
@@ -236,27 +238,27 @@ try {
                     <h4>Filter by Location</h4>
                     <div class="filter-options">
                         <label class="filter-option">
-                            <input type="checkbox" name="locations[]" value="hendon" <?= checked($location_filters, 'hendon'); ?>>
+                            <input type="checkbox" name="locations[]" value="hendon" <?= checked($location_filters, 'hendon'); ?> data-filter="location">
                             <span>Hendon</span>
                         </label>
                         <label class="filter-option">
-                            <input type="checkbox" name="locations[]" value="golders green" <?= checked($location_filters, 'golders green'); ?>>
+                            <input type="checkbox" name="locations[]" value="golders green" <?= checked($location_filters, 'golders green'); ?> data-filter="location">
                             <span>Golders Green</span>
                         </label>
                         <label class="filter-option">
-                            <input type="checkbox" name="locations[]" value="stanmore" <?= checked($location_filters, 'stanmore'); ?>>
+                            <input type="checkbox" name="locations[]" value="stanmore" <?= checked($location_filters, 'stanmore'); ?> data-filter="location">
                             <span>Stanmore</span>
                         </label>
                         <label class="filter-option">
-                            <input type="checkbox" name="locations[]" value="edgware" <?= checked($location_filters, 'edgware'); ?>>
+                            <input type="checkbox" name="locations[]" value="edgware" <?= checked($location_filters, 'edgware'); ?> data-filter="location">
                             <span>Edgware</span>
                         </label>
                         <label class="filter-option">
-                            <input type="checkbox" name="locations[]" value="finchley" <?= checked($location_filters, 'finchley'); ?>>
+                            <input type="checkbox" name="locations[]" value="finchley" <?= checked($location_filters, 'finchley'); ?> data-filter="location">
                             <span>Finchley</span>
                         </label>
                         <label class="filter-option">
-                            <input type="checkbox" name="locations[]" value="barnet" <?= checked($location_filters, 'barnet'); ?>>
+                            <input type="checkbox" name="locations[]" value="barnet" <?= checked($location_filters, 'barnet'); ?> data-filter="location">
                             <span>Barnet</span>
                         </label>
                     </div>
@@ -267,19 +269,19 @@ try {
                     <h4>Filter by Rating</h4>
                     <div class="filter-options">
                         <label class="filter-option">
-                            <input type="radio" name="rating" value="5" <?= $rating_filter == '5' ? 'checked' : '' ?>>
+                            <input type="radio" name="rating" value="5" <?= $rating_filter == '5' ? 'checked' : '' ?> data-filter="rating">
                             <span>★★★★★ 5 stars & up</span>
                         </label>
                         <label class="filter-option">
-                            <input type="radio" name="rating" value="4" <?= $rating_filter == '4' ? 'checked' : '' ?>>
+                            <input type="radio" name="rating" value="4" <?= $rating_filter == '4' ? 'checked' : '' ?> data-filter="rating">
                             <span>★★★★☆ 4 stars & up</span>
                         </label>
                         <label class="filter-option">
-                            <input type="radio" name="rating" value="3" <?= $rating_filter == '3' ? 'checked' : '' ?>>
+                            <input type="radio" name="rating" value="3" <?= $rating_filter == '3' ? 'checked' : '' ?> data-filter="rating">
                             <span>★★★☆☆ 3 stars & up</span>
                         </label>
                         <label class="filter-option">
-                            <input type="radio" name="rating" value="2" <?= $rating_filter == '2' ? 'checked' : '' ?>>
+                            <input type="radio" name="rating" value="2" <?= $rating_filter == '2' ? 'checked' : '' ?> data-filter="rating">
                             <span>★★☆☆☆ 2 stars & up</span>
                         </label>
                     </div>
@@ -290,7 +292,7 @@ try {
                 
                 <!-- Action Buttons -->
                 <div class="filter-actions">
-                    <button type="submit" class="btn-jshuk-primary">Apply Filters</button>
+                    <button type="button" class="btn-jshuk-primary" id="apply-filters">Apply Filters</button>
                     <a href="/businesses.php" class="btn btn-outline-secondary">Reset All</a>
                 </div>
             </form>
@@ -370,35 +372,5 @@ try {
 
 <?php include 'includes/footer_main.php'; ?>
 
-<script>
-// Enhanced filter experience
-document.addEventListener('DOMContentLoaded', function() {
-    // Auto-submit form when radio buttons change
-    const ratingRadios = document.querySelectorAll('input[name="rating"]');
-    ratingRadios.forEach(radio => {
-        radio.addEventListener('change', function() {
-            this.closest('form').submit();
-        });
-    });
-    
-    // Add loading state to sidebar when form submits
-    const filterForm = document.querySelector('.filter-form');
-    if (filterForm) {
-        filterForm.addEventListener('submit', function() {
-            const sidebar = document.querySelector('.filter-sidebar');
-            sidebar.classList.add('loading');
-        });
-    }
-    
-    // Smooth scroll to results when filters are applied
-    const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.has('category') || urlParams.has('search') || urlParams.has('locations') || urlParams.has('rating')) {
-        setTimeout(() => {
-            const resultsArea = document.querySelector('.results-grid-area');
-            if (resultsArea) {
-                resultsArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }
-        }, 100);
-    }
-});
-</script> 
+<!-- Include AJAX Filter JavaScript -->
+<script src="/js/ajax_filter.js"></script> 
