@@ -1,7 +1,8 @@
 <?php
 /**
  * Featured Showcase Section
- * Step 2: Dedicated carousel for sponsored/featured businesses
+ * Combined carousel for sponsored slides AND featured businesses
+ * Step 2: Enhanced to show both sponsored slides and featured businesses
  */
 
 require_once __DIR__ . '/../includes/enhanced_carousel_functions.php';
@@ -10,29 +11,107 @@ $location = $_SESSION['user_location'] ?? 'all';
 $today = date('Y-m-d');
 $zone = 'homepage';
 
+// Initialize combined slides array
+$all_slides = [];
+
 try {
-    // Only fetch sponsored (featured) slides
+    // QUERY A: Get sponsored slides from Enhanced Carousel Manager
     $stmt = $pdo->prepare("
-        SELECT * FROM carousel_slides
-        WHERE is_active = 1
-          AND sponsored = 1
+        SELECT 
+            id,
+            title,
+            subtitle,
+            image_url,
+            cta_text,
+            cta_link,
+            priority,
+            sponsored,
+            'carousel_slide' as slide_type
+        FROM carousel_slides
+        WHERE active = 1
           AND zone = :zone
-        ORDER BY sort_order DESC, id DESC
+          AND (start_date IS NULL OR start_date <= :today)
+          AND (end_date IS NULL OR end_date >= :today)
+        ORDER BY priority DESC, id DESC
     ");
-    $stmt->execute([':zone' => $zone]);
-    $slides = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $stmt->execute([':zone' => $zone, ':today' => $today]);
+    $sponsored_slides = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+    // Add sponsored slides to combined array with their priority
+    foreach ($sponsored_slides as $slide) {
+        $slide['priority'] = $slide['priority'] ?? 0;
+        $all_slides[] = $slide;
+    }
+    
+    // QUERY B: Get featured businesses from directory
+    $stmt = $pdo->prepare("
+        SELECT 
+            b.id,
+            b.business_name as title,
+            c.name as subtitle,
+            COALESCE(bi.file_path, 'images/jshuk-logo.png') as image_url,
+            'View Profile' as cta_text,
+            CONCAT('business.php?id=', b.id) as cta_link,
+            CASE 
+                WHEN u.subscription_tier = 'premium_plus' THEN 6
+                WHEN u.subscription_tier = 'premium' THEN 5
+                ELSE 4
+            END as priority,
+            1 as sponsored,
+            'featured_business' as slide_type,
+            u.subscription_tier
+        FROM businesses b 
+        LEFT JOIN business_categories c ON b.category_id = c.id 
+        LEFT JOIN users u ON b.user_id = u.id
+        LEFT JOIN business_images bi ON b.id = bi.business_id AND bi.sort_order = 0
+        WHERE b.status = 'active' 
+        AND u.subscription_tier IN ('premium', 'premium_plus')
+        ORDER BY 
+            CASE u.subscription_tier 
+                WHEN 'premium_plus' THEN 1 
+                WHEN 'premium' THEN 2 
+                ELSE 3 
+            END,
+            b.created_at DESC 
+        LIMIT 10
+    ");
+    $stmt->execute();
+    $featured_businesses = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+    // Add featured businesses to combined array
+    foreach ($featured_businesses as $business) {
+        $all_slides[] = $business;
+    }
+    
 } catch (PDOException $e) {
     echo "<div style='background:#f8d7da;color:#721c24;padding:10px;z-index:9999;position:relative;'>
         ❌ SQL Error: " . htmlspecialchars($e->getMessage()) . "</div>";
-    $slides = [];
+    $all_slides = [];
 }
 
-// Filter slides to only those with a valid image file
-$valid_slides = array_filter($slides, function($slide) {
-    return !empty($slide['image_url']) && strpos($slide['image_url'], 'data:') === false && file_exists(__DIR__ . '/../' . $slide['image_url']);
+// Sort the combined array by priority (highest first)
+usort($all_slides, function($a, $b) {
+    return ($b['priority'] ?? 0) - ($a['priority'] ?? 0);
 });
+
+// Filter slides to only those with a valid image file
+$valid_slides = array_filter($all_slides, function($slide) {
+    if (empty($slide['image_url'])) return false;
+    if (strpos($slide['image_url'], 'data:') !== false) return false;
+    
+    // For featured businesses, check if the image exists
+    if ($slide['slide_type'] === 'featured_business') {
+        $image_path = __DIR__ . '/../' . ltrim($slide['image_url'], '/');
+        return file_exists($image_path);
+    }
+    
+    // For carousel slides, check if the image exists
+    return file_exists(__DIR__ . '/../' . ltrim($slide['image_url'], '/'));
+});
+
 $numSlides = count($valid_slides);
 
+// If no valid slides, show placeholder
 if ($numSlides === 0) {
     $valid_slides = [
         [
@@ -41,7 +120,8 @@ if ($numSlides === 0) {
             'subtitle' => 'Featured businesses will appear here soon!',
             'image_url' => 'images/jshuk-logo.png',
             'cta_text' => 'Explore Now',
-            'cta_link' => 'businesses.php'
+            'cta_link' => 'businesses.php',
+            'slide_type' => 'placeholder'
         ]
     ];
     $numSlides = 1;
@@ -67,7 +147,9 @@ $loop = $numSlides > 1;
                                             class="carousel-img"
                                             loading="eager"
                                         />
-                                        <span class="featured-tag">Featured</span>
+                                        <?php if ($slide['slide_type'] === 'featured_business'): ?>
+                                            <span class="featured-tag">Featured</span>
+                                        <?php endif; ?>
                                     </div>
                                     <div class="text-block">
                                         <h3 class="carousel-title"><?= htmlspecialchars($slide['title']) ?></h3>
@@ -75,8 +157,8 @@ $loop = $numSlides > 1;
                                             <p class="carousel-subtitle"><?= htmlspecialchars($slide['subtitle']) ?></p>
                                         <?php endif; ?>
                                         <?php if (!empty($slide['cta_link'])): ?>
-                                            <a href="<?= htmlspecialchars($slide['cta_link']) ?>" class="carousel-cta" target="_blank">
-                                                View Profile
+                                            <a href="<?= htmlspecialchars($slide['cta_link']) ?>" class="carousel-cta">
+                                                <?= htmlspecialchars($slide['cta_text'] ?? 'View Profile') ?>
                                             </a>
                                         <?php endif; ?>
                                     </div>
@@ -253,19 +335,13 @@ $loop = $numSlides > 1;
     font-size: 2rem;
   }
   .swiper-container {
-    height: 350px;
+    height: 400px;
   }
   .carousel-title {
     font-size: 1.5rem;
   }
   .carousel-subtitle {
     font-size: 1rem;
-  }
-  .swiper-button-prev,
-  .swiper-button-next {
-    width: 40px;
-    height: 40px;
-    margin-top: -20px;
   }
 }
 </style> 

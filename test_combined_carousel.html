@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Combined Carousel - JShuk</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f8f9fa;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .success { color: #28a745; }
+        .warning { color: #ffc107; }
+        .error { color: #dc3545; }
+        .info { color: #17a2b8; }
+        .test-button {
+            background: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            margin: 10px 5px;
+        }
+        .test-button:hover {
+            background: #0056b3;
+        }
+        .code-block {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 15px;
+            margin: 10px 0;
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 Combined Carousel Test Page</h1>
+    
+    <div class="test-section">
+        <h2>📋 Test Instructions</h2>
+        <p>This page helps you test the combined carousel functionality that merges:</p>
+        <ul>
+            <li>🎠 <strong>Sponsored slides</strong> from your Enhanced Carousel Manager</li>
+            <li>🏢 <strong>Featured businesses</strong> from your business directory</li>
+        </ul>
+        
+        <h3>Expected Behavior:</h3>
+        <ol>
+            <li>The "Community Highlights" carousel should show both types of content</li>
+            <li>Sponsored slides should appear first (higher priority)</li>
+            <li>Featured businesses should show the yellow "Featured" tag</li>
+            <li>All slides should be sorted by priority (highest first)</li>
+        </ol>
+    </div>
+    
+    <div class="test-section">
+        <h2>🔗 Quick Test Links</h2>
+        <a href="index.php" class="test-button">🏠 View Homepage</a>
+        <a href="test_combined_carousel.php" class="test-button">🧪 Run PHP Test</a>
+        <a href="admin/enhanced_carousel_manager.php" class="test-button">⚙️ Carousel Manager</a>
+        <a href="businesses.php" class="test-button">🏢 Business Directory</a>
+    </div>
+    
+    <div class="test-section">
+        <h2>📊 Manual Verification Steps</h2>
+        
+        <h3>Step 1: Check Carousel Manager</h3>
+        <p>1. Go to <a href="admin/enhanced_carousel_manager.php">Enhanced Carousel Manager</a></p>
+        <p>2. Verify you have active slides with priority settings</p>
+        <p>3. Check that slides are assigned to "homepage" zone</p>
+        
+        <h3>Step 2: Check Featured Businesses</h3>
+        <p>1. Go to <a href="businesses.php">Business Directory</a></p>
+        <p>2. Look for businesses with Premium or Premium+ subscription</p>
+        <p>3. Verify these businesses have proper images</p>
+        
+        <h3>Step 3: Test Homepage Display</h3>
+        <p>1. Go to <a href="index.php">Homepage</a></p>
+        <p>2. Scroll down to "Community Highlights" section</p>
+        <p>3. Verify the carousel shows both types of content</p>
+        <p>4. Check that "Featured" tags only appear on business slides</p>
+    </div>
+    
+    <div class="test-section">
+        <h2>🔧 Technical Details</h2>
+        
+        <h3>Priority System:</h3>
+        <ul>
+            <li><strong>Carousel Slides:</strong> Use custom priority (0-15+)</li>
+            <li><strong>Premium+ Businesses:</strong> Priority 6</li>
+            <li><strong>Premium Businesses:</strong> Priority 5</li>
+            <li><strong>Basic Businesses:</strong> Priority 4</li>
+        </ul>
+        
+        <h3>File Structure:</h3>
+        <div class="code-block">sections/featured_showcase.php - Main carousel logic
+├── QUERY A: Fetches sponsored slides from carousel_slides
+├── QUERY B: Fetches featured businesses from businesses table
+├── Merges and sorts by priority
+└── Displays with conditional "Featured" tags</div>
+        
+        <h3>Database Tables:</h3>
+        <ul>
+            <li><code>carousel_slides</code> - Sponsored slides with priority</li>
+            <li><code>businesses</code> - Business directory</li>
+            <li><code>users</code> - Subscription tiers (premium/premium_plus)</li>
+            <li><code>business_images</code> - Business profile images</li>
+        </ul>
+    </div>
+    
+    <div class="test-section">
+        <h2>🚨 Troubleshooting</h2>
+        
+        <h3>If no slides appear:</h3>
+        <ul>
+            <li>Check if carousel_slides table has active slides</li>
+            <li>Verify businesses have Premium/Premium+ subscription</li>
+            <li>Check image file paths exist</li>
+            <li>Review database connection</li>
+        </ul>
+        
+        <h3>If only one type appears:</h3>
+        <ul>
+            <li>Check zone setting in carousel_slides (should be 'homepage')</li>
+            <li>Verify subscription_tier values in users table</li>
+            <li>Check business status is 'active'</li>
+        </ul>
+        
+        <h3>If priority sorting is wrong:</h3>
+        <ul>
+            <li>Verify priority values in carousel_slides table</li>
+            <li>Check subscription_tier mapping logic</li>
+            <li>Review the usort function in featured_showcase.php</li>
+        </ul>
+    </div>
+    
+    <div class="test-section">
+        <h2>✅ Success Criteria</h2>
+        <p>The combined carousel is working correctly when:</p>
+        <ul>
+            <li>✅ Both sponsored slides and featured businesses appear</li>
+            <li>✅ Slides are sorted by priority (highest first)</li>
+            <li>✅ "Featured" tag only shows on business slides</li>
+            <li>✅ Links work correctly (custom URLs vs business profiles)</li>
+            <li>✅ Images load properly</li>
+            <li>✅ Carousel navigation works</li>
+        </ul>
+    </div>
+    
+    <script>
+        // Add some interactive testing
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🧪 Combined Carousel Test Page Loaded');
+            console.log('Check the homepage to verify the carousel functionality');
+        });
+    </script>
+</body>
+</html> 
