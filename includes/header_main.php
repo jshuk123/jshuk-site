@@ -62,8 +62,28 @@ try {
     <meta name="googlebot" content="index, follow">
     <link rel="canonical" href="https://jshuk.com<?= $_SERVER['REQUEST_URI'] ?>">
     
-    <!-- Content Security Policy to fix font loading -->
-    <meta http-equiv="Content-Security-Policy" content="font-src 'self' data: https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com;">
+    <!-- Content Security Policy for external resources -->
+    <meta http-equiv="Content-Security-Policy" content="
+        default-src 'self';
+        script-src 'self' 'unsafe-inline' 'unsafe-eval' 
+            https://www.googletagmanager.com 
+            https://cdn.jsdelivr.net 
+            https://cdnjs.cloudflare.com 
+            https://unpkg.com 
+            https://maps.googleapis.com;
+        style-src 'self' 'unsafe-inline' 
+            https://cdn.jsdelivr.net 
+            https://cdnjs.cloudflare.com 
+            https://unpkg.com 
+            https://fonts.googleapis.com;
+        font-src 'self' data: 
+            https://fonts.googleapis.com 
+            https://fonts.gstatic.com 
+            https://cdnjs.cloudflare.com;
+        img-src 'self' data: https:;
+        connect-src 'self' https:;
+        frame-src 'self';
+    ">
     
     <!-- Google Analytics (replace GA_MEASUREMENT_ID with your actual ID) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID"></script>
