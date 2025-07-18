@@ -176,31 +176,44 @@ try {
 <div class="container mt-4">
     <h1>Browse Jewish Businesses</h1>
     
-    <!-- Results Header with Count and Sorting -->
+    <!-- Results Header with Count, Sorting, and View Toggle -->
     <div class="results-header d-flex justify-content-between align-items-center mb-4">
         <p class="result-count mb-0">
             Showing <?php echo $start_result_number; ?>-<?php echo $end_result_number; ?> of <?php echo $total_businesses; ?> businesses
         </p>
         
-        <form action="" method="get" class="sorting-form">
-            <label for="sort-by">Sort by:</label>
-            <select name="sort" id="sort-by" data-filter="sort">
-                <option value="newest" <?php selected($current_sort_value, 'newest'); ?>>Newest</option>
-                <option value="reviews" <?php selected($current_sort_value, 'reviews'); ?>>Most Reviewed</option>
-                <option value="alphabetical" <?php selected($current_sort_value, 'alphabetical'); ?>>Alphabetical (A-Z)</option>
-            </select>
-            <?php foreach ($_GET as $key => $value) {
-                if ($key != 'sort') {
-                    if (is_array($value)) {
-                        foreach ($value as $v) {
-                            echo '<input type="hidden" name="'.htmlspecialchars($key).'[]" value="'.htmlspecialchars($v).'">';
+        <div class="d-flex align-items-center gap-3">
+            <!-- View Toggle -->
+            <div class="view-toggle">
+                <button class="toggle-btn active" id="grid-view-btn" title="Grid View">
+                    <i class="fas fa-th-large"></i> <span class="d-none d-md-inline">Grid View</span>
+                </button>
+                <button class="toggle-btn" id="map-view-btn" title="Map View">
+                    <i class="fas fa-map-marked-alt"></i> <span class="d-none d-md-inline">Map View</span>
+                </button>
+            </div>
+            
+            <!-- Sort Form -->
+            <form action="" method="get" class="sorting-form">
+                <label for="sort-by">Sort by:</label>
+                <select name="sort" id="sort-by" data-filter="sort">
+                    <option value="newest" <?php selected($current_sort_value, 'newest'); ?>>Newest</option>
+                    <option value="reviews" <?php selected($current_sort_value, 'reviews'); ?>>Most Reviewed</option>
+                    <option value="alphabetical" <?php selected($current_sort_value, 'alphabetical'); ?>>Alphabetical (A-Z)</option>
+                </select>
+                <?php foreach ($_GET as $key => $value) {
+                    if ($key != 'sort') {
+                        if (is_array($value)) {
+                            foreach ($value as $v) {
+                                echo '<input type="hidden" name="'.htmlspecialchars($key).'[]" value="'.htmlspecialchars($v).'">';
+                            }
+                        } else {
+                            echo '<input type="hidden" name="'.htmlspecialchars($key).'" value="'.htmlspecialchars($value).'">';
                         }
-                    } else {
-                        echo '<input type="hidden" name="'.htmlspecialchars($key).'" value="'.htmlspecialchars($value).'">';
                     }
-                }
-            } ?>
-        </form>
+                } ?>
+            </form>
+        </div>
     </div>
     
     <!-- Two-Column Layout with Sidebar and Results -->
@@ -367,10 +380,59 @@ try {
                 <?php endif; ?>
             </div>
         </main>
+
+        <!-- Map View Area -->
+        <main id="map-view-area" style="display: none;">
+            <div class="map-container">
+                <div id="map-canvas" style="height: 600px; width: 100%; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1);"></div>
+                <div class="map-controls mt-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="map-info">
+                            <span class="badge bg-primary me-2">
+                                <i class="fas fa-map-marker-alt"></i> 
+                                <span id="map-business-count"><?= $total_businesses ?></span> businesses shown
+                            </span>
+                        </div>
+                        <div class="map-actions">
+                            <button class="btn btn-outline-secondary btn-sm" id="fit-bounds-btn" title="Fit all businesses on map">
+                                <i class="fas fa-expand-arrows-alt"></i> Fit All
+                            </button>
+                            <button class="btn btn-outline-secondary btn-sm ms-2" id="center-map-btn" title="Center map on London">
+                                <i class="fas fa-crosshairs"></i> Center
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
     </div>
 </div>
 
 <?php include 'includes/footer_main.php'; ?>
 
+<!-- Business Data for Map -->
+<script>
+window.businessMapData = <?php echo json_encode(array_map(function($business) {
+    return [
+        'id' => $business['id'],
+        'name' => htmlspecialchars($business['business_name']),
+        'category' => htmlspecialchars($business['category_name'] ?? 'Uncategorized'),
+        'location' => htmlspecialchars($business['business_location'] ?? ''),
+        'rating' => floatval($business['average_rating']),
+        'review_count' => intval($business['review_count']),
+        'subscription_tier' => $business['subscription_tier'],
+        'description' => htmlspecialchars(substr($business['description'] ?? '', 0, 100)),
+        'url' => '/business.php?id=' . $business['id'],
+        'logo_url' => getBusinessLogoUrl('', $business['business_name']),
+        // Default coordinates for London (will be enhanced with real geocoding)
+        'lat' => 51.5074 + (rand(-10, 10) / 100), // Random offset for demo
+        'lng' => -0.1278 + (rand(-10, 10) / 100)  // Random offset for demo
+    ];
+}, $businesses)); ?>;
+</script>
+
 <!-- Include AJAX Filter JavaScript -->
-<script src="/js/ajax_filter.js"></script> 
+<script src="/js/ajax_filter.js"></script>
+
+<!-- Include Map System JavaScript -->
+<script src="/js/map_system.js"></script> 

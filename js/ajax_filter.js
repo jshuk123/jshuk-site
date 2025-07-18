@@ -178,6 +178,11 @@ class BusinessFilter {
             resultCount.textContent = `Showing ${response.start_result_number}-${response.end_result_number} of ${response.total_businesses} businesses`;
         }
         
+        // Update map data if available and map system is initialized
+        if (response.map_data && window.businessMap && window.businessMap.isInitialized()) {
+            window.businessMap.updateBusinessData(response.map_data);
+        }
+        
         // Smooth scroll to results if filters were applied
         this.scrollToResults();
     }

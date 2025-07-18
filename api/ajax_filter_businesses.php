@@ -320,11 +320,31 @@ try {
     <?php
     $sidebar_html = ob_get_clean();
     
+    // Generate map data
+    $map_data = array_map(function($business) {
+        return [
+            'id' => $business['id'],
+            'name' => htmlspecialchars($business['business_name']),
+            'category' => htmlspecialchars($business['category_name'] ?? 'Uncategorized'),
+            'location' => htmlspecialchars($business['business_location'] ?? ''),
+            'rating' => floatval($business['average_rating']),
+            'review_count' => intval($business['review_count']),
+            'subscription_tier' => $business['subscription_tier'],
+            'description' => htmlspecialchars(substr($business['description'] ?? '', 0, 100)),
+            'url' => '/business.php?id=' . $business['id'],
+            'logo_url' => getBusinessLogoUrl('', $business['business_name']),
+            // Default coordinates for London (will be enhanced with real geocoding)
+            'lat' => 51.5074 + (rand(-10, 10) / 100), // Random offset for demo
+            'lng' => -0.1278 + (rand(-10, 10) / 100)  // Random offset for demo
+        ];
+    }, $businesses);
+
     // Return JSON response
     echo json_encode([
         'success' => true,
         'results_html' => $results_html,
         'sidebar_html' => $sidebar_html,
+        'map_data' => $map_data,
         'total_businesses' => $total_businesses,
         'start_result_number' => $start_result_number,
         'end_result_number' => $end_result_number,
