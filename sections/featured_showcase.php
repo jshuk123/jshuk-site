@@ -20,74 +20,119 @@ try {
     $tableExists = $pdo->query("SHOW TABLES LIKE 'carousel_slides'")->rowCount() > 0;
     
     if ($tableExists) {
-        $stmt = $pdo->prepare("
-            SELECT 
-                id,
-                title,
-                subtitle,
-                image_url,
-                cta_text,
-                cta_link,
-                priority,
-                sponsored,
-                'carousel_slide' as slide_type
-            FROM carousel_slides
-            WHERE active = 1
-              AND zone = :zone
-              AND (start_date IS NULL OR start_date <= :today)
-              AND (end_date IS NULL OR end_date >= :today)
-            ORDER BY priority DESC, id DESC
-        ");
-        $stmt->execute([':zone' => $zone, ':today' => $today]);
-        $sponsored_slides = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        // Check if the required columns exist
+        $columns = $pdo->query("SHOW COLUMNS FROM carousel_slides")->fetchAll(PDO::FETCH_COLUMN);
+        $hasRequiredColumns = in_array('active', $columns) && in_array('zone', $columns);
         
-        // Add sponsored slides to combined array with their priority
-        foreach ($sponsored_slides as $slide) {
-            $slide['priority'] = $slide['priority'] ?? 0;
-            $all_slides[] = $slide;
+        if ($hasRequiredColumns) {
+            $stmt = $pdo->prepare("
+                SELECT 
+                    id,
+                    title,
+                    subtitle,
+                    image_url,
+                    cta_text,
+                    cta_link,
+                    priority,
+                    sponsored,
+                    'carousel_slide' as slide_type
+                FROM carousel_slides
+                WHERE active = 1
+                  AND zone = :zone
+                  AND (start_date IS NULL OR start_date <= :today)
+                  AND (end_date IS NULL OR end_date >= :today)
+                ORDER BY priority DESC, id DESC
+            ");
+            $stmt->execute([':zone' => $zone, ':today' => $today]);
+            $sponsored_slides = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            
+            // Add sponsored slides to combined array with their priority
+            foreach ($sponsored_slides as $slide) {
+                $slide['priority'] = $slide['priority'] ?? 0;
+                $all_slides[] = $slide;
+            }
+        } else {
+            $sponsored_slides = [];
         }
     } else {
         $sponsored_slides = [];
     }
     
-    // QUERY B: Get featured businesses from directory
-    $stmt = $pdo->prepare("
-        SELECT 
-            b.id,
-            b.business_name as title,
-            c.name as subtitle,
-            COALESCE(bi.file_path, 'images/jshuk-logo.png') as image_url,
-            'View Profile' as cta_text,
-            CONCAT('business.php?id=', b.id) as cta_link,
-            CASE 
-                WHEN u.subscription_tier = 'premium_plus' THEN 6
-                WHEN u.subscription_tier = 'premium' THEN 5
-                ELSE 4
-            END as priority,
-            1 as sponsored,
-            'featured_business' as slide_type,
-            u.subscription_tier
-        FROM businesses b 
-        LEFT JOIN business_categories c ON b.category_id = c.id 
-        LEFT JOIN users u ON b.user_id = u.id
-        LEFT JOIN business_images bi ON b.id = bi.business_id AND bi.sort_order = 0
-        WHERE b.status = 'active' 
-        AND u.subscription_tier IN ('premium', 'premium_plus')
-        ORDER BY 
-            CASE u.subscription_tier 
-                WHEN 'premium_plus' THEN 1 
-                WHEN 'premium' THEN 2 
-                ELSE 3 
-            END,
-            b.created_at DESC 
-        LIMIT 10
-    ");
-    $stmt->execute();
-    $featured_businesses = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    // If no sponsored slides found, try a simpler query without parameters
+    if (empty($sponsored_slides) && $tableExists) {
+        try {
+            $stmt = $pdo->query("
+                SELECT 
+                    id,
+                    title,
+                    subtitle,
+                    image_url,
+                    cta_text,
+                    cta_link,
+                    priority,
+                    sponsored,
+                    'carousel_slide' as slide_type
+                FROM carousel_slides
+                WHERE active = 1
+                ORDER BY priority DESC, id DESC
+                LIMIT 5
+            ");
+            $sponsored_slides = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            
+            // Add sponsored slides to combined array with their priority
+            foreach ($sponsored_slides as $slide) {
+                $slide['priority'] = $slide['priority'] ?? 0;
+                $all_slides[] = $slide;
+            }
+        } catch (PDOException $e) {
+            // If even the simple query fails, just continue with empty sponsored slides
+            $sponsored_slides = [];
+        }
+    }
     
-    // Add featured businesses to combined array
-    foreach ($featured_businesses as $business) {
-        $all_slides[] = $business;
+    // QUERY B: Get featured businesses from directory
+    try {
+        $stmt = $pdo->prepare("
+            SELECT 
+                b.id,
+                b.business_name as title,
+                c.name as subtitle,
+                COALESCE(bi.file_path, 'images/jshuk-logo.png') as image_url,
+                'View Profile' as cta_text,
+                CONCAT('business.php?id=', b.id) as cta_link,
+                CASE 
+                    WHEN u.subscription_tier = 'premium_plus' THEN 6
+                    WHEN u.subscription_tier = 'premium' THEN 5
+                    ELSE 4
+                END as priority,
+                1 as sponsored,
+                'featured_business' as slide_type,
+                u.subscription_tier
+            FROM businesses b 
+            LEFT JOIN business_categories c ON b.category_id = c.id 
+            LEFT JOIN users u ON b.user_id = u.id
+            LEFT JOIN business_images bi ON b.id = bi.business_id AND bi.sort_order = 0
+            WHERE b.status = 'active' 
+            AND u.subscription_tier IN ('premium', 'premium_plus')
+            ORDER BY 
+                CASE u.subscription_tier 
+                    WHEN 'premium_plus' THEN 1 
+                    WHEN 'premium' THEN 2 
+                    ELSE 3 
+                END,
+                b.created_at DESC 
+            LIMIT 10
+        ");
+        $stmt->execute();
+        $featured_businesses = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        // Add featured businesses to combined array
+        foreach ($featured_businesses as $business) {
+            $all_slides[] = $business;
+        }
+    } catch (PDOException $e) {
+        // If featured businesses query fails, just continue with empty array
+        $featured_businesses = [];
     }
     
 } catch (PDOException $e) {
