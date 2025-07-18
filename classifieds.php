@@ -140,7 +140,7 @@ if (isset($_GET['debug_ads'])) {
 <!-- SEARCH BAR: Use homepage Airbnb-style search -->
 <section class="search-banner bg-white py-4 shadow-sm">
   <div class="container">
-    <form action="/classifieds.php" method="GET" class="unified-search-bar" role="search">
+    <form action="/classifieds.php" method="GET" class="unified-search-bar" role="search" id="classifieds-search-form">
       <div class="search-segment category-segment">
         <i class="fas fa-tags"></i>
         <select name="category" class="form-select" aria-label="Select category">
@@ -224,9 +224,21 @@ if (isset($_GET['debug_ads'])) {
             </div>
           </div>
           <div class="col-md-6 text-md-end">
-            <span class="text-muted">
-              <?= count($classifieds) ?> item<?= count($classifieds) !== 1 ? 's' : '' ?> found
-            </span>
+            <div class="d-flex align-items-center justify-content-md-end gap-3">
+              <!-- Sort Dropdown -->
+              <div class="sort-dropdown">
+                <label for="sort-by" class="form-label mb-0 me-2">Sort by:</label>
+                <select id="sort-by" class="form-select form-select-sm" style="width: auto;">
+                  <option value="newest" <?= ($_GET['sort'] ?? 'newest') === 'newest' ? 'selected' : '' ?>>Newest First</option>
+                  <option value="oldest" <?= ($_GET['sort'] ?? '') === 'oldest' ? 'selected' : '' ?>>Oldest First</option>
+                  <option value="price_low_high" <?= ($_GET['sort'] ?? '') === 'price_low_high' ? 'selected' : '' ?>>Price: Low to High</option>
+                  <option value="price_high_low" <?= ($_GET['sort'] ?? '') === 'price_high_low' ? 'selected' : '' ?>>Price: High to Low</option>
+                </select>
+              </div>
+              <span class="text-muted">
+                <?= count($classifieds) ?> item<?= count($classifieds) !== 1 ? 's' : '' ?> found
+              </span>
+            </div>
           </div>
         </div>
       </div>
@@ -360,45 +372,79 @@ if (isset($_GET['debug_ads'])) {
         <p class="section-subtitle">Browse classifieds by category</p>
       </div>
       
-      <div class="categories-scroll-wrapper">
-        <div class="category-scroll">
-          <a href="/classifieds.php?category=furniture" class="category-card">
-            <div class="icon-circle">
-              <i class="fas fa-couch"></i>
-            </div>
-            <h3 class="category-name">Furniture</h3>
-          </a>
-          <a href="/classifieds.php?category=electronics" class="category-card">
-            <div class="icon-circle">
-              <i class="fas fa-laptop"></i>
-            </div>
-            <h3 class="category-name">Electronics</h3>
-          </a>
-          <a href="/classifieds.php?category=books" class="category-card">
-            <div class="icon-circle">
-              <i class="fas fa-book"></i>
-            </div>
-            <h3 class="category-name">Books</h3>
-          </a>
-          <a href="/classifieds.php?category=clothing" class="category-card">
-            <div class="icon-circle">
-              <i class="fas fa-tshirt"></i>
-            </div>
-            <h3 class="category-name">Clothing</h3>
-          </a>
-          <a href="/classifieds.php?category=toys" class="category-card">
-            <div class="icon-circle">
-              <i class="fas fa-gamepad"></i>
-            </div>
-            <h3 class="category-name">Toys & Games</h3>
-          </a>
-          <a href="/classifieds.php?category=jewelry" class="category-card">
-            <div class="icon-circle">
-              <i class="fas fa-gem"></i>
-            </div>
-            <h3 class="category-name">Jewelry</h3>
-          </a>
-        </div>
+      <div class="classifieds-category-grid">
+        <a href="/classifieds.php?category=furniture" class="category-card card-hover-effect">
+          <div class="icon-circle">
+            <i class="fas fa-couch"></i>
+          </div>
+          <h4 class="category-name">Furniture</h4>
+        </a>
+        <a href="/classifieds.php?category=electronics" class="category-card card-hover-effect">
+          <div class="icon-circle">
+            <i class="fas fa-laptop"></i>
+          </div>
+          <h4 class="category-name">Electronics</h4>
+        </a>
+        <a href="/classifieds.php?category=books-seforim" class="category-card card-hover-effect">
+          <div class="icon-circle">
+            <i class="fas fa-book"></i>
+          </div>
+          <h4 class="category-name">Books & Seforim</h4>
+        </a>
+        <a href="/classifieds.php?category=clothing" class="category-card card-hover-effect">
+          <div class="icon-circle">
+            <i class="fas fa-tshirt"></i>
+          </div>
+          <h4 class="category-name">Clothing</h4>
+        </a>
+        <a href="/classifieds.php?category=toys-games" class="category-card card-hover-effect">
+          <div class="icon-circle">
+            <i class="fas fa-gamepad"></i>
+          </div>
+          <h4 class="category-name">Toys & Games</h4>
+        </a>
+        <a href="/classifieds.php?category=jewelry" class="category-card card-hover-effect">
+          <div class="icon-circle">
+            <i class="fas fa-gem"></i>
+          </div>
+          <h4 class="category-name">Jewelry</h4>
+        </a>
+        <a href="/classifieds.php?category=kitchen-items" class="category-card card-hover-effect">
+          <div class="icon-circle">
+            <i class="fas fa-utensils"></i>
+          </div>
+          <h4 class="category-name">Kitchen Items</h4>
+        </a>
+        <a href="/classifieds.php?category=judaica" class="category-card card-hover-effect">
+          <div class="icon-circle">
+            <i class="fas fa-star-of-david"></i>
+          </div>
+          <h4 class="category-name">Judaica</h4>
+        </a>
+        <a href="/classifieds.php?category=office-school" class="category-card card-hover-effect">
+          <div class="icon-circle">
+            <i class="fas fa-briefcase"></i>
+          </div>
+          <h4 class="category-name">Office & School</h4>
+        </a>
+        <a href="/classifieds.php?category=baby-kids" class="category-card card-hover-effect">
+          <div class="icon-circle">
+            <i class="fas fa-baby"></i>
+          </div>
+          <h4 class="category-name">Baby & Kids</h4>
+        </a>
+        <a href="/classifieds.php?category=free-stuff" class="category-card card-hover-effect">
+          <div class="icon-circle">
+            <i class="fas fa-gift"></i>
+          </div>
+          <h4 class="category-name">Free Stuff</h4>
+        </a>
+        <a href="/classifieds.php?category=miscellaneous" class="category-card card-hover-effect">
+          <div class="icon-circle">
+            <i class="fas fa-ellipsis-h"></i>
+          </div>
+          <h4 class="category-name">Miscellaneous</h4>
+        </a>
       </div>
     </div>
   </section>
@@ -406,61 +452,8 @@ if (isset($_GET['debug_ads'])) {
 
 <?php include 'includes/footer_main.php'; ?>
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Add loading states to classified cards
-    const classifiedCards = document.querySelectorAll('.classified-card');
-    
-    classifiedCards.forEach(card => {
-        card.addEventListener('click', function(e) {
-            // Don't add loading if clicking on buttons or links
-            if (e.target.tagName === 'A' || e.target.closest('a')) {
-                return;
-            }
-            
-            // Add loading state
-            this.classList.add('loading');
-            
-            // Navigate to classified page
-            const classifiedLink = this.querySelector('a[href*="classified_view.php"]');
-            if (classifiedLink) {
-                window.location.href = classifiedLink.href;
-            }
-        });
-    });
-    
-    // Add smooth scrolling for search form
-    const searchForm = document.querySelector('.unified-search-bar');
-    if (searchForm) {
-        searchForm.addEventListener('submit', function() {
-            // Add a small delay to show loading state
-            const submitBtn = this.querySelector('.search-button-unified');
-            if (submitBtn) {
-                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Searching...';
-                submitBtn.disabled = true;
-            }
-        });
-    }
-    
-    // Add scroll animations
-    const observerOptions = {
-        threshold: 0.1,
-        rootMargin: '0px 0px -50px 0px'
-    };
-    
-    const observer = new IntersectionObserver(function(entries) {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('animate-in');
-            }
-        });
-    }, observerOptions);
-    
-    document.querySelectorAll('[data-scroll]').forEach(el => {
-        observer.observe(el);
-    });
-});
-</script>
+<!-- Include the AJAX filter JavaScript -->
+<script src="/js/classifieds_filter.js"></script>
 
 <style>
 /* Import homepage styles */
@@ -752,6 +745,81 @@ document.addEventListener('DOMContentLoaded', function() {
     100% { transform: rotate(360deg); }
 }
 
+/* Sort Dropdown Styles */
+.sort-dropdown {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.sort-dropdown .form-select {
+    border-radius: 8px;
+    border: 1px solid #dee2e6;
+    font-size: 0.875rem;
+    padding: 0.375rem 0.75rem;
+    background-color: white;
+    transition: all 0.2s ease;
+}
+
+.sort-dropdown .form-select:focus {
+    border-color: #ffd700;
+    box-shadow: 0 0 0 0.2rem rgba(255, 215, 0, 0.25);
+}
+
+/* Category Grid Styles */
+.classifieds-category-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-top: 2rem;
+}
+
+.classifieds-category-grid .category-card {
+    background: white;
+    border-radius: 12px;
+    padding: 2rem 1.5rem;
+    text-align: center;
+    text-decoration: none;
+    color: #1a3353;
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+}
+
+.classifieds-category-grid .category-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+    border-color: #ffd700;
+    color: #1a3353;
+    text-decoration: none;
+}
+
+.classifieds-category-grid .icon-circle {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, #ffd700 0%, #ffcc00 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+    font-size: 1.5rem;
+    color: #1a3353;
+    transition: all 0.3s ease;
+}
+
+.classifieds-category-grid .category-card:hover .icon-circle {
+    transform: scale(1.1);
+    background: linear-gradient(135deg, #ffcc00 0%, #ffd700 100%);
+}
+
+.classifieds-category-grid .category-name {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0;
+    color: inherit;
+}
+
 /* Mobile optimizations */
 @media (max-width: 768px) {
     .classifieds-grid {
@@ -775,6 +843,31 @@ document.addEventListener('DOMContentLoaded', function() {
     
     .btn-view {
         padding: 0.75rem 1rem;
+    }
+    
+    .classifieds-category-grid {
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 1rem;
+    }
+    
+    .classifieds-category-grid .category-card {
+        padding: 1.5rem 1rem;
+    }
+    
+    .classifieds-category-grid .icon-circle {
+        width: 50px;
+        height: 50px;
+        font-size: 1.25rem;
+    }
+    
+    .sort-dropdown {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.25rem;
+    }
+    
+    .sort-dropdown .form-label {
+        font-size: 0.875rem;
     }
 }
 

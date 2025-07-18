@@ -1,5 +1,24 @@
+// Show loading indicator when Google Sign-In is being processed
+function showGoogleLoading() {
+    const loadingDiv = document.getElementById('google-loading');
+    if (loadingDiv) {
+        loadingDiv.style.display = 'block';
+    }
+}
+
+// Hide loading indicator
+function hideGoogleLoading() {
+    const loadingDiv = document.getElementById('google-loading');
+    if (loadingDiv) {
+        loadingDiv.style.display = 'none';
+    }
+}
+
 function handleGoogleSignIn(response) {
     console.log('Google Sign-In response received:', response);
+    
+    // Show loading state
+    showGoogleLoading();
     
     fetch('/auth/google-verify.php', {
         method: 'POST',
@@ -23,6 +42,7 @@ function handleGoogleSignIn(response) {
             } else {
                 alert('Unexpected server response. Please try again or contact support.');
             }
+            hideGoogleLoading();
             return;
         }
         console.log('Google verification response:', data);
@@ -45,6 +65,7 @@ function handleGoogleSignIn(response) {
             } else {
                 alert('Google login failed: ' + (data.message || 'Unknown error'));
             }
+            hideGoogleLoading();
         }
     })
     .catch(error => {
@@ -56,5 +77,6 @@ function handleGoogleSignIn(response) {
         } else {
             alert('An unexpected error occurred during login. Please try again.');
         }
+        hideGoogleLoading();
     });
 } 

@@ -146,6 +146,10 @@ include '../includes/header_main.php';
                              data-size="large"
                              data-logo_alignment="left">
                         </div>
+                        <!-- Fallback loading indicator -->
+                        <div id="google-loading" class="text-muted" style="display: none;">
+                            <small>Loading Google Sign-In...</small>
+                        </div>
                     </div>
                     
                     <!-- Debug Information (only show in development) -->
@@ -171,18 +175,37 @@ include '../includes/header_main.php';
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 <script src="/js/login.js"></script>
 <script>
-// Check if Google Sign-In library loaded properly
+// Enhanced Google Sign-In library loading check
 window.addEventListener('load', function() {
-    if (typeof google === 'undefined') {
-        console.error('Google Sign-In library failed to load');
+    // Wait a bit longer for the library to load
+    setTimeout(function() {
+        if (typeof google === 'undefined' || typeof google.accounts === 'undefined') {
+            console.error('Google Sign-In library failed to load');
+            const errorDiv = document.getElementById('login-error');
+            if (errorDiv) {
+                errorDiv.innerHTML = '<strong>Google Sign-In temporarily unavailable.</strong><br>You can still login with your email and password, or try refreshing the page.';
+                errorDiv.style.display = 'block';
+            }
+        } else {
+            console.log('Google Sign-In library loaded successfully');
+            // Hide any existing error messages
+            const errorDiv = document.getElementById('login-error');
+            if (errorDiv) {
+                errorDiv.style.display = 'none';
+            }
+        }
+    }, 2000); // Wait 2 seconds for library to load
+});
+
+// Fallback: If Google library doesn't load after 5 seconds, show a helpful message
+setTimeout(function() {
+    if (typeof google === 'undefined' || typeof google.accounts === 'undefined') {
         const errorDiv = document.getElementById('login-error');
-        if (errorDiv) {
-            errorDiv.textContent = 'Google Sign-In library failed to load. Please refresh the page.';
+        if (errorDiv && errorDiv.style.display !== 'none') {
+            errorDiv.innerHTML = '<strong>Google Sign-In is taking longer than usual to load.</strong><br>You can still login with your email and password below.';
             errorDiv.style.display = 'block';
         }
-    } else {
-        console.log('Google Sign-In library loaded successfully');
     }
-});
+}, 5000);
 </script>
 <?php include '../includes/footer_main.php'; ?> 
