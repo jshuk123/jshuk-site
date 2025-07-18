@@ -4,6 +4,7 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 require_once __DIR__ . '/../config/config.php';
 require_once __DIR__ . '/../config/constants.php';
+require_once __DIR__ . '/../config/maps_config.php';
 
 // Include helper functions
 if (file_exists(__DIR__ . '/helpers.php')) {
@@ -82,6 +83,9 @@ try {
     <!-- Swiper CSS for carousel functionality -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.css" />
     
+    <!-- Leaflet.js CSS for interactive maps -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -109,6 +113,12 @@ try {
     <link rel="stylesheet" href="/css/tippy-light.css" />
     <script src="/js/vendor/popper.min.js"></script>
     <script src="/js/vendor/tippy.min.js"></script>
+    
+    <!-- Leaflet.js for interactive maps -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    
+    <!-- Map Configuration -->
+    <?php outputMapConfig(); ?>
     <script>
     document.addEventListener('DOMContentLoaded', function() {
       // ✅ FIX: Only initialize Tippy.js on desktop to prevent mobile interference

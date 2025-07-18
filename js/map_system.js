@@ -22,26 +22,17 @@ class BusinessMap {
     }
     
     loadLeaflet() {
-        // Load Leaflet CSS if not already loaded
-        if (!document.querySelector('link[href*="leaflet.css"]')) {
-            const leafletCSS = document.createElement('link');
-            leafletCSS.rel = 'stylesheet';
-            leafletCSS.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
-            leafletCSS.integrity = 'sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=';
-            leafletCSS.crossOrigin = '';
-            document.head.appendChild(leafletCSS);
-        }
-        
-        // Load Leaflet JS if not already loaded
-        if (typeof L === 'undefined') {
-            const leafletJS = document.createElement('script');
-            leafletJS.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
-            leafletJS.integrity = 'sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=';
-            leafletJS.crossOrigin = '';
-            leafletJS.onload = () => this.initializeMap();
-            document.head.appendChild(leafletJS);
-        } else {
+        // Leaflet is now loaded in the header, so we can initialize directly
+        if (typeof L !== 'undefined') {
             this.initializeMap();
+        } else {
+            // Fallback: wait for Leaflet to load
+            const checkLeaflet = setInterval(() => {
+                if (typeof L !== 'undefined') {
+                    clearInterval(checkLeaflet);
+                    this.initializeMap();
+                }
+            }, 100);
         }
     }
     
@@ -49,11 +40,24 @@ class BusinessMap {
         // Initialize the map centered on London
         this.map = L.map('map-canvas').setView([51.5074, -0.1278], 10);
         
-        // Add OpenStreetMap tiles
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-            maxZoom: 18
-        }).addTo(this.map);
+        // Try to use Stadia Maps first (if API key is available), fallback to OpenStreetMap
+        const stadiaApiKey = this.getStadiaApiKey();
+        
+        if (stadiaApiKey) {
+            // Use Stadia Maps with API key for better performance and features
+            L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png?api_key=' + stadiaApiKey, {
+                maxZoom: 20,
+                attribution: '&copy; <a href="https://www.stadiamaps.com/" target="_blank">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>'
+            }).addTo(this.map);
+            console.log('🗺️ Using Stadia Maps with API key');
+        } else {
+            // Fallback to free OpenStreetMap tiles
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                maxZoom: 18
+            }).addTo(this.map);
+            console.log('🗺️ Using free OpenStreetMap tiles');
+        }
         
         // Initialize business data
         if (window.businessMapData) {
@@ -62,6 +66,21 @@ class BusinessMap {
         }
         
         console.log('🗺️ Map initialized successfully');
+    }
+    
+    getStadiaApiKey() {
+        // Check if API key is available in global config
+        if (window.JSHUK_CONFIG && window.JSHUK_CONFIG.STADIA_API_KEY) {
+            return window.JSHUK_CONFIG.STADIA_API_KEY;
+        }
+        
+        // Check if API key is available in meta tag
+        const metaTag = document.querySelector('meta[name="stadia-api-key"]');
+        if (metaTag && metaTag.content) {
+            return metaTag.content;
+        }
+        
+        return null;
     }
     
     bindViewToggleEvents() {
