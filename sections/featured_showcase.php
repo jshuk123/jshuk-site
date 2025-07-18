@@ -16,51 +16,12 @@ $all_slides = [];
 
 try {
     // QUERY A: Get sponsored slides from Enhanced Carousel Manager
-    // First check if carousel_slides table exists
+    // Use only direct queries to avoid parameter binding issues
     $tableExists = $pdo->query("SHOW TABLES LIKE 'carousel_slides'")->rowCount() > 0;
     
     if ($tableExists) {
-        // Check if the required columns exist
-        $columns = $pdo->query("SHOW COLUMNS FROM carousel_slides")->fetchAll(PDO::FETCH_COLUMN);
-        $hasRequiredColumns = in_array('active', $columns) && in_array('zone', $columns);
-        
-        if ($hasRequiredColumns) {
-            $stmt = $pdo->prepare("
-                SELECT 
-                    id,
-                    title,
-                    subtitle,
-                    image_url,
-                    cta_text,
-                    cta_link,
-                    priority,
-                    sponsored,
-                    'carousel_slide' as slide_type
-                FROM carousel_slides
-                WHERE active = 1
-                  AND zone = :zone
-                  AND (start_date IS NULL OR start_date <= :today)
-                  AND (end_date IS NULL OR end_date >= :today)
-                ORDER BY priority DESC, id DESC
-            ");
-            $stmt->execute([':zone' => $zone, ':today' => $today]);
-            $sponsored_slides = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            
-            // Add sponsored slides to combined array with their priority
-            foreach ($sponsored_slides as $slide) {
-                $slide['priority'] = $slide['priority'] ?? 0;
-                $all_slides[] = $slide;
-            }
-        } else {
-            $sponsored_slides = [];
-        }
-    } else {
-        $sponsored_slides = [];
-    }
-    
-    // If no sponsored slides found, try a simpler query without parameters
-    if (empty($sponsored_slides) && $tableExists) {
         try {
+            // Try the simplest possible query first
             $stmt = $pdo->query("
                 SELECT 
                     id,
@@ -85,14 +46,16 @@ try {
                 $all_slides[] = $slide;
             }
         } catch (PDOException $e) {
-            // If even the simple query fails, just continue with empty sponsored slides
+            // If query fails, just continue with empty sponsored slides
             $sponsored_slides = [];
         }
+    } else {
+        $sponsored_slides = [];
     }
     
     // QUERY B: Get featured businesses from directory
     try {
-        $stmt = $pdo->prepare("
+        $stmt = $pdo->query("
             SELECT 
                 b.id,
                 b.business_name as title,
@@ -123,7 +86,6 @@ try {
                 b.created_at DESC 
             LIMIT 10
         ");
-        $stmt->execute();
         $featured_businesses = $stmt->fetchAll(PDO::FETCH_ASSOC);
         
         // Add featured businesses to combined array
