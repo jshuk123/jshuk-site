@@ -6,6 +6,9 @@ session_start();
 require_once 'config/config.php';
 require_once 'includes/helpers.php';
 
+// Get user_id for saved jobs functionality
+$user_id = $_SESSION['user_id'] ?? 0;
+
 // --- Data Fetching ---
 $error_message = '';
 $warning_message = '';
@@ -126,7 +129,6 @@ try {
     $stmt = $pdo->prepare($sql);
     
     // Add user_id as the first parameter for the saved_jobs join
-    $user_id = $_SESSION['user_id'] ?? 0;
     $all_params = array_merge([$user_id], $params);
     
     $stmt->execute($all_params);
