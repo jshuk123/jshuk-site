@@ -778,4 +778,97 @@
 .job-card:nth-child(3) { animation-delay: 0.3s; }
 .job-card:nth-child(4) { animation-delay: 0.4s; }
 .job-card:nth-child(5) { animation-delay: 0.5s; }
-.job-card:nth-child(6) { animation-delay: 0.6s; } 
+.job-card:nth-child(6) { animation-delay: 0.6s; }
+
+/* AJAX Filter System Styles */
+.loading-spinner {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.loading-spinner p {
+    margin: 1rem 0 0 0;
+    color: #6c757d;
+    font-weight: 500;
+}
+
+.jobs-grid {
+    transition: opacity 0.3s ease;
+}
+
+.jobs-grid.loading {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+/* No Results Styling */
+.no-results {
+    text-align: center;
+    padding: 4rem 2rem;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    margin: 2rem 0;
+}
+
+.no-results-icon {
+    font-size: 4rem;
+    color: #dee2e6;
+    margin-bottom: 1rem;
+}
+
+.no-results h3 {
+    color: #6c757d;
+    margin-bottom: 1rem;
+    font-weight: 600;
+}
+
+.no-results p {
+    color: #6c757d;
+    font-size: 1.1rem;
+    margin-bottom: 0;
+}
+
+.no-results a {
+    color: #ffd700;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.no-results a:hover {
+    text-decoration: underline;
+}
+
+/* Filter Form Enhancements */
+.search-form {
+    transition: all 0.3s ease;
+}
+
+.search-group input:focus,
+.search-group select:focus {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(255, 215, 0, 0.15);
+}
+
+/* Keyboard Shortcut Hints */
+.search-group input::placeholder {
+    color: #adb5bd;
+    font-style: italic;
+}
+
+/* Responsive AJAX Enhancements */
+@media (max-width: 768px) {
+    .loading-spinner {
+        padding: 1.5rem;
+    }
+    
+    .no-results {
+        padding: 2rem 1rem;
+    }
+    
+    .no-results-icon {
+        font-size: 3rem;
+    }
+} 

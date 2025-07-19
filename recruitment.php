@@ -47,29 +47,33 @@ try {
     // Get featured job of the week (most recent featured job)
     $featured_query = "
         SELECT r.*, s.name as sector_name, b.business_name,
-               bi.file_path as business_logo, u.profile_image, u.first_name, u.last_name
+               bi.file_path as business_logo, u.profile_image, u.first_name, u.last_name,
+               CASE WHEN sj.id IS NOT NULL THEN 1 ELSE 0 END as is_saved
         FROM recruitment r
         LEFT JOIN job_sectors s ON r.sector_id = s.id
         LEFT JOIN businesses b ON r.business_id = b.id
         LEFT JOIN business_images bi ON b.id = bi.business_id AND bi.sort_order = 0
         LEFT JOIN users u ON r.user_id = u.id
+        LEFT JOIN saved_jobs sj ON r.id = sj.job_id AND sj.user_id = ?
         WHERE r.is_active = 1 AND r.is_featured = 1
         ORDER BY r.created_at DESC
         LIMIT 1
     ";
     $featured_stmt = $pdo->prepare($featured_query);
-    $featured_stmt->execute();
+    $featured_stmt->execute([$user_id]);
     $featured_job = $featured_stmt->fetch(PDO::FETCH_ASSOC);
 
     // Build the main query with proper joins
     $query = "
         SELECT r.*, s.name as sector_name, b.business_name,
-               bi.file_path as business_logo, u.profile_image, u.first_name, u.last_name
+               bi.file_path as business_logo, u.profile_image, u.first_name, u.last_name,
+               CASE WHEN sj.id IS NOT NULL THEN 1 ELSE 0 END as is_saved
         FROM recruitment r
         LEFT JOIN job_sectors s ON r.sector_id = s.id
         LEFT JOIN businesses b ON r.business_id = b.id
         LEFT JOIN business_images bi ON b.id = bi.business_id AND bi.sort_order = 0
         LEFT JOIN users u ON r.user_id = u.id
+        LEFT JOIN saved_jobs sj ON r.id = sj.job_id AND sj.user_id = ?
         WHERE r.is_active = 1
     ";
     
@@ -120,7 +124,12 @@ try {
     $sql = $query . " AND $where_clause $order_clause";
     
     $stmt = $pdo->prepare($sql);
-    $stmt->execute($params);
+    
+    // Add user_id as the first parameter for the saved_jobs join
+    $user_id = $_SESSION['user_id'] ?? 0;
+    $all_params = array_merge([$user_id], $params);
+    
+    $stmt->execute($all_params);
     $jobs = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     // Get sectors for filter dropdown
@@ -534,11 +543,11 @@ if ($header_ad) {
                             </a>
                             
                             <?php if (isset($_SESSION['user_id'])): ?>
-                                <button class="btn btn-outline-secondary btn-sm save-job-btn" 
+                                <button class="btn <?= $job['is_saved'] ? 'btn-success' : 'btn-outline-secondary' ?> btn-sm save-job-btn" 
                                         data-job-id="<?= $job['id'] ?>" 
-                                        title="Save this job">
+                                        title="<?= $job['is_saved'] ? 'Remove from saved jobs' : 'Save this job' ?>">
                                     <i class="fas fa-bookmark"></i>
-                                    Save
+                                    <?= $job['is_saved'] ? 'Saved' : 'Save' ?>
                                 </button>
                                 
                                 <button class="btn btn-outline-info btn-sm create-alert-btn" 
@@ -677,103 +686,40 @@ if ($header_ad) {
     </div>
 </div>
 
+<!-- Include AJAX Filter JavaScript -->
+<script src="/js/jobs_filter.js"></script>
+
 <script>
-// Job saving functionality
+// Job alert modal functionality (kept separate from AJAX system)
 document.addEventListener('DOMContentLoaded', function() {
-    // Save job functionality
-    document.querySelectorAll('.save-job-btn').forEach(button => {
-        button.addEventListener('click', function() {
-            const jobId = this.dataset.jobId;
-            const button = this;
+    // Create alert functionality
+    const createAlertBtn = document.getElementById('createAlertBtn');
+    if (createAlertBtn) {
+        createAlertBtn.addEventListener('click', function() {
+            const form = document.getElementById('jobAlertForm');
+            const formData = new FormData(form);
             
-            fetch('/api/save_job.php', {
+            fetch('/api/create_job_alert.php', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: `job_id=${jobId}`
+                body: formData
             })
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    button.innerHTML = '<i class="fas fa-check"></i> Saved';
-                    button.classList.remove('btn-outline-secondary');
-                    button.classList.add('btn-success');
-                    button.disabled = true;
+                    alert('Job alert created successfully!');
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('jobAlertModal'));
+                    modal.hide();
+                    form.reset();
                 } else {
-                    alert('Error saving job: ' + data.message);
+                    alert('Error creating alert: ' + data.message);
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
-                alert('Error saving job. Please try again.');
+                alert('Error creating alert. Please try again.');
             });
         });
-    });
-    
-    // Job alert functionality
-    document.querySelectorAll('.create-alert-btn').forEach(button => {
-        button.addEventListener('click', function() {
-            const jobTitle = this.dataset.jobTitle;
-            const jobSector = this.dataset.jobSector;
-            const jobLocation = this.dataset.jobLocation;
-            
-            // Pre-fill the modal
-            document.getElementById('alertName').value = jobTitle + ' Alert';
-            
-            // Set sector if available
-            if (jobSector) {
-                const sectorSelect = document.getElementById('alertSector');
-                for (let option of sectorSelect.options) {
-                    if (option.text === jobSector) {
-                        option.selected = true;
-                        break;
-                    }
-                }
-            }
-            
-            // Set location if available
-            if (jobLocation) {
-                const locationSelect = document.getElementById('alertLocation');
-                for (let option of locationSelect.options) {
-                    if (option.text === jobLocation) {
-                        option.selected = true;
-                        break;
-                    }
-                }
-            }
-            
-            // Show modal
-            const modal = new bootstrap.Modal(document.getElementById('jobAlertModal'));
-            modal.show();
-        });
-    });
-    
-    // Create alert functionality
-    document.getElementById('createAlertBtn').addEventListener('click', function() {
-        const form = document.getElementById('jobAlertForm');
-        const formData = new FormData(form);
-        
-        fetch('/api/create_job_alert.php', {
-            method: 'POST',
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                alert('Job alert created successfully!');
-                const modal = bootstrap.Modal.getInstance(document.getElementById('jobAlertModal'));
-                modal.hide();
-                form.reset();
-            } else {
-                alert('Error creating alert: ' + data.message);
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('Error creating alert. Please try again.');
-        });
-    });
+    }
 });
 </script>
 

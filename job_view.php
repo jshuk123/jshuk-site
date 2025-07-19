@@ -11,14 +11,17 @@ if (!$job_id) {
 try {
     $stmt = $pdo->prepare("
         SELECT r.*, s.name as sector_name, b.business_name, b.logo_path, b.description as business_description,
-               u.profile_image, u.first_name, u.last_name, u.email as user_email
+               u.profile_image, u.first_name, u.last_name, u.email as user_email,
+               CASE WHEN sj.id IS NOT NULL THEN 1 ELSE 0 END as is_saved
         FROM recruitment r
         LEFT JOIN job_sectors s ON r.sector_id = s.id
         LEFT JOIN businesses b ON r.business_id = b.id
         LEFT JOIN users u ON r.user_id = u.id
+        LEFT JOIN saved_jobs sj ON r.id = sj.job_id AND sj.user_id = ?
         WHERE r.id = ? AND r.is_active = 1
     ");
-    $stmt->execute([$job_id]);
+    $user_id = $_SESSION['user_id'] ?? 0;
+    $stmt->execute([$user_id, $job_id]);
     $job = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if (!$job) {
@@ -187,9 +190,11 @@ include 'includes/header_main.php';
                 
                 <?php if (isset($_SESSION['user_id'])): ?>
                 <div class="save-job-section mb-3">
-                    <button class="btn-save-job-large" data-job-id="<?= $job['id'] ?>" title="Save this job">
+                    <button class="btn-save-job-large <?= $job['is_saved'] ? 'saved' : '' ?>" 
+                            data-job-id="<?= $job['id'] ?>" 
+                            title="<?= $job['is_saved'] ? 'Remove from saved jobs' : 'Save this job' ?>">
                         <i class="fas fa-bookmark"></i>
-                        <span>Save Job</span>
+                        <span><?= $job['is_saved'] ? 'Saved' : 'Save Job' ?></span>
                     </button>
                 </div>
                 <?php endif; ?>
