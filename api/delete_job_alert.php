@@ -38,6 +38,20 @@ if (!$alert_id || !is_numeric($alert_id)) {
 }
 
 try {
+    // First, check if the job_alerts table exists
+    $stmt = $pdo->query("SHOW TABLES LIKE 'job_alerts'");
+    $table_exists = $stmt->fetch();
+    
+    if (!$table_exists) {
+        http_response_code(500);
+        echo json_encode([
+            'success' => false,
+            'message' => 'Job alerts system is not set up yet. Please contact support.',
+            'error' => 'job_alerts_table_missing'
+        ]);
+        exit;
+    }
+    
     // Check if the alert belongs to the user
     $stmt = $pdo->prepare("SELECT id, name FROM job_alerts WHERE id = ? AND user_id = ?");
     $stmt->execute([$alert_id, $user_id]);
@@ -66,6 +80,8 @@ try {
     http_response_code(500);
     echo json_encode([
         'success' => false,
-        'message' => 'An error occurred while deleting the job alert'
+        'message' => 'An error occurred while deleting the job alert',
+        'error' => 'database_error',
+        'details' => $e->getMessage()
     ]);
 } 
