@@ -143,7 +143,7 @@ include '../includes/header_main.php';
                         <?= array_sum(array_column($jobs, 'application_count')) ?> total applications
                     </p>
                 </div>
-                <a href="/post_job.php" class="btn btn-primary">
+                <a href="/submit_job.php" class="btn btn-primary">
                     <i class="fa-solid fa-plus me-2"></i>Post New Job
                 </a>
             </div>
@@ -171,7 +171,7 @@ include '../includes/header_main.php';
                     <p class="text-muted mb-4">
                         Start posting jobs to attract talented candidates to your company.
                     </p>
-                    <a href="/post_job.php" class="btn btn-primary">
+                    <a href="/submit_job.php" class="btn btn-primary">
                         <i class="fa-solid fa-plus me-2"></i>Post Your First Job
                     </a>
                 </div>

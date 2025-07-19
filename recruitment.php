@@ -131,9 +131,9 @@ try {
 
     // ✅ Fixed: Better error handling - only show error for actual DB issues
     if (empty($jobs) && $has_filters) {
-        $warning_message = "😕 No jobs found matching your filters. Try adjusting your search criteria or <a href='/post_job.php'>post a new job</a>.";
+        $warning_message = "😕 No jobs found matching your filters. Try adjusting your search criteria or <a href='/submit_job.php'>post a new job</a>.";
     } elseif (empty($jobs) && !$has_filters) {
-        $warning_message = "😕 No jobs available at the moment. <a href='/post_job.php'>Be the first to post a job</a>!";
+        $warning_message = "😕 No jobs available at the moment. <a href='/submit_job.php'>Be the first to post a job</a>!";
     }
 
 } catch (PDOException $e) {
@@ -220,7 +220,7 @@ if (isset($_GET['debug_ads'])) {
     </p>
           <div class="hero-cta-buttons">
         <?php if (isset($_SESSION['user_id'])): ?>
-          <a href="/post_job.php" class="hero-btn">Post a Job</a>
+          <a href="/submit_job.php" class="hero-btn">Post a Job</a>
           <a href="/users/saved_jobs.php" class="hero-btn">My Saved Jobs</a>
         <?php else: ?>
           <a href="/auth/login.php" class="hero-btn">Login to Post</a>
@@ -359,7 +359,7 @@ if (isset($_GET['debug_ads'])) {
           <h3>No Jobs Found</h3>
           <p class="text-muted">Be the first to post a job opportunity in our community!</p>
           <?php if (isset($_SESSION['user_id'])): ?>
-            <a href="/post_job.php" class="btn-jshuk-primary">Post a Job</a>
+            <a href="/submit_job.php" class="btn-jshuk-primary">Post a Job</a>
           <?php else: ?>
             <a href="/auth/login.php" class="btn-jshuk-primary">Login to Post</a>
           <?php endif; ?>
