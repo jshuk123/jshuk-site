@@ -151,6 +151,8 @@ try {
     // ✅ Fixed: Log the error for debugging
     error_log("Database error in recruitment.php: " . $e->getMessage());
     $jobs = [];
+    $sectors = []; // Ensure sectors is an array even on error
+    $locations = []; // Ensure locations is an array even on error
     $error_message = "Unable to load job listings. Please try again later.";
 }
 
