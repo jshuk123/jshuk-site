@@ -150,6 +150,10 @@ function getBusinessTestimonialCount($business_id, $pdo) {
                     <a href="/users/saved_jobs.php" class="list-group-item list-group-item-action"><i class="fa-solid fa-bookmark me-2"></i>Saved Jobs</a>
                     <a href="/users/job_alerts.php" class="list-group-item list-group-item-action"><i class="fa-solid fa-bell me-2"></i>Job Alerts</a>
                     <hr class="my-1">
+                    <a href="/users/company_profile.php" class="list-group-item list-group-item-action"><i class="fa-solid fa-building me-2"></i>Company Profile</a>
+                    <a href="/users/manage_jobs.php" class="list-group-item list-group-item-action"><i class="fa-solid fa-briefcase me-2"></i>Manage Jobs</a>
+                    <a href="/users/applications.php" class="list-group-item list-group-item-action"><i class="fa-solid fa-users me-2"></i>Applications</a>
+                    <hr class="my-1">
                     <a href="/users/edit_profile.php" class="list-group-item list-group-item-action"><i class="fa-solid fa-user-edit me-2"></i>Edit Profile</a>
                     <a href="/users/change_password.php" class="list-group-item list-group-item-action"><i class="fa-solid fa-key me-2"></i>Change Password</a>
                     <a href="/auth/logout.php" class="list-group-item list-group-item-action text-danger"><i class="fa-solid fa-sign-out-alt me-2"></i>Logout</a>
