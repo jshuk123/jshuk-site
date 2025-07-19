@@ -185,6 +185,15 @@ include 'includes/header_main.php';
             <div class="sidebar-widget apply-section">
                 <h3>Apply for this Position</h3>
                 
+                <?php if (isset($_SESSION['user_id'])): ?>
+                <div class="save-job-section mb-3">
+                    <button class="btn-save-job-large" data-job-id="<?= $job['id'] ?>" title="Save this job">
+                        <i class="fas fa-bookmark"></i>
+                        <span>Save Job</span>
+                    </button>
+                </div>
+                <?php endif; ?>
+                
                 <?php if (!empty($contact_email)): ?>
                 <div class="apply-options">
                     <a href="mailto:<?= htmlspecialchars($contact_email) ?>?subject=Application for <?= urlencode($job['job_title']) ?>" 
@@ -733,6 +742,150 @@ include 'includes/header_main.php';
         font-size: 0.9rem;
     }
 }
+/* Save Job Button */
+.save-job-section {
+    text-align: center;
+}
+
+.btn-save-job-large {
+    background: linear-gradient(90deg, #ffd700 0%, #ffd700 100%);
+    color: #1a3353;
+    border: none;
+    border-radius: 8px;
+    padding: 0.75rem 1.5rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    width: 100%;
+    transition: all 0.2s ease;
+}
+
+.btn-save-job-large:hover {
+    background: linear-gradient(90deg, #ffd700 0%, #ffcc00 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(255, 215, 0, 0.3);
+}
+
+.btn-save-job-large.saved {
+    background: linear-gradient(90deg, #28a745 0%, #20c997 100%);
+    color: white;
+}
+
+.btn-save-job-large.saved:hover {
+    background: linear-gradient(90deg, #218838 0%, #1ea085 100%);
+}
+
+/* Notification animations */
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideOutRight {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
 </style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Handle save job button
+    const saveJobBtn = document.querySelector('.btn-save-job-large');
+    if (saveJobBtn) {
+        saveJobBtn.addEventListener('click', function() {
+            const jobId = this.dataset.jobId;
+            
+            // Show loading state
+            this.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Saving...</span>';
+            this.disabled = true;
+            
+            // Send AJAX request to save job
+            fetch('/api/save_job.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `job_id=${jobId}&action=toggle`
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Update button state
+                    if (data.is_saved) {
+                        this.innerHTML = '<i class="fas fa-bookmark"></i><span>Saved</span>';
+                        this.classList.add('saved');
+                        this.title = 'Remove from saved jobs';
+                        showNotification(data.message, 'success');
+                    } else {
+                        this.innerHTML = '<i class="fas fa-bookmark"></i><span>Save Job</span>';
+                        this.classList.remove('saved');
+                        this.title = 'Save this job';
+                        showNotification(data.message, 'success');
+                    }
+                } else if (data.action === 'login_required') {
+                    // Show login modal or redirect
+                    showNotification('Please log in to save jobs', 'info');
+                    setTimeout(() => {
+                        window.location.href = '/auth/login.php?redirect=' + encodeURIComponent(window.location.href);
+                    }, 2000);
+                } else {
+                    showNotification(data.message, 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showNotification('An error occurred while saving the job', 'error');
+            })
+            .finally(() => {
+                this.disabled = false;
+            });
+        });
+    }
+    
+    // Function to show notifications
+    function showNotification(message, type) {
+        const notification = document.createElement('div');
+        notification.className = `alert alert-${type === 'success' ? 'success' : type === 'error' ? 'danger' : type === 'warning' ? 'warning' : 'info'} notification`;
+        notification.innerHTML = `
+            <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-triangle' : type === 'warning' ? 'exclamation-triangle' : 'info-circle'} me-2"></i>
+            ${message}
+        `;
+        
+        // Add styles
+        notification.style.position = 'fixed';
+        notification.style.top = '20px';
+        notification.style.right = '20px';
+        notification.style.zIndex = '9999';
+        notification.style.minWidth = '300px';
+        notification.style.animation = 'slideInRight 0.3s ease-out';
+        
+        document.body.appendChild(notification);
+        
+        // Remove after 3 seconds
+        setTimeout(() => {
+            notification.style.animation = 'slideOutRight 0.3s ease-out';
+            setTimeout(() => {
+                notification.remove();
+            }, 300);
+        }, 3000);
+    }
+});
+</script>
 
 <?php include 'includes/footer_main.php'; ?> 

@@ -218,15 +218,16 @@ if (isset($_GET['debug_ads'])) {
     <p class="subheading">
       Discover job opportunities in the Jewish community. Browse full-time, part-time, and contract positions from trusted employers.
     </p>
-    <div class="hero-cta-buttons">
-      <?php if (isset($_SESSION['user_id'])): ?>
-        <a href="/post_job.php" class="hero-btn">Post a Job</a>
-      <?php else: ?>
-        <a href="/auth/login.php" class="hero-btn">Login to Post</a>
-        <a href="/auth/register.php" class="hero-btn">Sign Up Free</a>
-      <?php endif; ?>
-      <a href="#jobs" class="hero-btn">Browse Jobs</a>
-    </div>
+          <div class="hero-cta-buttons">
+        <?php if (isset($_SESSION['user_id'])): ?>
+          <a href="/post_job.php" class="hero-btn">Post a Job</a>
+          <a href="/users/saved_jobs.php" class="hero-btn">My Saved Jobs</a>
+        <?php else: ?>
+          <a href="/auth/login.php" class="hero-btn">Login to Post</a>
+          <a href="/auth/register.php" class="hero-btn">Sign Up Free</a>
+        <?php endif; ?>
+        <a href="#jobs" class="hero-btn">Browse Jobs</a>
+      </div>
   </div>
 </section>
 
@@ -263,6 +264,13 @@ if (isset($_GET['debug_ads'])) {
         <i class="fa fa-search"></i>
         <span class="d-none d-md-inline">Search</span>
       </button>
+      
+      <?php if (isset($_SESSION['user_id'])): ?>
+        <button type="button" class="btn btn-alert" id="createJobAlertBtn" aria-label="Create Job Alert">
+          <i class="fa fa-bell"></i>
+          <span class="d-none d-md-inline">Create Alert</span>
+        </button>
+      <?php endif; ?>
     </form>
   </div>
 </section>
@@ -379,9 +387,16 @@ if (isset($_GET['debug_ads'])) {
                     </h3>
                     <p class="job-company"><?= htmlspecialchars($job['business_name'] ?? 'Company') ?></p>
                   </div>
-                  <?php if ($job['is_featured']): ?>
-                    <span class="featured-badge">Featured</span>
-                  <?php endif; ?>
+                  <div class="job-actions">
+                    <?php if (isset($_SESSION['user_id'])): ?>
+                      <button class="btn-save-job" data-job-id="<?= $job['id'] ?>" title="Save job">
+                        <i class="fas fa-bookmark"></i>
+                      </button>
+                    <?php endif; ?>
+                    <?php if ($job['is_featured']): ?>
+                      <span class="featured-badge">Featured</span>
+                    <?php endif; ?>
+                  </div>
                 </div>
                 
                 <div class="job-meta">
@@ -453,7 +468,7 @@ document.addEventListener('DOMContentLoaded', function() {
     jobCards.forEach(card => {
         card.addEventListener('click', function(e) {
             // Don't add loading if clicking on buttons or links
-            if (e.target.tagName === 'A' || e.target.closest('a')) {
+            if (e.target.tagName === 'A' || e.target.closest('a') || e.target.closest('.btn-save-job')) {
                 return;
             }
             
@@ -467,6 +482,118 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
+    
+    // Handle save job buttons
+    document.querySelectorAll('.btn-save-job').forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            const jobId = this.dataset.jobId;
+            
+            // Show loading state
+            this.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+            this.disabled = true;
+            
+            // Send AJAX request to save job
+            fetch('/api/save_job.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `job_id=${jobId}&action=toggle`
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Update button state
+                    if (data.is_saved) {
+                        this.innerHTML = '<i class="fas fa-bookmark"></i>';
+                        this.style.color = '#ffd700';
+                        this.title = 'Remove from saved jobs';
+                        showNotification(data.message, 'success');
+                    } else {
+                        this.innerHTML = '<i class="far fa-bookmark"></i>';
+                        this.style.color = '#6c757d';
+                        this.title = 'Save job';
+                        showNotification(data.message, 'success');
+                    }
+                } else if (data.action === 'login_required') {
+                    // Show login modal or redirect
+                    showNotification('Please log in to save jobs', 'info');
+                    setTimeout(() => {
+                        window.location.href = '/auth/login.php?redirect=' + encodeURIComponent(window.location.href);
+                    }, 2000);
+                } else {
+                    showNotification(data.message, 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showNotification('An error occurred while saving the job', 'error');
+            })
+            .finally(() => {
+                this.disabled = false;
+            });
+        });
+    });
+    
+    // Handle create job alert button
+    const createAlertBtn = document.getElementById('createJobAlertBtn');
+    if (createAlertBtn) {
+        createAlertBtn.addEventListener('click', function() {
+            // Get current search criteria
+            const sectorSelect = document.querySelector('select[name="sector"]');
+            const locationSelect = document.querySelector('select[name="location"]');
+            const jobTypeSelect = document.querySelector('select[name="job_type"]');
+            const searchInput = document.querySelector('input[name="search"]');
+            
+            const sectorId = sectorSelect ? sectorSelect.value : '';
+            const location = locationSelect ? locationSelect.value : '';
+            const jobType = jobTypeSelect ? jobTypeSelect.value : '';
+            const keywords = searchInput ? searchInput.value : '';
+            
+            // Check if at least one criteria is set
+            if (!sectorId && !location && !jobType && !keywords) {
+                showNotification('Please set at least one search criteria before creating an alert', 'warning');
+                return;
+            }
+            
+            // Show loading state
+            this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating...';
+            this.disabled = true;
+            
+            // Send AJAX request to create alert
+            const formData = new FormData();
+            formData.append('sector_id', sectorId);
+            formData.append('location', location);
+            formData.append('job_type', jobType);
+            formData.append('keywords', keywords);
+            formData.append('name', 'Job Alert');
+            formData.append('email_frequency', 'daily');
+            
+            fetch('/api/create_job_alert.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showNotification(data.message, 'success');
+                } else {
+                    showNotification(data.message, 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showNotification('An error occurred while creating the job alert', 'error');
+            })
+            .finally(() => {
+                this.innerHTML = '<i class="fa fa-bell"></i><span class="d-none d-md-inline">Create Alert</span>';
+                this.disabled = false;
+            });
+        });
+    }
     
     // Add smooth scrolling for search form
     const searchForm = document.querySelector('.airbnb-search-bar');
@@ -498,6 +625,34 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('[data-scroll]').forEach(el => {
         observer.observe(el);
     });
+    
+    // Function to show notifications
+    function showNotification(message, type) {
+        const notification = document.createElement('div');
+        notification.className = `alert alert-${type === 'success' ? 'success' : type === 'error' ? 'danger' : type === 'warning' ? 'warning' : 'info'} notification`;
+        notification.innerHTML = `
+            <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-triangle' : type === 'warning' ? 'exclamation-triangle' : 'info-circle'} me-2"></i>
+            ${message}
+        `;
+        
+        // Add styles
+        notification.style.position = 'fixed';
+        notification.style.top = '20px';
+        notification.style.right = '20px';
+        notification.style.zIndex = '9999';
+        notification.style.minWidth = '300px';
+        notification.style.animation = 'slideInRight 0.3s ease-out';
+        
+        document.body.appendChild(notification);
+        
+        // Remove after 3 seconds
+        setTimeout(() => {
+            notification.style.animation = 'slideOutRight 0.3s ease-out';
+            setTimeout(() => {
+                notification.remove();
+            }, 300);
+        }, 3000);
+    }
 });
 </script>
 
@@ -884,13 +1039,85 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 }
 
+/* Job Actions */
+.job-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-save-job {
+    background: none;
+    border: none;
+    color: #6c757d;
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+}
+
+.btn-save-job:hover {
+    background: rgba(255, 215, 0, 0.1);
+    transform: scale(1.1);
+}
+
+.btn-save-job.saved {
+    color: #ffd700;
+}
+
+/* Job Alert Button */
+.btn-alert {
+    background: linear-gradient(90deg, #28a745 0%, #20c997 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 0.75rem 1.5rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    margin-left: 0.5rem;
+}
+
+.btn-alert:hover {
+    background: linear-gradient(90deg, #218838 0%, #1ea085 100%);
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+}
+
+/* Notification animations */
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideOutRight {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
+
 /* Focus states for accessibility */
 .job-card:focus-within {
     outline: 2px solid #ffd700;
     outline-offset: 2px;
 }
 
-.btn-view:focus {
+.btn-view:focus,
+.btn-save-job:focus,
+.btn-alert:focus {
     outline: 2px solid #ffd700;
     outline-offset: 2px;
 }
