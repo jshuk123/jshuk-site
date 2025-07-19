@@ -39,8 +39,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         // Generate slug from company name
-        $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $company_name)));
-        $slug = trim($slug, '-');
+        $base_slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $company_name)));
+        $base_slug = trim($base_slug, '-');
+        
+        // Ensure unique slug
+        $slug = $base_slug;
+        $counter = 1;
+        while (true) {
+            $stmt = $pdo->prepare("SELECT id FROM company_profiles WHERE slug = ? AND user_id != ?");
+            $stmt->execute([$slug, $user_id]);
+            if (!$stmt->fetch()) {
+                break; // Slug is unique
+            }
+            $slug = $base_slug . '-' . $counter;
+            $counter++;
+        }
 
         // Check if company profile exists
         $stmt = $pdo->prepare("SELECT id FROM company_profiles WHERE user_id = ?");

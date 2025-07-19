@@ -104,17 +104,4 @@ SET FOREIGN_KEY_CHECKS = 1;
 ALTER TABLE `recruitment` 
 ADD INDEX IF NOT EXISTS `idx_user_active` (`user_id`, `is_active`);
 
--- Create a function to generate company slugs
-DELIMITER //
-CREATE FUNCTION IF NOT EXISTS generate_company_slug(company_name VARCHAR(255)) 
-RETURNS VARCHAR(255)
-DETERMINISTIC
-BEGIN
-    DECLARE slug VARCHAR(255);
-    SET slug = LOWER(company_name);
-    SET slug = REGEXP_REPLACE(slug, '[^a-z0-9\\s-]', '');
-    SET slug = REGEXP_REPLACE(slug, '\\s+', '-');
-    SET slug = TRIM(BOTH '-' FROM slug);
-    RETURN slug;
-END //
-DELIMITER ; 
+-- Note: Company slug generation will be handled in PHP for better compatibility 

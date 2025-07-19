@@ -95,9 +95,22 @@ try {
             $stmt->execute([$user['id']]);
             
             if (!$stmt->fetch()) {
-                // Create sample company profile
+                // Create sample company profile with unique slug
                 $company_name = $user['first_name'] . "'s Company";
-                $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $company_name)));
+                $base_slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $company_name)));
+                
+                // Ensure unique slug
+                $slug = $base_slug;
+                $counter = 1;
+                while (true) {
+                    $stmt = $pdo->prepare("SELECT id FROM company_profiles WHERE slug = ?");
+                    $stmt->execute([$slug]);
+                    if (!$stmt->fetch()) {
+                        break; // Slug is unique
+                    }
+                    $slug = $base_slug . '-' . $counter;
+                    $counter++;
+                }
                 
                 $stmt = $pdo->prepare("
                     INSERT INTO company_profiles (
@@ -120,7 +133,7 @@ try {
                     $user['first_name'] . "@example.com"
                 ]);
                 
-                echo "✅ Created sample company profile for " . $user['first_name'] . "\n";
+                echo "✅ Created sample company profile for " . $user['first_name'] . " (slug: $slug)\n";
             }
         }
     }
