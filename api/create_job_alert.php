@@ -1,9 +1,25 @@
 <?php
-session_start();
-require_once '../config/config.php';
+// Set error handling to catch any PHP errors
+error_reporting(E_ALL);
+ini_set('display_errors', 0);
+ini_set('log_errors', 1);
 
-// Set JSON response header
+// Set JSON response header early
 header('Content-Type: application/json');
+
+try {
+    session_start();
+    require_once '../config/config.php';
+} catch (Exception $e) {
+    http_response_code(500);
+    echo json_encode([
+        'success' => false,
+        'message' => 'Configuration error. Please try again later.',
+        'error' => 'config_error',
+        'details' => $e->getMessage()
+    ]);
+    exit;
+}
 
 // Check if user is logged in
 if (!isset($_SESSION['user_id'])) {
@@ -71,6 +87,17 @@ if (empty($sector_id) && empty($location) && empty($job_type) && empty($keywords
 }
 
 try {
+    // Check if database connection is available
+    if (!$pdo) {
+        http_response_code(500);
+        echo json_encode([
+            'success' => false,
+            'message' => 'Database connection not available. Please try again later.',
+            'error' => 'database_connection_failed'
+        ]);
+        exit;
+    }
+    
     // First, check if the job_alerts table exists
     $stmt = $pdo->query("SHOW TABLES LIKE 'job_alerts'");
     $table_exists = $stmt->fetch();
@@ -119,11 +146,16 @@ try {
     // Build a description of the alert criteria
     $criteria = [];
     if ($sector_id) {
-        $stmt = $pdo->prepare("SELECT name FROM job_sectors WHERE id = ?");
-        $stmt->execute([$sector_id]);
-        $sector_name = $stmt->fetchColumn();
-        if ($sector_name) {
-            $criteria[] = "Sector: $sector_name";
+        try {
+            $stmt = $pdo->prepare("SELECT name FROM job_sectors WHERE id = ?");
+            $stmt->execute([$sector_id]);
+            $sector_name = $stmt->fetchColumn();
+            if ($sector_name) {
+                $criteria[] = "Sector: $sector_name";
+            }
+        } catch (PDOException $e) {
+            // If job_sectors table doesn't exist, just skip sector name
+            $criteria[] = "Sector ID: $sector_id";
         }
     }
     if ($location) {
